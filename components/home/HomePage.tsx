@@ -25,17 +25,15 @@ import {
   PROVIDERS,
   type CategoryKey,
   type TabKey,
-  type WalletSubTab,
-  type WalletTab,
 } from "@/data/homeLobby";
+import { AuthSheet } from "@/components/auth/AuthSheet";
 import { GameCard } from "./GameCard";
-import { AuthDialog, InfoDialog, WalletDialog } from "./dialogs";
+import { InfoDialog } from "./dialogs";
 import { SportsSection } from "./SportsSection";
 
 type DialogState =
   | { type: "none" }
   | { type: "auth"; mode: "login" | "register" }
-  | { type: "wallet"; tab: WalletTab; subTab: WalletSubTab }
   | { type: "info"; title: string; message: string };
 
 export function HomePage() {
@@ -253,18 +251,10 @@ export function HomePage() {
       <BottomNav active="home" />
 
       {dialog.type === "auth" ? (
-        <AuthDialog
+        <AuthSheet
           mode={dialog.mode}
           onClose={closeDialog}
           onSwitch={(mode) => setDialog({ type: "auth", mode })}
-        />
-      ) : null}
-      {dialog.type === "wallet" ? (
-        <WalletDialog
-          tab={dialog.tab}
-          subTab={dialog.subTab}
-          onClose={closeDialog}
-          onChange={(next) => setDialog({ type: "wallet", ...next })}
         />
       ) : null}
       {dialog.type === "info" ? (

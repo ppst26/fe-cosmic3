@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import type { WalletSubTab, WalletTab } from "@/data/homeLobby";
 
 type DialogFrameProps = {
@@ -27,77 +26,6 @@ function DialogFrame({ title, onClose, children }: DialogFrameProps) {
         {children}
       </div>
     </div>
-  );
-}
-
-type AuthMode = "login" | "register";
-
-export function AuthDialog({
-  mode,
-  onClose,
-  onSwitch,
-}: {
-  mode: AuthMode;
-  onClose: () => void;
-  onSwitch: (mode: AuthMode) => void;
-}) {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [message, setMessage] = useState("");
-  const [pending, setPending] = useState(false);
-
-  async function submit(event: React.FormEvent) {
-    event.preventDefault();
-    if (mode === "register") {
-      setMessage("สมัครสมาชิกจำลองสำเร็จ");
-      return;
-    }
-    setPending(true);
-    setMessage("");
-    try {
-      const response = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }),
-      });
-      const data = (await response.json()) as { message?: string };
-      setMessage(data.message ?? "เข้าสู่ระบบไม่สำเร็จ");
-    } catch {
-      setMessage("เชื่อมต่อเซิร์ฟเวอร์ไม่ได้");
-    } finally {
-      setPending(false);
-    }
-  }
-
-  return (
-    <DialogFrame title={mode === "login" ? "เข้าสู่ระบบ" : "สมัครสมาชิก"} onClose={onClose}>
-      <form onSubmit={submit} className="space-y-3">
-        <input
-          value={username}
-          onChange={(event) => setUsername(event.target.value)}
-          placeholder="บัญชีผู้ใช้ หรือ เบอร์โทรศัพท์"
-          className="h-11 w-full rounded-[var(--radius-soft-sm)] bg-[var(--soft-card)] px-3 text-sm outline-none"
-        />
-        <input
-          type="password"
-          value={password}
-          onChange={(event) => setPassword(event.target.value)}
-          placeholder="รหัสผ่าน"
-          className="h-11 w-full rounded-[var(--radius-soft-sm)] bg-[var(--soft-card)] px-3 text-sm outline-none"
-        />
-        <button type="submit" disabled={pending} className="soft-btn-primary h-11 w-full text-sm font-semibold">
-          {pending ? "กำลังตรวจสอบ..." : mode === "login" ? "เข้าสู่ระบบ" : "สมัครสมาชิก"}
-        </button>
-        {message ? <p className="text-sm text-[var(--text-on-light)]">{message}</p> : null}
-        <button
-          type="button"
-          className="w-full text-sm font-semibold text-[var(--brand)]"
-          onClick={() => onSwitch(mode === "login" ? "register" : "login")}
-        >
-          {mode === "login" ? "ยังไม่มีบัญชี? สมัครสมาชิก" : "มีบัญชีแล้ว? เข้าสู่ระบบ"}
-        </button>
-      </form>
-    </DialogFrame>
   );
 }
 
