@@ -27,6 +27,7 @@ import {
   type TabKey,
 } from "@/data/homeLobby";
 import { AuthSheet } from "@/components/auth/AuthSheet";
+import { useMember } from "@/components/member/MemberProvider";
 import { GameCard } from "./GameCard";
 import { InfoDialog } from "./dialogs";
 import { SportsSection } from "./SportsSection";
@@ -36,8 +37,19 @@ type DialogState =
   | { type: "auth"; mode: "login" | "register" }
   | { type: "info"; title: string; message: string };
 
+const SLOTS_CATALOG_PROVIDER_IDS = new Set(["pg", "jili"]);
+
+const CATEGORY_ROUTES: Partial<Record<CategoryKey, string>> = {
+  slot: "/slots",
+  casino: "/casino",
+  sport: "/sport-games",
+  fish: "/fishing",
+  table: "/cards",
+};
+
 export function HomePage() {
   const router = useRouter();
+  const { state } = useMember();
   const [activeCat, setActiveCat] = useState<CategoryKey>("home");
   const [gameSubTab, setGameSubTab] = useState<TabKey>("hot");
   const [dialog, setDialog] = useState<DialogState>({ type: "none" });
@@ -49,9 +61,30 @@ export function HomePage() {
       }
       if (gameSubTab === "hot") return game.hot;
       if (gameSubTab === "recent") return game.recent;
-      return game.favorite;
+      return state.favoriteGameIds.includes(String(game.id));
     }).slice(0, 12);
-  }, [activeCat, gameSubTab]);
+  }, [activeCat, gameSubTab, state.favoriteGameIds]);
+
+  function handleCategorySelect(id: CategoryKey) {
+    const route = CATEGORY_ROUTES[id];
+    if (route) {
+      router.push(route);
+      return;
+    }
+    if (id === "lotto") {
+      router.push("/lottery");
+      return;
+    }
+    setActiveCat(id);
+  }
+
+  function handleProviderClick(providerId: string) {
+    if (SLOTS_CATALOG_PROVIDER_IDS.has(providerId)) {
+      router.push(`/slots/${providerId}`);
+      return;
+    }
+    router.push("/slots");
+  }
 
   function closeDialog() {
     setDialog({ type: "none" });
@@ -75,7 +108,7 @@ export function HomePage() {
       <CategoryIconNav
         items={NAV_CATEGORIES}
         active={activeCat}
-        onSelect={(id) => setActiveCat(id as CategoryKey)}
+        onSelect={(id) => handleCategorySelect(id as CategoryKey)}
       />
 
       {activeCat === "home" || activeCat === "sport" ? <SportsSection /> : null}
@@ -170,7 +203,7 @@ export function HomePage() {
                 <li key={provider.id}>
                   <button
                     type="button"
-                    onClick={() => setActiveCat("slot")}
+                    onClick={() => handleProviderClick(provider.id)}
                     className="flex w-full flex-col items-center gap-1 rounded-[var(--radius-soft-md)] bg-[var(--soft-card-elevated)] px-2 py-3 text-center shadow-[var(--shadow-soft-sm)]"
                   >
                     <span className="text-xl" aria-hidden>
