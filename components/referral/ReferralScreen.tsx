@@ -24,14 +24,6 @@ const RANGE_BUTTONS: { key: EarningsRange; label: string }[] = [
 
 const OVERVIEW_STEPS = ["คัดลอกลิงก์", "ส่งให้เพื่อน", "รับรายได้เมื่อเพื่อนเล่น"];
 
-function localToday(): string {
-  const d = new Date();
-  const y = d.getFullYear();
-  const m = String(d.getMonth() + 1).padStart(2, "0");
-  const day = String(d.getDate()).padStart(2, "0");
-  return `${y}-${m}-${day}`;
-}
-
 export function ReferralScreen() {
   const { state, dispatch } = useMember();
   const [tab, setTab] = useState<ReferralTab>("overview");
@@ -39,7 +31,7 @@ export function ReferralScreen() {
   const [range, setRange] = useState<EarningsRange>("all");
   const [message, setMessage] = useState("");
 
-  const today = localToday();
+  const today = new Date().toISOString().slice(0, 10);
 
   const friends = useMemo(() => {
     const q = friendQuery.trim();
@@ -58,7 +50,7 @@ export function ReferralScreen() {
   }
 
   function handleWithdraw() {
-    dispatch({ type: "withdrawReferral", at: localToday() });
+    dispatch({ type: "withdrawReferral", at: new Date().toISOString().slice(0, 10) });
     setMessage("ถอนรายได้เข้ากระเป๋าแล้ว");
   }
 
