@@ -1,0 +1,21 @@
+---
+description: Typography และการจัดการแบบอักษรสำหรับ CM Theme Legend Pro (Black-Purple)
+globs: "**/*.{tsx,css}"
+alwaysApply: false
+---
+
+# Typography — CM Theme Legend Pro
+
+ต้นฉบับ: `design.md`
+
+## กฎและระดับแบบอักษร (Typography Rules & Hierarchy)
+
+- **ฟอนต์หลัก:** ฟอนต์สไตล์โมเดิร์นอ่านง่าย เช่น Sukhumvit, Kanit, Prompt หรือ Inter
+- **ขนาดและน้ำหนัก (Font Size & Weight Hierarchy):**
+  - **Headings & Badges (หัวข้อหลัก, ยอดแจ็คพ็อต, ป้ายแท็ก):** ใช้ `font-bold` (`700`) หรือ `font-extrabold` (`800`) เพื่อความคมชัด สวยสะดุดตา
+  - **Section Titles:** `text-lg` ถึง `text-xl` (`18px - 20px`), `font-bold`, ตัวอักษรสีขาว หรือสีม่วงสว่าง (`--Main-Primary-Light`)
+  - **Buttons & Nav Tabs:** `text-sm` ถึง `text-base` (`14px - 16px`), `font-semibold` (`600`) หรือ `font-bold` (`700`)
+  - **Body & Subtitles:** `text-sm` (`14px`) หรือ `text-xs` (`12px`), `font-normal` (`400`) หรือ `font-medium` (`500`), สีเทา `--text-secondary` (`#a0a0a5`)
+  - **Badges (HOT, NEW, Live):** `text-[10px]` ถึง `text-xs` (`12px`), `font-bold`
+- **Text Gradients:** หัวข้อพิเศษและยอดเงินรางวัล ใช้คลาส `text-purple-gradient` หรือ `text-gold-gradient` ร่วมกับ `bg-clip-text text-transparent`
+- **ภาษาไทย:** กำหนด `line-height` ให้เหมาะสม (อย่างน้อย `1.4` ถึง `1.5`) เพื่อไม่ให้สระบน/ล่าง (เช่น สระอิ, วรรณยุกต์โท, สระอุ) โดนตัดขอบ

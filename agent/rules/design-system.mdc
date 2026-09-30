@@ -1,0 +1,113 @@
+---
+description: สรุป design system CM Theme Legend Pro (Black-Purple) — tokens, layout, การ์ด, ความโค้งมน; รายละเอียดเต็มใน design.md
+globs: "**/*.{tsx,ts,css}"
+alwaysApply: false
+---
+
+# Design System — CM Theme Legend Pro (Black-Purple)
+
+> **เอกสารอ้างอิงหลัก:** ดูรายละเอียดเต็มใน [design.md](file:///c:/Users/PP/Desktop/production/Cm%20Theme/black-purple/design.md)  
+> **แหล่งถอดแบบ UI:** [CTMX Legend Pro](https://demo-legend-pro.ctmx.pro/)  
+> **โทนสีประจำโปรเจกต์:** **Black-Purple** (ดำสนิทผสมม่วงนีออนลักชัวรี่)  
+> **ปรัชญาหลัก:** **Mobile-First เสมอเป็นอันดับแรก (Priority #1)**
+
+---
+
+## 0. กฎเหล็กการออกแบบ: ยึดถือ Mobile-First เป็นอันดับแรก (Mandatory Mobile-First Priority)
+
+ระบบ UI ทั้งหมดต้องถูกวิเคราะห์ วางโครงสร้าง และสร้างขึ้นโดยยึด **หน้าจอมือถือ (Mobile Viewport: 360px – 430px) เป็นอันดับแรกสุดเสมอ** ก่อนที่จะทำการ Scale Up สู่ Tablet และ Desktop:
+
+1. **Mobile-First Styling Architecture (Tailwind CSS):**
+   - **Base Class คือ Mobile เสมอ:** ทุกคลาสเริ่มต้นที่ไม่ใส่ Prefix จะต้องเป็นสไตล์ที่เหมาะที่สุดกับหน้าจอมือถือ (เช่น `px-3 py-2 text-xs grid-cols-2`)
+   - **Scale Up ด้วย Responsive Prefix:** ใช้ `sm:`, `md:`, `lg:`, `xl:` สำหรับขยาย Layout เมื่ออยู่บนหน้าจอที่กว้างขึ้น **ห้ามเขียนสไตล์ Desktop เป็นค่าหลักแล้วพยายามย่อลงมือถือเด็ดขาด**
+2. **Touch Ergonomics & Thumb Zone (ความสะดวกในการสัมผัส):**
+   - **ขนาด Touch Target:** ปุ่มกด ลิงก์ และจุด Action ทุกจุดบนมือถือต้องมีขนาดความสูง/กว้างไม่ต่ำกว่า `40px – 44px` (`h-10` ถึง `h-11`) เพื่อให้นิ้วสัมผัสได้แม่นยำ ไม่กดผิด
+   - **Thumb Accessibility:** ฟังก์ชันสำคัญ (เมนูลัด, สลับธีม, แชทสด, นำทางหลัก) ต้องอยู่ในจุดที่นิ้วโป้งเอื้อมถึงได้สะดวกบนมือถือ
+3. **Touch-friendly Scrolling & Navigation:**
+   - แถบหมวดหมู่ (`CategoryNav`) บนมือถือต้องสามารถใช้นิ้วปัดเลื่อนแนวนอนได้อย่างลื่นไหล (`overflow-x-auto scrollbar-none snap-x`) พร้อม Safe Padding ด้านข้าง
+4. **Zero Horizontal Overflow (ไร้ขอบล้นแนวนอน):**
+   - หน้าเว็บต้องไม่มี Horizontal Scrollbar ที่ไม่ตั้งใจบนทุกขนาดหน้าจอ โดยเฉพาะหน้าจอแคบขนาด 360px, 375px, 390px, และ 414px
+5. **Progressive Grid Progression:**
+   - การ์ดเกมสล็อต (`GameCard`): Mobile เริ่มต้น `grid-cols-2` ➔ `sm:grid-cols-3` ➔ `md:grid-cols-4` ➔ `xl:grid-cols-5`
+   - การ์ดค่ายเกม (`ProviderCard`): Mobile เริ่มต้น `grid-cols-2` ➔ `sm:grid-cols-3` ➔ `md:grid-cols-4` ➔ `lg:grid-cols-6`
+   - การ์ดโปรโมชั่น & กิจกรรม: Mobile เริ่มต้นเรียงซ้อนแบบแถวเดี่ยว 1 คอลัมน์ ➔ Desktop กางเป็น 12 คอลัมน์
+
+---
+
+## 1. ชุดสีและ Design Tokens หลัก (Color Palette & Surface Rules)
+
+> ⚠️ **กฎเหล็กสถาปัตยกรรมสี (Color Role Principle):**  
+> - **Surface หลัก และพื้นหลังทั้งหมด ต้องเป็น "สีดำ (Pure Black / Dark Charcoal)" เท่านั้น** ไม่ใช่สีม่วงทึบ!
+> - **สีม่วง (Purple #a855f7 / #c084fc) คือ "สี Primary องค์ประกอบ"** สำหรับขับเน้น (Accents, Highlights, Borders, Glows, Active Indicators, Text Gradients, Buttons) เพื่อให้หน้าเว็บดูมืดสนิท ลักชัวรี่ คมชัด และสบายตาเหมือนในรูปต้นฉบับจริง
+
+| บทบาทการใช้งาน | CSS Variable / Token | รหัสสี (HEX / RGBA) | คำอธิบาย |
+|---|---|---|---|
+| **พื้นหลังระดับลึกสุด (Body)** | `--body-bg` / `--surface-solid-base` | `#0a090f` | ดำสนิท Pure Pitch Black 100% Solid Canvas มืดลึกสบายตา |
+| **พื้นผิวการ์ดหลัก (Card Surface)** | `--card-primary` / `--surface-solid-card` | `#151320` | ผิวการ์ดสีทึบ Solid Dark Charcoal ปราศจากเกรเดียนต์ตัดสายตา |
+| **พื้นผิวชั้นยก / สว่าง (Elevated)** | `--card-tertiary` / `--surface-solid-elevated` | `#1e1a2e` | พื้นผิวชั้นยกลอย, Card Hover Highlight สีเทาดำทึบ |
+| **พื้นผิวชั้นลึก / Input (Hole Surface)**| `--card-secondary` / `--surface-solid-inset` | `#0d0c14` | ก้นลึกสีดำสนิททึบสำหรับ Input, ช่องค้นหา, หลุมตัวกรอง |
+| **พื้นผิวแถบเมนู (Header & Bar)** | `--BG-Surface-Lighter` | `#13111d` | หัว Section, แถบเมนูด้านบน, แท็บ (ดำสนิทโทนเข้ม) |
+| **สีองค์ประกอบหลัก (Primary Accent)** | `--Main-Primary` | `#a855f7` | **ม่วงนีออนสด (Purple 500)** — ใช้สำหรับปุ่ม CTA, จุด Active, แสงเรืองนุ่ม |
+| **สีม่วงสว่างไฮไลท์ (Light Accent)** | `--Main-Primary-Light` | `#c084fc` | ม่วงสว่าง (Purple 400) สำหรับข้อความ Text Gradient, ไฮไลท์ |
+| **สีประกายคู่ (Secondary Accent)** | `--Main-Secondary` | `#d946ef` | ชมพูฟูเชีย (Fuchsia 500) สำหรับปุ่มคู่กับสีม่วง |
+| **แท็กเกมฮิต (Hot)** | `--Status-Hot` | `#e10000` | สีแดงนีออนสำหรับ Badge เกมยอดนิยม |
+| **แท็กเกมใหม่ (New)** | `--Status-New` | `#34a200` | สีเขียวนีออนสำหรับ Badge เกมมาใหม่ |
+| **ปุ่ม LINE** | `--Brand-Line` | `#06C755` | สีเขียวทางการสำหรับปุ่มเข้าสู่ระบบด้วย LINE |
+
+---
+
+## 2. ลำดับชั้นความโค้งมนและสถาปัตยกรรมไร้ขอบสไตล์ Thrill.com (Border Radius & Borderless Hierarchy)
+
+> 💎 **มาตรฐานถอดแบบจาก Thrill.com Casino:**
+> 1. **Borderless 100%:** ไม่ใช้เส้นขอบแข็ง (`border: none` / `border-0`) ล้อมรอบการ์ด เพื่อให้ภาพเกมและรูปทรงโค้งมนแสดงผลได้อย่างไร้รอยต่อ
+> 2. **Solid Matte Surfaces:** พื้นหลังการ์ดใช้สีทึบ (`#151320`) สบายตา ขับให้ภาพเกมโดดเด่น
+> 3. **Soft Ambient Shadow:** มิติความลึกสร้างขึ้นจากระดับสีทึบ (Elevation) และเงาตกกระทบนุ่มฟุ้ง:
+>    - Default: `box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.45)`
+>    - Hover: `box-shadow: 0 14px 30px -4px rgba(0, 0, 0, 0.65)` พร้อม `translateY(-4px)`
+
+### ลำดับความโค้งมน (Radius Scale):
+- **4px – 6px (`rounded-md`):** Badge สถานะขนาดเล็ก (HOT, NEW), เส้นเลื่อนสไลเดอร์
+- **10px – 12px (`rounded-xl` / `rounded-[12px]`):** ปุ่มกด Action ทั้งหมด (Auth, Submit), Dropdown, Category Tabs
+- **16px (`rounded-2xl` / `rounded-[16px]`):** **การ์ดเกมสล็อต (`GameCard`)**, กล่องค้นหา (Search Bar)
+- **20px – 24px (`rounded-3xl` / `rounded-[20px]`):** **การ์ดค่ายเกม (`ProviderCard`)**, Event & Promotion Cards, Content Containers
+- **28px (`rounded-[28px]`):** Modal Dialogs, Floating Bottom Sheets
+- **9999px (`rounded-full`):** แท็บหมวดหมู่ (Pill Tabs), ปุ่มวงกลม Favorite, ปุ่มลอย FAB (จานสีธีม, แชทสด), ป้ายคนดูสด
+
+---
+
+## 3. สเปกการ์ดหลักสไตล์ Thrill Casino (Card Component Specifications)
+
+### 3.1 Provider Card (การ์ดค่ายเกม - Thrill Borderless Style)
+- **ความโค้งมน:** `rounded-[20px]` ถึง `rounded-[24px]` (20px - 24px)
+- **สไตล์ขอบ:** **Borderless 100%** (`border: none` / `border-0`)
+- **พื้นหลัง:** สีทึบ Solid Dark Charcoal `bg-[#151320]` (Hover: `bg-[#1e1a2e]`)
+- **เงาและการเคลื่อนไหว:** มิติเงานุ่ม `shadow-[0_4px_20px_-2px_rgba(0,0,0,0.45)]` ยกตัวลอยขึ้นนุ่มนวล `hover:-translate-y-1 hover:scale-[1.02]`
+- **สัดส่วน:** สี่เหลี่ยมจัตุรัส `aspect-square` (1:1)
+- **เงาดำล่าง:** Gradient ดำบังด้านล่างความสูง `80px` เพื่อขับโลโก้ให้ลอยเด่น
+
+### 3.2 Game Card (การ์ดเกมสล็อต - Thrill High-Radius Style)
+- **ความโค้งมน:** **`rounded-2xl` (16px)** ทั้งกรอบนอกและรูปภาพภายใน
+- **สไตล์ขอบ:** **Borderless 100%** ไร้เส้นขอบตัดกรอบ
+- **พื้นหลัง:** สีทึบ Solid Surface `bg-[#151320]`
+- **สัดส่วน:** โปสเตอร์ `3:4` (`aspect-[3/4]`)
+- **แอนิเมชัน Hover:** ยกตัวนุ่มนวล `hover:-translate-y-1.5 hover:scale-[1.03]` และเงาฟุ้ง `hover:shadow-[0_14px_30px_-4px_rgba(0,0,0,0.65)]`
+- **Badges:** มุมซ้ายบนมี Badge HOT (`#e10000`) หรือ NEW (`#34a200`) โค้งมน 4px
+- **ปุ่มหัวใจ:** วงกลมแก้วโปร่งแสงมุมขวาบน (`backdrop-blur-sm bg-black/45 hover:scale-110`)
+
+### 3.3 Event / Promo Card & Content Wells
+- **ความโค้งมน:** `rounded-[20px]` (20px)
+- **สไตล์ขอบ:** Borderless สบายตา
+- **พื้นหลัง:** Solid Dark Surface `bg-[#151320]`
+- **แอนิเมชัน 3D:** โมเดลลอยตัวขึ้น-ลงแบบนุ่มนวล (`@keyframes float`)
+
+---
+
+## 4. ปุ่มและการควบคุม (Buttons & Elevation)
+- **ปุ่มหลัก Solid CTA:**
+  - สีม่วง Gradient หรือ Solid Purple `#a855f7`
+  - ขอบมน `rounded-xl` (12px)
+  - แสงนูนนุ่มนวล: `box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.25)`
+- **Category Pill Tabs (เหมือน Thrill):**
+  - ทรงแคปซูลมนสมบูรณ์ `rounded-full`
+  - ป้าย Active: พื้นหลัง Solid Purple `#a855f7` ตัวอักษรสีขาว
+  - ป้าย Inactive: พื้นหลัง Solid Dark `#151320` หรือโปร่งใส ตัวอักษรสีเทา `hover:bg-[#1e1a2e]`

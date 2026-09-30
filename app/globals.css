@@ -1,26 +1,96 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+:root,
+[data-theme="orange"] {
+  /* Soft UI — canvas ลึกสุด → card อ่อนขึ้นเรื่อยๆ (solid ไม่ใช้ gradient พื้นผิว) */
+  --soft-canvas: #d4dae5;
+  --soft-surface: #dfe4ed;
+  --soft-card: #e9edf4;
+  --soft-card-elevated: #f3f6fa;
+  --soft-chrome: #3f4858;
+
+  --body: var(--soft-canvas);
+  --header: var(--soft-chrome);
+  --footer: var(--soft-chrome);
+
+  --notice-bg: #4a5568;
+  --brand: #f5871e;
+  --brand-strong: #fe8401;
+  --brand-soft: #fff0e3;
+  --text-on-light: #4a5568;
+  --text-on-dark: #f8fafc;
+  --text-muted: #7b8798;
+
+  --input: var(--soft-card-elevated);
+  --tab-inactive: #8b95a5;
+  --icon-muted: #6b7280;
+
+  --radius-soft-sm: 14px;
+  --radius-soft-md: 18px;
+  --radius-soft-lg: 22px;
+  --radius-soft-xl: 28px;
+
+  --shadow-soft: 0 6px 18px rgba(45, 55, 72, 0.08);
+  --shadow-soft-sm: 0 2px 10px rgba(45, 55, 72, 0.06);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-kanit);
+  --color-brand: var(--brand);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  overflow-x: hidden;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--body);
+  color: var(--text-on-light);
+  font-family: var(--font-kanit), Kanit, sans-serif;
+}
+
+@utility soft-panel {
+  background-color: var(--soft-card);
+  border-radius: var(--radius-soft-lg);
+  box-shadow: var(--shadow-soft-sm);
+}
+
+@utility soft-card {
+  background-color: var(--soft-card-elevated);
+  border-radius: var(--radius-soft-md);
+  box-shadow: var(--shadow-soft-sm);
+}
+
+@utility soft-btn-primary {
+  background-color: var(--brand);
+  color: #fff;
+  border-radius: var(--radius-soft-sm);
+  box-shadow: 0 4px 12px rgba(245, 135, 30, 0.35);
+}
+
+@utility soft-btn-outline {
+  background-color: var(--soft-card-elevated);
+  color: var(--brand);
+  border: 2px solid rgba(245, 135, 30, 0.45);
+  border-radius: var(--radius-soft-sm);
+}
+
+@utility scrollbar-none {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 28s linear infinite;
 }

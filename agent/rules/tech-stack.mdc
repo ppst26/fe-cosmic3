@@ -1,0 +1,22 @@
+---
+description: Tech stack CM Theme Legend Pro (Black-Purple) — Next.js 16, React 19, Tailwind CSS v4
+alwaysApply: true
+---
+
+# Tech Stack
+
+- **Front-end:** Next.js 16 (App Router) + React 19 + TypeScript
+- **Styling:** Tailwind CSS 4 + Scoped / CSS Variables
+- **Package manager:** pnpm
+- **Next.js Guidelines:** ก่อนเขียนหรือแก้โค้ด Next.js ให้อ่านคู่มือใน `node_modules/next/dist/docs/` เพราะ API ใน Next 16 อาจต่างจากความรู้เดิม; เคารพ deprecation notices เสมอ
+- **Version Control:** Commit งานทุกครั้งเมื่อมีการทำฟีเจอร์หรือแก้ไขสำคัญ
+- **Design Tokens:** ค่าสี, ความโค้งมน, และเงาใน `design.md` และ `app/globals.css` ถือเป็นสเปกต้นฉบับ โดยใช้ธีม **Black-Purple** (พื้นหลังดำสนิท `#09060e`, พื้นผิวการ์ด `#130c1c`, สีหลักม่วงนีออน `#a855f7`, สีรองฟูเชีย `#d946ef`)
+- **โครงสร้างโฟลเดอร์:**
+  - `components/` หรือ `app/components/`: Reusable UI components
+  - `app/globals.css`: Root design tokens, CSS variables, และ `@utility` สำหรับสไตล์พิเศษ (เช่น `bg-provider-card`, `btn-beveled`)
+
+## Styling — Tailwind CSS v4 เป็นหลัก
+
+- **Component และ layout:** ใช้ **Tailwind CSS ใน TSX** เป็นค่าเริ่มต้น — จัดการ `flex`, `grid`, `gap`, `padding`, `margin`, `rounded-*`, และ responsive breakpoints ใน `className`
+- **ไฟล์ CSS:** ใช้สำหรับ **Design Tokens**, **CSS Variables**, **Gradient 2 ชั้น (Double-clip)**, แอนิเมชันพิเศษ (`@keyframes float`, `@keyframes spin`), และเอฟเฟกต์สะท้อนแสงนูน (`inset box-shadow`)
+- **Semantic Colors:** อ้างอิงตัวแปร `var(--Main-Primary)`, `var(--card-primary)` หรือคลาส Tailwind ที่ map ค่าสีแล้ว — ห้ามเขียนค่า hex ซ้ำซ้อนแบบกระจัดกระจาย
