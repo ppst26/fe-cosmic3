@@ -2,6 +2,7 @@ export const MEMBER = {
   username: "demolege854905112",
   displayName: "คุณพีพี (VIP 3)",
   phone: "089-xxx-8899",
+  password: "demo1234",
   balance: 28450.75,
   diamonds: 12500,
   vipTier: "GOLD",
