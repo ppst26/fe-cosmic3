@@ -99,5 +99,6 @@ export const MEMBER_LINKS = [
   { href: "/referral", label: "ชวนเพื่อน", emoji: "🤝" },
   { href: "/commission", label: "คอมมิชชั่น", emoji: "💸" },
   { href: "/shop", label: "ร้านเพชร", emoji: "💎" },
+  { href: "/wheel", label: "วงล้อ", emoji: "🎡" },
   { href: "/vip", label: "แรงค์ VIP", emoji: "👑" },
 ] as const;
