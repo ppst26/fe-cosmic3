@@ -64,6 +64,10 @@ const MARKETS: Record<string, LotteryMarket> = {
   "yiki-30": createMarket("yiki-30", "ยี่กี 30 นาที", "yiki"),
 };
 
+export function listMarkets(group: LotteryMarketGroup): LotteryMarket[] {
+  return Object.values(MARKETS).filter((market) => market.group === group);
+}
+
 export function getMarket(marketId: string): LotteryMarket | null {
   return MARKETS[marketId] ?? null;
 }
