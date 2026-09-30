@@ -121,8 +121,11 @@ export function ProviderGamesScreen({ category, providerId }: ProviderGamesScree
                   <button
                     type="button"
                     aria-label="บันทึกเกมโปรด"
-                    onClick={() => dispatch({ type: "toggleFavorite", gameId: game.id })}
-                    className={`absolute right-1 top-1 flex h-7 w-7 items-center justify-center rounded-full bg-[var(--soft-card-elevated)]/85 text-xs ${
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      dispatch({ type: "toggleFavorite", gameId: game.id });
+                    }}
+                    className={`relative z-10 absolute right-1 top-1 flex h-10 w-10 items-center justify-center rounded-full bg-[var(--soft-card-elevated)]/85 text-xs ${
                       favorited ? "text-[#ff6b6b]" : "text-[var(--text-muted)]"
                     }`}
                   >

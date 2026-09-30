@@ -24,8 +24,10 @@ import {
   PROMOTIONS,
   PROVIDERS,
   type CategoryKey,
+  type LobbyGame,
   type TabKey,
 } from "@/data/homeLobby";
+import { listProviders, type GameCategory } from "@/data/providers";
 import { AuthSheet } from "@/components/auth/AuthSheet";
 import { useMember } from "@/components/member/MemberProvider";
 import { GameCard } from "./GameCard";
@@ -38,6 +40,18 @@ type DialogState =
   | { type: "info"; title: string; message: string };
 
 const SLOTS_CATALOG_PROVIDER_IDS = new Set(["pg", "jili"]);
+
+const PROVIDER_FAVORITE_CATEGORIES: GameCategory[] = [
+  "slots",
+  "casino",
+  "fishing",
+  "cards",
+  "sport-games",
+];
+
+type HomeGridItem =
+  | { source: "lobby"; game: LobbyGame }
+  | { source: "provider"; id: string; title: string };
 
 const CATEGORY_ROUTES: Partial<Record<CategoryKey, string>> = {
   slot: "/slots",
@@ -54,15 +68,41 @@ export function HomePage() {
   const [gameSubTab, setGameSubTab] = useState<TabKey>("hot");
   const [dialog, setDialog] = useState<DialogState>({ type: "none" });
 
-  const lobbyGames = useMemo(() => {
-    return LOBBY_GAMES.filter((game) => {
-      if (activeCat !== "home") {
-        return game.category === activeCat;
+  const lobbyGames = useMemo((): HomeGridItem[] => {
+    const toLobbyItems = (games: LobbyGame[]): HomeGridItem[] =>
+      games.map((game) => ({ source: "lobby", game }));
+
+    if (activeCat !== "home") {
+      return toLobbyItems(
+        LOBBY_GAMES.filter((game) => game.category === activeCat).slice(0, 12),
+      );
+    }
+
+    if (gameSubTab === "hot") {
+      return toLobbyItems(LOBBY_GAMES.filter((game) => game.hot).slice(0, 12));
+    }
+    if (gameSubTab === "recent") {
+      return toLobbyItems(LOBBY_GAMES.filter((game) => game.recent).slice(0, 12));
+    }
+
+    const lobbyFavorites = LOBBY_GAMES.filter((game) =>
+      state.favoriteGameIds.includes(String(game.id)),
+    );
+    const seenIds = new Set(lobbyFavorites.map((game) => String(game.id)));
+    const providerItems: HomeGridItem[] = [];
+
+    for (const category of PROVIDER_FAVORITE_CATEGORIES) {
+      for (const provider of listProviders(category)) {
+        for (const game of provider.games) {
+          if (state.favoriteGameIds.includes(game.id) && !seenIds.has(game.id)) {
+            seenIds.add(game.id);
+            providerItems.push({ source: "provider", id: game.id, title: game.title });
+          }
+        }
       }
-      if (gameSubTab === "hot") return game.hot;
-      if (gameSubTab === "recent") return game.recent;
-      return state.favoriteGameIds.includes(String(game.id));
-    }).slice(0, 12);
+    }
+
+    return [...toLobbyItems(lobbyFavorites), ...providerItems].slice(0, 12);
   }, [activeCat, gameSubTab, state.favoriteGameIds]);
 
   function handleCategorySelect(id: CategoryKey) {
@@ -142,18 +182,35 @@ export function HomePage() {
           icon="🔥"
         />
         <ul className="grid grid-cols-3 gap-2 bg-[var(--soft-card)] px-3 pb-4 pt-1 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6">
-          {lobbyGames.map((game) => (
-            <li key={game.id}>
-              <GameCard
-                game={{
-                  id: String(game.id),
-                  title: game.title,
-                  players: (game.players ?? 0).toLocaleString("th-TH"),
-                  tag: game.badge === "ใหม่" ? "new" : game.badge === "ฮิต" ? "hot" : undefined,
-                }}
-              />
-            </li>
-          ))}
+          {lobbyGames.map((item) =>
+            item.source === "lobby" ? (
+              <li key={`lobby-${item.game.id}`}>
+                <GameCard
+                  game={{
+                    id: String(item.game.id),
+                    title: item.game.title,
+                    players: (item.game.players ?? 0).toLocaleString("th-TH"),
+                    tag:
+                      item.game.badge === "ใหม่"
+                        ? "new"
+                        : item.game.badge === "ฮิต"
+                          ? "hot"
+                          : undefined,
+                  }}
+                />
+              </li>
+            ) : (
+              <li key={`provider-${item.id}`}>
+                <GameCard
+                  game={{
+                    id: item.id,
+                    title: item.title,
+                    players: "—",
+                  }}
+                />
+              </li>
+            ),
+          )}
         </ul>
       </SoftSection>
 
