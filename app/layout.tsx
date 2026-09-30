@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Kanit } from "next/font/google";
+import { MemberProvider } from "@/components/member/MemberProvider";
 import "./globals.css";
 
 const kanit = Kanit({
@@ -20,7 +21,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${kanit.variable} light h-full antialiased`}
       data-theme="orange"
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <MemberProvider>{children}</MemberProvider>
+      </body>
     </html>
   );
 }
