@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useMember } from "@/components/member/MemberProvider";
 import { SheetFrame } from "@/components/wallet/SheetFrame";
 import { BANKS } from "@/data/member";
@@ -46,10 +46,11 @@ export function AuthSheet({
   const [accountNumber, setAccountNumber] = useState("");
   const [channel, setChannel] = useState("");
 
-  useEffect(() => {
+  function switchMode(next: AuthMode) {
     setMessage("");
     setStep(1);
-  }, [mode]);
+    onSwitch(next);
+  }
 
   async function submitLogin(event: React.FormEvent) {
     event.preventDefault();
@@ -161,7 +162,7 @@ export function AuthSheet({
           <button
             type="button"
             className="w-full text-sm font-semibold text-[var(--brand)]"
-            onClick={() => onSwitch("register")}
+            onClick={() => switchMode("register")}
           >
             ยังไม่มีบัญชี? สมัครสมาชิก
           </button>
@@ -199,7 +200,7 @@ export function AuthSheet({
           <button
             type="button"
             className="w-full text-sm font-semibold text-[var(--brand)]"
-            onClick={() => onSwitch("login")}
+            onClick={() => switchMode("login")}
           >
             มีบัญชีแล้ว? เข้าสู่ระบบ
           </button>
@@ -272,7 +273,7 @@ export function AuthSheet({
           <button
             type="button"
             className="w-full text-sm font-semibold text-[var(--brand)]"
-            onClick={() => onSwitch("login")}
+            onClick={() => switchMode("login")}
           >
             มีบัญชีแล้ว? เข้าสู่ระบบ
           </button>
