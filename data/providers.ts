@@ -82,3 +82,7 @@ export function getProvider(
 ): ProviderRecord | null {
   return CATALOG[category].find((p) => p.id === providerId) ?? null;
 }
+
+export function listProviders(category: GameCategory): ProviderRecord[] {
+  return CATALOG[category];
+}
