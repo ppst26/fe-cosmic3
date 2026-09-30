@@ -2,6 +2,7 @@
 
 import { use } from "react";
 import { ProviderGamesScreen } from "@/components/games/ProviderGamesScreen";
+import { SubPageShell } from "@/components/layout/SubPageShell";
 
 type PageProps = {
   params: Promise<{ provider: string }>;
@@ -9,5 +10,9 @@ type PageProps = {
 
 export default function CardsProviderPage({ params }: PageProps) {
   const { provider } = use(params);
-  return <ProviderGamesScreen category="cards" providerId={provider} />;
+  return (
+    <SubPageShell title="ไพ่">
+      <ProviderGamesScreen category="cards" providerId={provider} />
+    </SubPageShell>
+  );
 }

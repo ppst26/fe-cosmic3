@@ -44,7 +44,7 @@ export function ProviderGamesScreen({ category, providerId }: ProviderGamesScree
 
   if (!provider) {
     return (
-      <div className="space-y-3 px-3 py-6 text-center">
+      <div className="space-y-3 py-6 text-center">
         <p className="text-base font-semibold text-[var(--text-on-light)]">ไม่พบค่าย</p>
         <Link
           href={`/${category}`}
@@ -57,7 +57,7 @@ export function ProviderGamesScreen({ category, providerId }: ProviderGamesScree
   }
 
   return (
-    <div className="space-y-3 px-3 py-3">
+    <div className="space-y-3">
       <nav>
         <Link
           href={`/${category}`}
