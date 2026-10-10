@@ -260,3 +260,7 @@
 | 14 | `app/serwist/[path]/route.ts` | 132f1b4 | 646aee2 | ลอกตามเดิม (manifest: ชื่อแบรนด์/สี; next.config: เพิ่ม redirects ของ sport) |
 | 14 | `next.config.ts` | 132f1b4 | 646aee2 | ลอกตามเดิม (manifest: ชื่อแบรนด์/สี; next.config: เพิ่ม redirects ของ sport) |
 | 14 | `app/manifest.ts` | 132f1b4 | 646aee2 | ลอกตามเดิม (manifest: ชื่อแบรนด์/สี; next.config: เพิ่ม redirects ของ sport) |
+| 13-hub | `app/components/hub/hubModalRegistry.ts` | 132f1b4 | 3e57b97 | ลอกตามเดิม |
+| 13-hub | `app/components/hub/DesktopHubModalProvider.tsx` | 132f1b4 | 3e57b97 | ลอกตามเดิม |
+| 13-hub | `app/components/hub/HubNavLink.tsx` | 132f1b4 | 3e57b97 | ลอกตามเดิม |
+| 13-hub | `app/components/hub/useIsDesktop.ts` | 132f1b4 | 3e57b97 | ลอกตามเดิม |
