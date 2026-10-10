@@ -93,3 +93,6 @@
 | 3-4a | `lib/server/request.test.ts` | 132f1b4 | cedec5c | ลอกตามเดิม (messages: แทนชื่อแบรนด์เป็น CMB-Jupiter) |
 | 3-4a | `lib/server/request.ts` | 132f1b4 | cedec5c | ลอกตามเดิม (messages: แทนชื่อแบรนด์เป็น CMB-Jupiter) |
 | 3-4a | `lib/uiConstants.ts` | 132f1b4 | cedec5c | ลอกตามเดิม (messages: แทนชื่อแบรนด์เป็น CMB-Jupiter) |
+| 4b | `proxy.ts` | 132f1b4 | 77417db | ลอกตามเดิม (eslint: เพิ่ม ignore lottery-kit/**, lottery-kit-from-app/**) |
+| 4b | `scripts/i18n-swap-imports.mjs` | 132f1b4 | 77417db | ลอกตามเดิม (eslint: เพิ่ม ignore lottery-kit/**, lottery-kit-from-app/**) |
+| 4b | `eslint.config.mjs` | 132f1b4 | 77417db | ลอกตามเดิม (eslint: เพิ่ม ignore lottery-kit/**, lottery-kit-from-app/**) |
