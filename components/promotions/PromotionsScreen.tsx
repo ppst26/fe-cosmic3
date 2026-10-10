@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { useMember } from "@/components/member/MemberProvider";
+import { useAuth } from "@/context/AuthContext";
 import { PROMOTIONS, type PromotionItem } from "@/data/homeLobby";
 
 type CategoryFilter = "general" | "special";
@@ -13,7 +13,7 @@ const CATEGORY_BUTTONS: { key: CategoryFilter; label: string }[] = [
 ];
 
 export function PromotionsScreen() {
-  const { state, dispatch } = useMember();
+  const { state, dispatch } = useAuth();
   const [category, setCategory] = useState<CategoryFilter>("general");
   const [selected, setSelected] = useState<PromotionItem | null>(null);
   const [message, setMessage] = useState("");
@@ -24,6 +24,10 @@ export function PromotionsScreen() {
   );
 
   function handleToggleOptIn() {
+    if (!state.isAuthenticated) {
+      setMessage("เข้าสู่ระบบก่อนเพื่อเปิด/ปิดรับโปรโมชั่น");
+      return;
+    }
     const next = !state.promoOptIn;
     dispatch({ type: "setPromoOptIn", value: next });
     setMessage(
@@ -33,18 +37,29 @@ export function PromotionsScreen() {
     );
   }
 
+  const promoOn = state.isAuthenticated && state.promoOptIn;
+
   return (
     <div className="space-y-3">
+      {!state.isAuthenticated ? (
+        <p className="soft-panel p-3 text-center text-sm text-[var(--text-muted)]">
+          ดูโปรโมชั่นได้ทันที — เข้าสู่ระบบเพื่อรับสิทธิ์และไปฝากเงิน
+        </p>
+      ) : null}
       <button
         type="button"
         onClick={handleToggleOptIn}
         className={`h-10 w-full rounded-[var(--radius-soft-sm)] text-sm font-semibold ${
-          state.promoOptIn
+          promoOn
             ? "soft-btn-primary"
             : "bg-[var(--soft-card)] text-[var(--text-on-light)]"
         }`}
       >
-        {state.promoOptIn ? "เปิดรับโปรโมชั่น" : "ปิดรับโปรโมชั่น"}
+        {!state.isAuthenticated
+          ? "เปิดรับโปรโมชั่น (ต้องล็อกอิน)"
+          : promoOn
+            ? "เปิดรับโปรโมชั่น"
+            : "ปิดรับโปรโมชั่น"}
       </button>
 
       <div className="flex gap-2">

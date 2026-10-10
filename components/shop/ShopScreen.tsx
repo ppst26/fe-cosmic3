@@ -1,12 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { useMember } from "@/components/member/MemberProvider";
+import { useAuth } from "@/context/AuthContext";
 import { SHOP_PACKAGES } from "@/data/member";
 import { SHOP_TERMS } from "@/data/shopTerms";
 
 export function ShopScreen() {
-  const { state, dispatch } = useMember();
+  const { state, dispatch } = useAuth();
   const [message, setMessage] = useState("");
   const [termsOpen, setTermsOpen] = useState(false);
 

@@ -5,7 +5,7 @@ import { SubPageShell } from "@/components/layout/SubPageShell";
 
 export default function ShopPage() {
   return (
-    <SubPageShell title="ร้านแลกเพชร">
+    <SubPageShell title="ร้านแลกเพชร" requiresAuth sessionMode="gems">
       <ShopScreen />
     </SubPageShell>
   );

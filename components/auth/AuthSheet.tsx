@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useMember } from "@/components/member/MemberProvider";
+import { useAuth } from "@/context/AuthContext";
 import { SheetFrame } from "@/components/wallet/SheetFrame";
 import { BANKS } from "@/data/member";
 import { SIGNUP_CHANNELS } from "@/data/signup";
@@ -14,6 +14,7 @@ import {
   phoneError,
   PHONE_DIGIT_LENGTH,
 } from "@/lib/fieldRules";
+import { DEMO_LOGIN_PASSWORD, DEMO_LOGIN_PHONE } from "@/lib/auth/demoLogin";
 
 const inputClass =
   "h-11 w-full rounded-[var(--radius-soft-sm)] bg-[var(--soft-card)] px-3 text-sm outline-none";
@@ -29,12 +30,12 @@ export function AuthSheet({
   onClose: () => void;
   onSwitch: (mode: AuthMode) => void;
 }) {
-  const { dispatch } = useMember();
+  const { dispatch } = useAuth();
   const [message, setMessage] = useState("");
   const [pending, setPending] = useState(false);
 
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState(DEMO_LOGIN_PHONE);
+  const [password, setPassword] = useState(DEMO_LOGIN_PASSWORD);
 
   const [step, setStep] = useState<1 | 2>(1);
   const [phone, setPhone] = useState("");
@@ -63,10 +64,11 @@ export function AuthSheet({
         body: JSON.stringify({ username, password }),
       });
       const data = (await response.json()) as {
+        success?: boolean;
         message?: string;
         user?: { username?: string };
       };
-      if (response.ok) {
+      if (response.ok && data.success) {
         const loginUsername = data.user?.username ?? username;
         dispatch({ type: "loginSuccess", username: loginUsername });
         onClose();

@@ -1,9 +1,9 @@
 export type GameCategory =
   | "slots"
   | "casino"
-  | "fishing"
-  | "cards"
-  | "sport-games";
+  | "fish"
+  | "card"
+  | "sports";
 
 export type ProviderGame = {
   id: string;
@@ -21,9 +21,9 @@ export type ProviderRecord = {
 const GAME_CATEGORIES: readonly GameCategory[] = [
   "slots",
   "casino",
-  "fishing",
-  "cards",
-  "sport-games",
+  "fish",
+  "card",
+  "sports",
 ];
 
 function providerGames(prefix: string, label: string): ProviderGame[] {
@@ -44,7 +44,7 @@ const CATALOG: Record<GameCategory, ProviderRecord[]> = {
     { id: "sexy", name: "SEXY GAMING", games: providerGames("sexy", "SEXY GAMING") },
     { id: "sa", name: "SA GAMING", games: providerGames("sa", "SA GAMING") },
   ],
-  fishing: [
+  fish: [
     {
       id: "jili-fish",
       name: "JILI FISH",
@@ -56,7 +56,7 @@ const CATALOG: Record<GameCategory, ProviderRecord[]> = {
       games: providerGames("spadegaming", "SPADE"),
     },
   ],
-  cards: [
+  card: [
     {
       id: "kingmidas",
       name: "KING MIDAS",
@@ -64,16 +64,21 @@ const CATALOG: Record<GameCategory, ProviderRecord[]> = {
     },
     { id: "km", name: "KM POKER", games: providerGames("km", "KM POKER") },
   ],
-  "sport-games": [
+  sports: [
     { id: "onebx", name: "ONE BX", games: providerGames("onebx", "ONE BX") },
     { id: "saba", name: "SABA", games: providerGames("saba", "SABA") },
   ],
 };
 
-export function getCategory(slug: string): GameCategory | null {
-  return GAME_CATEGORIES.includes(slug as GameCategory)
-    ? (slug as GameCategory)
+/** URL segment (e.g. /sports) → catalog key */
+export function categoryFromPath(segment: string): GameCategory | null {
+  return GAME_CATEGORIES.includes(segment as GameCategory)
+    ? (segment as GameCategory)
     : null;
+}
+
+export function getCategory(slug: string): GameCategory | null {
+  return categoryFromPath(slug);
 }
 
 export function getProvider(

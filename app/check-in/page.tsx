@@ -5,7 +5,7 @@ import { SubPageShell } from "@/components/layout/SubPageShell";
 
 export default function CheckInPage() {
   return (
-    <SubPageShell title="เช็คอินรายวัน">
+    <SubPageShell title="เช็คอินรายวัน" requiresAuth sessionMode="gems">
       <CheckInScreen />
     </SubPageShell>
   );

@@ -1,15 +1,22 @@
+import type { CategoryNavIconId } from "@/components/layout/CategoryNavIcons";
+
 export type TabKey = "hot" | "recent" | "favorite";
 
 export type CategoryKey =
   | "home"
+  | "new"
+  | "providers"
   | "slot"
   | "casino"
   | "sport"
   | "lotto"
   | "fish"
-  | "card"
   | "table"
-  | "others";
+  | "arcade"
+  | "fight"
+  | "crash"
+  | "crypto"
+  | "favorite";
 
 export type LobbyGame = {
   id: number;
@@ -81,15 +88,25 @@ export const LOBBY_TABS: { key: TabKey; label: string; emoji: string }[] = [
   { key: "favorite", label: "เกมโปรด", emoji: "⭐" },
 ];
 
-export const NAV_CATEGORIES: { id: CategoryKey; label: string; emoji: string }[] = [
-  { id: "home", label: "หน้าหลัก", emoji: "🏠" },
-  { id: "slot", label: "สล็อต", emoji: "🎰" },
-  { id: "casino", label: "คาสิโน", emoji: "🎲" },
-  { id: "sport", label: "กีฬา", emoji: "⚽" },
-  { id: "lotto", label: "หวย", emoji: "🎱" },
-  { id: "fish", label: "ยิงปลา", emoji: "🐟" },
-  { id: "table", label: "ไพ่", emoji: "🃏" },
-  { id: "others", label: "อื่นๆ", emoji: "✨" },
+export const NAV_CATEGORIES: {
+  id: CategoryKey;
+  label: string;
+  icon: CategoryNavIconId;
+}[] = [
+  { id: "home", label: "มาแรง", icon: "hot" },
+  { id: "new", label: "เกมมาใหม่", icon: "new" },
+  { id: "providers", label: "ค่ายเกม", icon: "providers" },
+  { id: "sport", label: "กีฬา", icon: "sport" },
+  { id: "slot", label: "สล็อต", icon: "slot" },
+  { id: "casino", label: "คาสิโน", icon: "casino" },
+  { id: "table", label: "ไพ่", icon: "cards" },
+  { id: "fish", label: "ยิงปลา", icon: "fish" },
+  { id: "lotto", label: "หวย", icon: "lottery" },
+  { id: "arcade", label: "อาร์เคด", icon: "arcade" },
+  { id: "fight", label: "ต่อสู้", icon: "fight" },
+  { id: "crash", label: "แครช", icon: "crash" },
+  { id: "crypto", label: "คริปโต", icon: "crypto" },
+  { id: "favorite", label: "เกมโปรด", icon: "favorite" },
 ];
 
 export const POPULAR_GAMES: PopularGame[] = [

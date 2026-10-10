@@ -1,14 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { useMember } from "@/components/member/MemberProvider";
+import { useAuth } from "@/context/AuthContext";
 
 type SlipDetailScreenProps = {
   slipId: string;
 };
 
 export function SlipDetailScreen({ slipId }: SlipDetailScreenProps) {
-  const { state } = useMember();
+  const { state } = useAuth();
   const slip = state.lotterySlips.find((s) => s.id === slipId);
 
   if (!slip) {

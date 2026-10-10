@@ -1,0 +1,78 @@
+/* Gaming lobby — โครง BP + soft card ส้ม */
+
+.gaming-lobby-panel {
+  border-radius: var(--radius-soft-lg);
+  background: var(--soft-card-elevated);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-soft-sm);
+}
+
+.gaming-provider-sidebar {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--brand) 35%, transparent) transparent;
+}
+
+.gaming-provider-sidebar::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+.gaming-provider-nav-tile {
+  aspect-ratio: 1;
+  border-radius: var(--radius-soft-sm);
+  background: var(--soft-card);
+  border: 2px solid transparent;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s,
+    transform 0.2s;
+}
+
+.gaming-provider-nav-tile:hover {
+  border-color: color-mix(in srgb, var(--brand) 35%, transparent);
+}
+
+.gaming-provider-nav-tile--active {
+  border-color: var(--brand);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--brand) 40%, transparent),
+    var(--shadow-soft-sm);
+  background: var(--brand-soft);
+}
+
+.gaming-tab {
+  position: relative;
+  padding: 0.5rem 0.25rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+.gaming-tab:hover {
+  color: var(--text-on-light);
+}
+
+.gaming-tab--active {
+  color: var(--brand);
+}
+
+.gaming-tab--active::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -0.35rem;
+  height: 2px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--brand-strong), var(--brand));
+}
+
+.gaming-game-card {
+  border-radius: var(--radius-soft-sm);
+  overflow: hidden;
+  background: var(--soft-card);
+  box-shadow: var(--shadow-soft-sm);
+}

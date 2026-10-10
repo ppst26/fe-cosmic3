@@ -1,8 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { useMember } from "@/components/member/MemberProvider";
-import { MEMBER, REFERRAL_LINK } from "@/data/member";
+import { useAuth } from "@/context/AuthContext";
+import { REFERRAL_LINK } from "@/data/member";
 import { REFERRAL_EARNING_ROWS, REFERRAL_FRIENDS } from "@/data/referral";
 import { filterReferralRows } from "@/lib/referralFilter";
 
@@ -25,13 +25,17 @@ const RANGE_BUTTONS: { key: EarningsRange; label: string }[] = [
 const OVERVIEW_STEPS = ["คัดลอกลิงก์", "ส่งให้เพื่อน", "รับรายได้เมื่อเพื่อนเล่น"];
 
 export function ReferralScreen() {
-  const { state, dispatch } = useMember();
+  const { state, dispatch } = useAuth();
   const [tab, setTab] = useState<ReferralTab>("overview");
   const [friendQuery, setFriendQuery] = useState("");
   const [range, setRange] = useState<EarningsRange>("all");
   const [message, setMessage] = useState("");
 
   const today = new Date().toISOString().slice(0, 10);
+  const referralUsername = state.username || "สมาชิก";
+  const referralLink = state.username
+    ? `https://demo-legend.ctmx.live/?prefix=${state.username}`
+    : REFERRAL_LINK;
 
   const friends = useMemo(() => {
     const q = friendQuery.trim();
@@ -45,7 +49,7 @@ export function ReferralScreen() {
   );
 
   function handleCopyLink() {
-    void navigator.clipboard?.writeText(REFERRAL_LINK);
+    void navigator.clipboard?.writeText(referralLink);
     setMessage("คัดลอกลิงก์แล้ว");
   }
 
@@ -81,13 +85,13 @@ export function ReferralScreen() {
             ))}
           </ol>
           <p className="text-sm text-[var(--text-muted)]">ลิงก์แนะนำ</p>
-          <p className="break-all text-sm">{REFERRAL_LINK}</p>
+          <p className="break-all text-sm">{referralLink}</p>
           <button
             type="button"
             onClick={handleCopyLink}
             className="soft-btn-outline h-10 w-full text-sm font-semibold"
           >
-            คัดลอกลิงก์ของ {MEMBER.username}
+            คัดลอกลิงก์ของ {referralUsername}
           </button>
         </section>
       ) : null}
@@ -133,7 +137,7 @@ export function ReferralScreen() {
                 key={key}
                 type="button"
                 onClick={() => setRange(key)}
-                className={`h-10 shrink-0 rounded-full px-3 text-xs font-semibold ${
+                className={`h-10 shrink-0 rounded-lg px-3 text-xs font-semibold ${
                   range === key
                     ? "bg-[var(--brand)] text-white"
                     : "bg-[var(--soft-card-elevated)]"

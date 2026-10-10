@@ -1,6 +1,6 @@
-import { SectionHeader } from "@/components/layout";
-import { SoftSection } from "@/components/ui/SoftSection";
 import { SPORT_CATEGORIES } from "@/lib/mock/home";
+import { HomeHorizontalScroll } from "./HomeHorizontalScroll";
+import { HomePageSection } from "./HomePageSection";
 import { SportCategoryCard } from "./SportCategoryCard";
 
 function BasketballIcon() {
@@ -17,17 +17,14 @@ function BasketballIcon() {
 
 export function SportsSection() {
   return (
-    <SoftSection className="mt-3">
-      <SectionHeader title="กีฬา" leading={<BasketballIcon />} />
-      <div className="overflow-x-auto scrollbar-none bg-[var(--soft-card)] px-3 pb-3 pt-1 sm:px-4">
-        <ul className="flex gap-2.5">
-          {SPORT_CATEGORIES.map((sport) => (
-            <li key={sport.id}>
-              <SportCategoryCard sport={sport} />
-            </li>
-          ))}
-        </ul>
-      </div>
-    </SoftSection>
+    <HomePageSection title="กีฬา" leading={<BasketballIcon />}>
+      <HomeHorizontalScroll>
+        {SPORT_CATEGORIES.map((sport) => (
+          <li key={sport.id} className="shrink-0 snap-start">
+            <SportCategoryCard sport={sport} />
+          </li>
+        ))}
+      </HomeHorizontalScroll>
+    </HomePageSection>
   );
 }

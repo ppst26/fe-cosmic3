@@ -1,8 +1,7 @@
 "use client";
 
 import { use } from "react";
-import { ProviderGamesScreen } from "@/components/games/ProviderGamesScreen";
-import { SubPageShell } from "@/components/layout/SubPageShell";
+import { GamingGamesView } from "@/components/gaming/GamingGamesView";
 
 type PageProps = {
   params: Promise<{ provider: string }>;
@@ -10,9 +9,5 @@ type PageProps = {
 
 export default function CasinoProviderPage({ params }: PageProps) {
   const { provider } = use(params);
-  return (
-    <SubPageShell title="คาสิโน">
-      <ProviderGamesScreen category="casino" providerId={provider} />
-    </SubPageShell>
-  );
+  return <GamingGamesView categoryId="casino" providerKey={provider} />;
 }

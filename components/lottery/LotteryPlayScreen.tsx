@@ -1,11 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
-import { getMarket, getRound, YIKI_HOW_TO } from "@/data/lottery";
+import { useEffect, useState } from "react";
+import { getLotteryCatalogEntry } from "@/data/lotteryCatalog";
+import { getLotteryPlayRoundById, getLotteryPlayRounds } from "@/data/lotteryRounds";
+import { getMarket, YIKI_HOW_TO } from "@/data/lottery";
+import { formatCountdown } from "@/lib/lottery/format";
 import { canConfirmSlip, slipTotal } from "@/lib/lottery/slip";
 import type { LotterySlipLine } from "@/lib/member/types";
-import { useMember } from "@/components/member/MemberProvider";
+import { useAuth } from "@/context/AuthContext";
 
 const PRICES = [10, 20, 50, 100] as const;
 
@@ -28,17 +31,25 @@ export function LotteryPlayScreen({
   roundId,
   showYikiHelp,
 }: LotteryPlayScreenProps) {
-  const { state, dispatch } = useMember();
+  const { state, dispatch } = useAuth();
+  const catalog = getLotteryCatalogEntry(marketId);
   const market = getMarket(marketId);
-  const round = getRound(marketId, roundId);
+  const playRound = getLotteryPlayRoundById(marketId, roundId);
+  const marketName = catalog?.title ?? market?.name;
+  const [nowMs, setNowMs] = useState(() => Date.now());
 
-  const [betType, setBetType] = useState(market?.betTypes[0] ?? "");
+  useEffect(() => {
+    const timer = window.setInterval(() => setNowMs(Date.now()), 1000);
+    return () => window.clearInterval(timer);
+  }, []);
+
+  const [betType, setBetType] = useState(market?.betTypes[0] ?? "สามตัวบน");
   const [number, setNumber] = useState("");
   const [price, setPrice] = useState<number | null>(null);
   const [lines, setLines] = useState<LotterySlipLine[]>([]);
   const [confirmed, setConfirmed] = useState(false);
 
-  if (!market || !round) {
+  if (!marketName || !playRound) {
     return (
       <div className="soft-card space-y-3 p-4 text-center">
         <p className="text-sm text-[var(--text-on-light)]">ไม่พบรอบ</p>
@@ -54,6 +65,19 @@ export function LotteryPlayScreen({
 
   const total = slipTotal(lines);
   const canConfirm = canConfirmSlip(lines.length, total, state.balance);
+  const betTypes = market?.betTypes ?? [
+    "วิ่งบน",
+    "วิ่งล่าง",
+    "สองตัวบน",
+    "สามตัวบน",
+  ];
+  const routeBase = market?.routeBase ?? `/lottery/${marketId}`;
+  const otherRounds = getLotteryPlayRounds(marketId)
+    .filter((round) => round.status === "open" && round.id !== roundId)
+    .slice(0, 6);
+  const countdownLabel = formatCountdown(
+    new Date(playRound.closeAt).getTime() - nowMs,
+  );
 
   function appendDigit(digit: string) {
     if (number.length >= 3) {
@@ -126,9 +150,12 @@ export function LotteryPlayScreen({
 
   return (
     <div className="space-y-4">
-      <p className="text-sm text-[var(--text-muted)]">
-        {market.name} · {round.label}
-      </p>
+      <section className="lottery-soft-card space-y-1 p-3">
+        <p className="text-sm font-bold text-[var(--text-on-light)]">
+          {marketName} · {playRound.drawLabel}
+        </p>
+        <p className="lottery-countdown text-xs">ปิดรับใน {countdownLabel}</p>
+      </section>
 
       {showYikiHelp ? (
         <section className="soft-card p-3 text-sm text-[var(--text-on-light)]">
@@ -139,15 +166,13 @@ export function LotteryPlayScreen({
             ))}
           </ol>
           <div className="mt-3 flex flex-wrap gap-2">
-            {market.rounds
-              .filter((r) => r.id !== roundId)
-              .map((r) => (
+            {otherRounds.map((r) => (
                 <Link
                   key={r.id}
-                  href={`${market.routeBase}/${r.id}`}
+                  href={`${routeBase}/${r.id}`}
                   className="soft-btn-outline inline-flex h-10 items-center px-3 text-xs font-semibold"
                 >
-                  {r.label}
+                  {r.drawLabel}
                 </Link>
               ))}
           </div>
@@ -157,7 +182,7 @@ export function LotteryPlayScreen({
       <section className="soft-card space-y-3 p-3">
         <p className="text-xs font-semibold text-[var(--text-muted)]">ประเภท</p>
         <div className="flex flex-wrap gap-2">
-          {market.betTypes.map((type) => (
+          {betTypes.map((type) => (
             <button
               key={type}
               type="button"

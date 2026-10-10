@@ -1,9 +1,7 @@
 "use client";
 
 import { use } from "react";
-import { getMarket } from "@/data/lottery";
-import { LotteryRoundList } from "@/components/lottery/LotteryRoundList";
-import { SubPageShell } from "@/components/layout/SubPageShell";
+import { LotteryMarketRoundsPage } from "@/components/lottery/rounds/LotteryMarketRoundsPage";
 
 type PageProps = {
   params: Promise<{ marketId: string }>;
@@ -11,10 +9,5 @@ type PageProps = {
 
 export default function LotteryMarketPage({ params }: PageProps) {
   const { marketId } = use(params);
-  const market = getMarket(marketId);
-  return (
-    <SubPageShell title={market?.name ?? "หวย"}>
-      <LotteryRoundList marketId={marketId} basePath={`/lottery/${marketId}`} />
-    </SubPageShell>
-  );
+  return <LotteryMarketRoundsPage marketSlug={marketId} />;
 }

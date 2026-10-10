@@ -1,12 +1,7 @@
 "use client";
 
-import { CategoryLobby } from "@/components/games/CategoryLobby";
-import { SubPageShell } from "@/components/layout/SubPageShell";
+import { GamingProvidersView } from "@/components/gaming/GamingProvidersView";
 
 export default function SlotsPage() {
-  return (
-    <SubPageShell title="สล็อต">
-      <CategoryLobby category="slots" title="สล็อต" />
-    </SubPageShell>
-  );
+  return <GamingProvidersView categoryId="slot" />;
 }

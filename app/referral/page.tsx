@@ -5,7 +5,7 @@ import { ReferralScreen } from "@/components/referral/ReferralScreen";
 
 export default function ReferralPage() {
   return (
-    <SubPageShell title="ชวนเพื่อน">
+    <SubPageShell title="ชวนเพื่อน" requiresAuth sessionMode="referral">
       <ReferralScreen />
     </SubPageShell>
   );

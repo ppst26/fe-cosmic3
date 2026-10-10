@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useMember } from "@/components/member/MemberProvider";
+import { useAuth } from "@/context/AuthContext";
 import { BANKS, MEMBER } from "@/data/member";
 import {
   BANK_ACCOUNT_MAX_DIGITS,
@@ -22,7 +22,7 @@ const inputClass =
   "mt-1 h-11 w-full rounded-[var(--radius-soft-sm)] bg-[var(--soft-card-elevated)] px-3 text-sm outline-none";
 
 export function ProfileScreen() {
-  const { state, dispatch } = useMember();
+  const { state, dispatch } = useAuth();
   const [tab, setTab] = useState<ProfileTab>("info");
   const [message, setMessage] = useState("");
 
@@ -97,6 +97,10 @@ export function ProfileScreen() {
   function handleLogout() {
     dispatch({ type: "logout" });
     setMessage("ออกจากระบบแล้ว");
+  }
+
+  if (!state.isAuthenticated) {
+    return null;
   }
 
   return (

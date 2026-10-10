@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useMember } from "@/components/member/MemberProvider";
+import { useAuth } from "@/context/AuthContext";
 import { CASHBACK_RATES } from "@/data/cashback";
 
 type CashbackTab = keyof typeof CASHBACK_RATES;
@@ -15,7 +15,7 @@ function localToday(): string {
 }
 
 export function CommissionScreen() {
-  const { state, dispatch } = useMember();
+  const { state, dispatch } = useAuth();
   const [tab, setTab] = useState<CashbackTab>("play");
 
   const config = CASHBACK_RATES[tab];

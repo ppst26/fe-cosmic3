@@ -1,3 +1,4 @@
+import Image from "next/image";
 import type { MockSportCategory } from "@/lib/mock/home";
 
 const toneClass = {
@@ -5,22 +6,40 @@ const toneClass = {
   green: "text-[#2ecc71]",
 } as const;
 
-export function SportCategoryCard({ sport }: { sport: MockSportCategory }) {
+export function SportCategoryCard({
+  sport,
+  onPress,
+}: {
+  sport: MockSportCategory;
+  onPress?: () => void;
+}) {
   return (
     <article className="w-[108px] shrink-0 sm:w-[120px]">
-      <button type="button" className="group w-full text-left">
-        <div className="relative aspect-[3/4] overflow-hidden rounded-[var(--radius-soft-md)] bg-[var(--soft-card-elevated)] shadow-[var(--shadow-soft-sm)]">
-          <div className="absolute inset-0" style={{ background: sport.gradient }} />
+      <button type="button" onClick={onPress} className="group w-full border-0 bg-transparent p-0 text-left cursor-pointer">
+        <div className="relative aspect-[3/4] overflow-hidden rounded-lg bg-white shadow-[0_1px_4px_rgba(0,0,0,0.08)]">
+          {sport.imageUrl ? (
+            <Image
+              src={sport.imageUrl}
+              alt=""
+              fill
+              sizes="120px"
+              className="object-cover"
+            />
+          ) : (
+            <div className="absolute inset-0" style={{ background: sport.gradient }} aria-hidden />
+          )}
           <div
             className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-black/15 to-transparent"
             aria-hidden
           />
 
           <span
-            className="absolute right-1.5 top-1.5 flex h-7 w-7 items-center justify-center rounded-full bg-[var(--soft-card-elevated)]/80 text-sm text-[var(--text-muted)]"
+            className={`absolute right-1.5 top-1.5 flex h-7 w-7 items-center justify-center rounded-md bg-[var(--soft-card-elevated)]/80 text-sm ${
+              sport.favorited ? "text-[#e74c3c]" : "text-[var(--text-muted)]"
+            }`}
             aria-hidden
           >
-            ♡
+            {sport.favorited ? "♥" : "♡"}
           </span>
 
           <p
@@ -29,7 +48,7 @@ export function SportCategoryCard({ sport }: { sport: MockSportCategory }) {
             {sport.overlayTitle}
           </p>
 
-          <div className="absolute inset-x-1 bottom-1 flex items-center justify-between rounded-[var(--radius-soft-sm)] bg-[var(--soft-card-elevated)]/90 px-2 py-1 text-[10px] font-semibold backdrop-blur-[2px]">
+          <div className="absolute inset-x-1 bottom-1 flex items-center justify-between rounded bg-white/90 px-2 py-1 text-[10px] font-semibold backdrop-blur-[2px]">
             <span className={`flex items-center gap-0.5 ${toneClass[sport.playersTone]}`}>
               <UsersIcon />
               {sport.players}

@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { useMember } from "@/components/member/MemberProvider";
+import { useAuth } from "@/context/AuthContext";
 import { ACTIVITIES, type ActivityItem } from "@/data/activities";
 
 type CategoryFilter = "all" | "slot" | "casino";
@@ -21,7 +21,7 @@ function localToday(): string {
 }
 
 export function ActivitiesScreen() {
-  const { state, dispatch } = useMember();
+  const { state, dispatch } = useAuth();
   const [category, setCategory] = useState<CategoryFilter>("all");
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [message, setMessage] = useState("");

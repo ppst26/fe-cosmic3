@@ -1,11 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { useMember } from "@/components/member/MemberProvider";
+import { useAuth } from "@/context/AuthContext";
 import { CHECKIN_DAYS } from "@/data/member";
 
 export function CheckInScreen() {
-  const { state, dispatch } = useMember();
+  const { state, dispatch } = useAuth();
   const [message, setMessage] = useState("");
   const claimedCount =
     CHECKIN_DAYS.filter(

@@ -1,0 +1,534 @@
+/**
+ * หน้า standalone มือถือ (โปรไฟล์, ธุรกรรม, โปรโมชัน ฯลฯ) — ไม่ทาพื้น --bg-page / ไม่บังคับ min-h-screen
+ * พื้นหลังเดียวกับ .cosmic-bg บน <html> · ต่อกับ CosmicFooter ไม่เหลือแถบสีต่างกลางจอ
+ */
+.mobile-standalone-page {
+  display: flex;
+  min-height: 0;
+  flex: 1;
+  flex-direction: column;
+  background: transparent;
+  color: var(--text-primary);
+}
+
+/** เนื้อหาหน้า standalone — gutter แนวนอนเท่า .page-shell / หน้าแรก */
+.mobile-standalone-main {
+  width: 100%;
+  max-width: var(--content-max);
+  margin-inline: auto;
+  padding-inline: var(--layout-inline-gutter);
+  box-sizing: border-box;
+}
+
+/** แถบหัวย่อย (ย้อนกลับ + ชื่อหน้า) — ใช้ร่วมกันทุกหน้า standalone */
+@media (max-width: 1023px) {
+  .mobile-standalone-page .standalone-sub-header,
+  .mobile-standalone-page .page-sub-header,
+  .mobile-standalone-page .slot-providers-header,
+  .mobile-standalone-page .profile-page-header,
+  .mobile-standalone-page .provider-breadcrumb-nav {
+    background: #140f1c;
+    border-bottom: 1px solid rgba(45, 27, 78, 0.5);
+  }
+}
+
+@media (max-width: 1023px) {
+  /** หวย / feature — กรอบกลางเต็มความกว้างจอ (ไม่จำกัดแบบ desktop cluster) */
+  .lobby-desktop-shell__desk-body,
+  .lobby-desktop-shell__center-container,
+  .lobby-desktop-shell__frame.lobby-desktop-shell__frame--dex {
+    width: 100%;
+    max-width: none;
+    margin-inline: 0;
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .mobile-standalone-main {
+    padding-bottom: var(--menu-nav-clearance);
+  }
+
+  .lobby-desktop-center--over-rail > main.page-shell--feature:not(.lottery-page-main) {
+    padding-bottom: var(--menu-nav-clearance);
+    box-sizing: border-box;
+  }
+
+  /**
+   * หวย step 2/3 — ย่อ shell ให้อยู่เหนือ bottom nav (scroll ในโซนรอบ/แทง)
+   */
+  .lobby-desktop-shell:has(main.lottery-page-main) {
+    display: flex;
+    flex-direction: column;
+    height: 100dvh;
+    max-height: 100dvh;
+    overflow: hidden;
+  }
+
+  .lobby-desktop-shell:has(main.lottery-page-main) .lobby-desktop-shell__desk-body,
+  .lobby-desktop-shell:has(main.lottery-page-main) .lobby-desktop-shell__center-container,
+  .lobby-desktop-shell:has(main.lottery-page-main) .lobby-desktop-shell__frame,
+  .lobby-desktop-shell:has(main.lottery-page-main) .lobby-desktop-shell__row,
+  .lobby-desktop-shell:has(main.lottery-page-main) .lobby-desktop-main,
+  .lobby-desktop-shell:has(main.lottery-page-main) .lobby-desktop-workspace,
+  .lobby-desktop-shell:has(main.lottery-page-main) .lobby-desktop-workspace--over-right-rail,
+  .lobby-desktop-shell:has(main.lottery-page-main) .lobby-desktop-center,
+  .lobby-desktop-shell:has(main.lottery-page-main) .lobby-desktop-center--over-rail {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-height: 0;
+    min-width: 0;
+  }
+
+  .lobby-desktop-shell:has(main.lottery-page-main) .lobby-desktop-shell__header-band,
+  .lobby-desktop-shell:has(main.lottery-page-main) .lobby-desktop-center > .lg\:hidden,
+  .lobby-desktop-shell:has(main.lottery-page-main) .lobby-desktop-center--over-rail > .lg\:hidden {
+    flex-shrink: 0;
+  }
+
+  .lobby-desktop-center > main.page-shell--feature.lottery-page-main,
+  .lobby-desktop-center--over-rail > main.page-shell--feature.lottery-page-main {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-height: 0;
+    box-sizing: border-box;
+    /* เว้นล่างให้เลื่อนสุดแล้วไม่โดน FloatingBottomNav (fixed) ทับ */
+    padding-bottom: calc(
+      var(--nav-height) + var(--nav-float-offset) + var(--nav-safe) + var(--nav-scroll-gap)
+    );
+    overflow: hidden;
+  }
+
+  /* หน้าสรุป/รายการโพย — scroll ทั้ง main (ไม่ใช้เลย์เอาต์เต็มจอแบบแทงหวย) */
+  .lobby-desktop-center > main.page-shell--feature.lottery-page-main.lottery-slips-page,
+  .lobby-desktop-center--over-rail > main.page-shell--feature.lottery-page-main.lottery-slips-page {
+    overflow-x: clip;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+@media (max-width: 1023px) {
+  /**
+   * Segment ฝาก/ถอน ฯลฯ — glass track · active ไม่ใช้ --action-solid
+   */
+  .mobile-standalone-page .cosmic-segment-track {
+    border: 1px solid rgb(255 255 255 / 0.08);
+    background: var(--glass-fill-subtle);
+    -webkit-backdrop-filter: blur(12px) saturate(1.12);
+    backdrop-filter: blur(12px) saturate(1.12);
+    box-shadow: 0 8px 22px rgb(0 0 0 / 0.18);
+  }
+
+  .mobile-standalone-page .cosmic-segment-btn {
+    border: 0;
+    background: transparent;
+  }
+
+  .mobile-standalone-page .cosmic-segment-btn.is-active {
+    background: var(--cta-white-bg);
+    color: var(--cta-white-fg);
+    box-shadow: 0 2px 12px rgb(0 0 0 / 0.16);
+  }
+
+  .mobile-standalone-page .cosmic-segment-btn:hover:not(.is-active) {
+    color: var(--text-secondary);
+  }
+}
+
+/** แถบหมวดโปรโมชัน — glass chip (PromotionsCategoryTabs) */
+.promo-hub-category-tabs .glass-card--soft {
+  border-radius: var(--radius-pill);
+  box-shadow: none;
+}
+
+.promo-hub-category-tabs .glass-card--soft.is-active {
+  background: linear-gradient(
+    135deg,
+    rgb(119 71 229 / 0.28),
+    rgb(90 70 130 / 0.18)
+  );
+  color: var(--text-primary);
+}
+
+/** หน้ากิจกรรม (/event) — การ์ดรายการ + ชิปหมวด (ActivityHubShared · ActivitiesMobileHub) */
+.activities-mobile-hub .activity-hub-mobile-card.glass-card--soft {
+  box-shadow: 0 10px 28px rgb(0 0 0 / 0.22);
+}
+
+.activities-hub-cat-tabs .glass-card--soft {
+  border-radius: var(--radius-pill);
+  box-shadow: none;
+}
+
+.mobile-standalone-page .activities-hub-cat-tabs .glass-card--soft.is-active {
+  background: var(--cta-white-bg);
+  color: var(--cta-white-fg);
+  box-shadow: 0 2px 12px rgb(0 0 0 / 0.16);
+}
+
+/**
+ * Modal รายละเอียดโปรโมชั่น — PromotionDetailModal.tsx · PromotionDetailPanel.tsx
+ */
+.promo-detail-modal {
+  --promo-detail-title-gold: linear-gradient(180deg, #fff8e7 0%, #fde047 72%, #f59e0b 100%);
+  box-shadow:
+    0 22px 48px rgb(0 0 0 / 0.55),
+    inset 0 1px 0 rgb(255 255 255 / 0.06);
+}
+
+.promo-detail-modal__header {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  padding: 0.875rem 0.75rem 0.625rem;
+}
+
+.promo-detail-modal__title {
+  min-width: 0;
+  flex: 1;
+  text-align: right;
+  line-height: 1.35;
+  color: var(--text-primary);
+}
+
+@media (min-width: 640px) {
+  .promo-detail-modal__title {
+  }
+}
+
+.promo-detail-modal__scroll {
+  min-height: 0;
+  flex: 1;
+  overflow-y: auto;
+  padding: 0.375rem 0.75rem 1rem;
+}
+
+.promotion-detail-panel--modal {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding-top: var(--space-1);
+}
+
+.promotion-detail-panel__banner.glass-card--soft {
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.08),
+    0 10px 28px rgb(0 0 0 / 0.22);
+}
+
+.promotion-detail-panel__banner-glow {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 90% 80% at 72% 38%,
+    rgb(124 58 237 / 0.42) 0%,
+    rgb(13 11 26 / 0.92) 52%,
+    rgb(9 11 24 / 1) 100%
+  );
+  opacity: 0.95;
+}
+
+.promotion-detail-panel__banner-title {
+  line-height: 1.35;
+  background: var(--promo-detail-title-gold);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.promotion-detail-panel__details.glass-card--soft {
+  box-shadow: none;
+}
+
+.promotion-detail-panel__details-heading {
+  padding: 1rem 1rem 0.75rem;
+  color: var(--text-primary);
+}
+
+.promotion-detail-panel__details .promotion-detail-panel__divider {
+  margin-inline: 1rem;
+}
+
+.promotion-detail-panel__accordion-body {
+  padding: 0.75rem 1rem 1rem;
+}
+
+.promotion-detail-panel__blocks {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.promotion-detail-panel__divider {
+  margin: 0;
+  border: 0;
+  border-top: 1px solid rgb(255 255 255 / 0.08);
+}
+
+.promotion-detail-panel__block-title {
+  color: var(--text-primary);
+}
+
+.promo-detail-block-icon {
+  border-radius: var(--radius-pill);
+  border: 1px solid rgb(124 58 237 / 0.45);
+  background: color-mix(in srgb, var(--surface-mid) 70%, rgb(124 58 237 / 0.18));
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.06);
+}
+
+.promotion-detail-panel__footer {
+  margin-top: 0.75rem;
+  padding-top: 0.25rem;
+  text-align: center;
+  color: var(--text-muted);
+}
+
+
+@media (min-width: 1024px) {
+  body {
+    padding-bottom: var(--space-6);
+  }
+
+  /** Desktop lobby — กรอบกลาง max 1680 · 3 คอลัมน์ flex (sidebar หด/ขยาย → main ปรับตาม) */
+  .lobby-desktop-shell {
+    --lobby-desktop-main-max: 76rem;
+    --lobby-desktop-cluster-gutter: var(--page-gutter);
+    --lobby-sidebar-card-width: 220px;
+    --lobby-sidebar-card-width-collapsed: 84px;
+    --lobby-desktop-frame-max: 1680px;
+    --lobby-desktop-center-width: min(
+      var(--lobby-desktop-main-max),
+      calc(100% - 2 * var(--lobby-desktop-cluster-gutter))
+    );
+    --lobby-bottom-nav-inset-left: calc(var(--lobby-sidebar-card-width) + 1rem);
+    --lobby-desktop-side-rail-offset: 0px;
+    --lobby-sidebar-sticky-top: calc(
+      var(--header-desktop-bar-height) + env(safe-area-inset-top, 0px) + var(--space-2)
+    );
+    /* สูงสูงสุดของแผง sidebar — ไม่เกิน viewport ใต้ header (ไม่ยืดตามความยาวหน้า) */
+    --lobby-sidebar-panel-height: min(
+      calc(100dvh - 80px),
+      calc(100dvh - var(--lobby-sidebar-sticky-top) - 1rem - var(--space-6))
+    );
+    --lobby-workspace-pad-top: var(--space-2);
+    background: transparent;
+  }
+
+  /** แถบ header เต็ม viewport — inner กว้างเต็มจอ (main ยังอยู่กรอบกลาง) */
+  .lobby-desktop-shell__header-band {
+    background: transparent !important;
+    background-image: none !important;
+  }
+
+  .lobby-desktop-shell__header-band::before {
+    display: none;
+  }
+
+  .lobby-desktop-shell__header-band .header-desktop-bar::before {
+    display: none;
+  }
+
+  /** Sidebar นอก container กลาง — ชิดซ้าย viewport — transition ของแผงยุบ/ขยาย */
+  .lobby-desktop-shell__sidebar-outside {
+    transition:
+      transform 320ms cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 260ms ease,
+      visibility 320ms;
+  }
+
+  .lobby-desktop-shell__sidebar-outside .lobby-desktop-sidebar.glass-sidebar {
+    height: auto;
+    max-height: none;
+  }
+
+  .lobby-desktop-shell__frame--dex .lobby-desktop-main:has(.lobby-desktop-main__peek) .lobby-desktop-workspace {
+    padding-top: 0;
+  }
+
+  .lobby-desktop-sidebar-rail {
+    transition: width 280ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .lobby-desktop-shell.is-sidebar-collapsed {
+    --lobby-bottom-nav-inset-left: 1rem;
+  }
+
+  .lobby-desktop-shell.is-sidebar-collapsed .lobby-desktop-shell__sidebar-outside {
+    transform: translateX(calc(-100% - var(--lobby-desktop-cluster-gutter) - 0.75rem));
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+
+  .lobby-category-stack .category-nav {
+    margin-top: 0.25rem;
+  }
+
+  /* โฮม desktop — ไม่มี intro / โซนพื้นหลัง */
+  .lobby-desktop-shell .lobby-category-stack .category-nav {
+    margin-block: 0;
+  }
+
+  .lobby-desktop-shell .page-shell--lobby section[aria-label="เกมยอดฮิต"] {
+    margin-top: 0.75rem;
+  }
+}
+
+.surface {
+  background: var(--surface-gradient);
+}
+
+
+
+/*
+ * แถบเมนูย่อยแนวนอน — มุมโค้ง --radius-panel เดียวกันทุกหน้า
+ * CategoryNav (หน้าแรก), SlotFilterTabs (/slots, /casino, /sport)
+ */
+.page-subnav__track {
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x proximity;
+}
+
+.category-nav__chip,
+.page-subnav__chip {
+  cursor: pointer;
+  scroll-snap-align: start;
+
+  border: 0;
+  border-radius: var(--radius-panel);
+  background: var(--surface-mid);
+  color: var(--nav-text);
+
+  font: inherit;
+  line-height: 1.25;
+
+  transition:
+    color 160ms ease,
+    background 160ms ease,
+    box-shadow 160ms ease,
+    transform 160ms ease;
+}
+
+.category-nav__chip {
+  background: var(--glass-fill-subtle);
+  -webkit-backdrop-filter: blur(12px) saturate(1.12);
+  backdrop-filter: blur(12px) saturate(1.12);
+  box-shadow: 0 10px 28px rgb(0 0 0 / 0.22);
+}
+
+.category-nav__chip:hover:not(.is-active) {
+  background: linear-gradient(
+    135deg,
+    rgb(255 255 255 / 0.1),
+    rgb(151 112 213 / 0.14)
+  );
+  box-shadow: 0 12px 32px rgb(0 0 0 / 0.26);
+}
+
+.category-nav__chip.is-active {
+  background: linear-gradient(
+    135deg,
+    rgb(255 255 255 / 0.12),
+    rgb(151 112 213 / 0.18)
+  );
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.12),
+    0 10px 28px rgb(0 0 0 / 0.22);
+  transform: none;
+}
+
+.page-subnav__chip--filter {
+  letter-spacing: -0.01em;
+}
+
+.page-subnav__chip:hover:not(.is-active) {
+  color: var(--nav-active);
+  background: var(--surface-hover);
+}
+
+.page-subnav__chip.is-active {
+  color: var(--text-primary);
+  background: var(--action-solid);
+  box-shadow: 0 4px 16px rgb(73 48 223 / 35%);
+  transform: scale(1.02);
+}
+
+/*
+ * ปุ่ม CTA / quick amount / segment — สีทึบ + มุม --radius-panel เดียวกัน
+ */
+.cosmic-action-btn {
+  border-radius: var(--radius-panel);
+  background: var(--action-solid);
+  color: var(--primary-foreground);
+  transition:
+    filter var(--motion-fast) ease,
+    opacity var(--motion-fast) ease,
+    transform var(--motion-fast) ease;
+}
+
+.cosmic-action-btn:hover:not(:disabled) {
+  filter: brightness(1.08);
+}
+
+.cosmic-action-btn:active:not(:disabled) {
+  transform: scale(0.99);
+}
+
+.cosmic-action-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.cosmic-segment-track {
+  border-radius: var(--radius-panel);
+  background: color-mix(in srgb, var(--surface-hover) 88%, transparent);
+  padding: 4px;
+}
+
+.cosmic-segment-btn {
+  border-radius: calc(var(--radius-panel) - 4px);
+  transition:
+    color var(--motion-fast) ease,
+    background var(--motion-fast) ease,
+    box-shadow var(--motion-fast) ease;
+}
+
+.cosmic-segment-btn.is-active {
+  background: var(--action-solid);
+  color: var(--text-primary);
+  box-shadow: 0 2px 12px rgb(73 48 223 / 35%);
+}
+
+/** segment — glass track · แท็บ active white solid (คืนยอด ฯลฯ) */
+.cosmic-segment-track--glass-white {
+  border: 1px solid rgb(255 255 255 / 0.08);
+  background: var(--glass-fill-subtle);
+  -webkit-backdrop-filter: blur(12px) saturate(1.12);
+  backdrop-filter: blur(12px) saturate(1.12);
+  box-shadow: 0 8px 22px rgb(0 0 0 / 0.18);
+}
+
+.cosmic-segment-track--glass-white .cosmic-segment-btn {
+  border: 0;
+  background: transparent;
+  color: var(--text-muted);
+}
+
+.cosmic-segment-track--glass-white .cosmic-segment-btn:hover:not(.is-active) {
+  color: var(--text-secondary);
+}
+
+.cosmic-segment-track--glass-white .cosmic-segment-btn.is-active {
+  background: var(--cta-white-bg);
+  color: var(--cta-white-fg);
+  box-shadow: 0 2px 12px rgb(0 0 0 / 0.16);
+}
+
+

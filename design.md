@@ -16,12 +16,14 @@
 
 | ชั้น | องค์ประกอบ | รายละเอียด |
 |------|-------------|------------|
-| **1** | **Top Header** | พื้น `#050608` โลโก้ XG / XGAMBET ซ้าย ปุ่ม **สมัครสมาชิก** (outline ส้ม) + **เข้าสู่ระบบ** (ทึบส้ม) กลาง–ขวา ไอคอนค้นหา + เมนูแฮมเบอร์เกอร์ |
-| **2** | **Notice / Marquee** | แถบ `#302e2c` ข้อความขาวเลื่อน ประกาศบริการ 24 ชม. |
-| **3** | **Hero Carousel** | สไลด์โปรโมชันกีฬา (เช่น SOLID SPORTS PLATFORM) พื้นลาย geometric อ่อน ปุ่ม CTA ขาวขอบส้ม |
-| **4** | **Game Search Row** | Input กว้าง `#f7f7f7` placeholder «ระบุชื่อเกม» + ปุ่ม **ค้นหาเกม** ส้ม + ปุ่ม **ปรับแต่ง** (ธีม/การตั้งค่า) |
-| **5** | **Category Nav (Icon Tabs)** | พื้น `#f4f4f4` เลื่อนแนวนอน 14 หมวด: มาแรง, เกมมาใหม่, ค่ายเกม, กีฬา, สล็อต, คาสิโน, ไพ่, อาร์เคด, ต่อสู้, แครช, ยิงปลา, หวย, คริปโต, เกมโปรด — Active: ไอคอน+ข้อความส้ม + เส้นใต้ส้ม |
-| **6** | **Section Blocks** | หัวข้อมาแรง (ไอคอนไฟ) แถบผู้ให้บริการกีฬา (ONE BX, Sportbook, Muay…) การ์ดเกมกริด 3–4 คอลัมน์ บล็อก **บอลโลก 2026** พร้อมลิงก์ **ดูทั้งหมด** |
+| **1** | **Top Header** | **เต็มความกว้าง** พื้น `#050608` — **Mobile:** โลโก้ XG + ปุ่มสมัคร/เข้าสู่ระบบกลาง · **Desktop (`md+`):** โลโก้ XG/XGAMBET ซ้าย · กลาง capsule **เงิน** (ตัวเลขส้ม + refresh) + **เครดิต** (ตัวขาว + ปุ่มฝาก) · ขวา ค้นหา + เมนู |
+| **2** | **Notice / Marquee** | **เต็มความกว้าง** ชิดใต้ header (sticky ร่วมกัน) — พื้นเดียวกับ header ข้อความขาวเลื่อน |
+| **3–5** | **Hero + ค้นหา + หมวด** | **Mobile:** หมวด → Hero → ค้นหา · **Desktop:** Hero → แถบค้นหา (ทับขอบล่าง hero) → หมวด — พื้นขาวชุดเดียวใต้ hero, หมวด `overflow-x` 14 รายการ |
+| **3** | **Hero Carousel** | เต็มความกว้าง — `#ebebeb`, หัว **SOLID SPORTS PLATFORM**, รองส้ม (desktop), **JOIN NOW** |
+| **4** | **Game Search Row** | แถบขาว — input + ปุ่ม **ค้นหาเกม** ส้มติดขวา + **ปรับแต่ง** (desktop) |
+| **5** | **Category Nav** | ใต้ช่องค้นหา (desktop) หรือเหนือ hero (mobile) |
+| **6** | **Main content (Desktop)** | **ไม่ full-width** — `max-width: 1200px`, `margin: 0 auto`, พื้น `#fff` บน canvas เทา; ภายใน: บอลโลก → กีฬา → มาแรง → กริดเกม ฯลฯ |
+| **6b** | **Section Blocks** | หัว section แถบขาว + **ดูทั้งหมด** ส้ม — อยู่ภายใน container กลาง ไม่กว้างเต็มจอ |
 | **7** | **Floating Controls** | ปุ่ม **ปรับแต่ง** แนวตั้งขวา ปุ่ม **ติดต่อ** (ไอคอนหูฟัง) มุมล่างขวา |
 | **8** | **Bottom Navigation (Fixed)** | พื้นดำ 5 แท็บ: โปรโมชั่น, กิจกรรม, **หน้าหลัก** (active ส้ม), ฝาก/ถอน, บอลสด — สูง ~56–64px + safe-area |
 
@@ -175,10 +177,20 @@
 
 ### 3.3 Category Icon Navigation
 
-- พื้นแถบ: `#f4f4f4`
-- ไอคอนเทา `#5f5f5f` เมื่อไม่ active
-- Active: สี `#f5871e` + **underline / indicator** ส้มหนาใต้ไอคอน
-- แต่ละรายการ: ไอคอน + label ไทย ขนาดเล็ก
+- **Full width** — ไม่มี `mx-3` / ไม่ห่อ `soft-panel`
+- พื้นแถบ: `#fff` + เส้นล่าง `#e8e8e8`
+- ไอคอน SVG + label ไทย เรียงแนวตั้งกลาง
+- ไม่ active: ไอคอน+ข้อความ `#5f5f5f` (`font-medium`)
+- Active: `#f5871e` ทั้งไอคอนและข้อความ (`font-bold`)
+- `overflow-x-auto scrollbar-none` — รายการ mock 14 หมวดให้เลื่อนได้
+
+### 3.3.1 Hero Welcome Banner
+
+- **Full width** — ชิดขอบ viewport ไม่มี radius กล่องใหญ่
+- พื้น `#ebebeb` + ลาย diagonal grid จาง
+- ด้านขวา: gradient ส้ม/เหลือง + ภาพโปรโมชันกีฬา (ถ้วย/นักเตะ/ลูกบอล)
+- ด้านซ้าย: หัวข้อใหญ่ `#515151`, บรรทัดรอง `#8e8e8e`, CTA ขาวขอบส้ม
+- จุดสไลด์ล่าง: แท่งสี่เหลี่ยม `rounded-sm` (ไม่ใช้ dot กลม pill)
 
 ### 3.4 Game Card (มาแรง / สล็อต)
 
@@ -220,10 +232,36 @@
 
 ### 3.6 Section Header
 
-- ไอคอนธีม (ไฟ = มาแรง, ถ้วย = บอลโลก) + ชื่อหมวด
-- ปุ่ม **ดูทั้งหมด** สีส้ม มุมขวา
+- พื้น **ขาวเต็มแถบ** (`#fff`) บน canvas เทา `#ebebeb` / `--body` — **ไม่** อยู่ในกล่อง card มนใหญ่
+- ไอคอนธีม (ไฟ = มาแรง, ลูกบasketball = กีฬา, ถ้วย = บอลโลก) + ชื่อหมวด
+- ลิงก์ **ดูทั้งหมด >** สีส้ม มุมขวา — **ข้อความล plain** ไม่ใช้ `rounded-full` / แคปซูล
 
-### 3.7 Bottom Navigation
+### 3.7 การใช้ Card (Card Layering — สำคัญ)
+
+อย่าห่อ **ทั้ง section** ด้วย `soft-panel` / การ์ดใหญ่เหมือนกันทุกบล็อก — ให้ตรง Solidx ต้นฉบับ:
+
+| ชั้น | ใช้ card / elevation? | ตัวอย่าง |
+|------|------------------------|----------|
+| **Section shell** | ไม่ใช้ | แถบหัวข้อขาว + พื้น body โปร่ง |
+| **แถบเลื่อนแนวนอน** | ไม่ใช้ wrapper card | `overflow-x-auto` + รายการข้างใน |
+| **รายการในแถบ** | ใช้ **ทีละชิ้น** | การ์ดคู่บอล, thumbnail กีฬา/มาแรง |
+| **กริดเกม** | ใช้ **ทีละ Game card** | ไม่ต้องมีกล่องครอบ grid ทั้งก้อน |
+| **รายการข้อความ (Hall of Fame, ออนไลน์)** | card **ต่อแถว** | แต่ละ `<li>` พื้นขาว + shadow เบา |
+
+**Implement ในโปรเจกต์:** `HomePageSection` + `HomeHorizontalScroll` (หน้าหลัก) — หลีกเลี่ยง `SoftSection` สำหรับ feed หลัก Solidx
+
+#### Sport bet card (บอลโลก)
+
+- การ์ดขาว `rounded-lg` (~8px), shadow `0 1px 4px rgba(0,0,0,0.08)`
+- หัวลีกพื้น `#2c4563`, แถบราคา `#f4f4f4`
+- ปุ่ม **แทงคู่นี้** ส้มทึบ `rounded-lg` (ไม่ pill)
+
+#### Thumbnail strip (กีฬา / มาแรง)
+
+- ภาพแนวตั้ง 3:4, `rounded-lg`, ชื่อใต้ thumbnail
+- เลื่อนแนวนอน + mock หลายรายการให้ overflow ชัดเจน
+
+### 3.8 Bottom Navigation
 
 ```css
 .bottom-nav {
@@ -245,7 +283,7 @@
 }
 ```
 
-### 3.8 Floating: ปรับแต่ง + ติดต่อ
+### 3.9 Floating: ปรับแต่ง + ติดต่อ
 
 - **ปรับแต่ง:** แคปซูลดำ ไอคอนเฟือง + ข้อความแนวตั้ง
 - **ติดต่อ:** กล่องขาว ไอคอนหูฟัง
@@ -256,13 +294,41 @@
 
 | ระดับ | px | Tailwind | ใช้กับ |
 |-------|-----|----------|--------|
-| Tight | 4px | `rounded` | ปุ่ม Header, Auth |
-| Small | 8px | `rounded-lg` | Game card, search |
-| Medium | 10px | `rounded-[10px]` | `--border-radius` ระบบ |
-| Pill | 9999px | `rounded-full` | FAB, badge ผู้เล่น |
-| Circle | 50% | `rounded-full` | Carousel dots |
+| Tight | 4px | `rounded` | Badge ฮิต/ใหม่, tag เล็ก |
+| Small | 6–8px | `rounded-md` / `rounded-lg` | **Game card, sport card, ปุ่ม CTA หน้าหลัก, tab ย่อย** |
+| Medium | 10px | `rounded-[10px]` | `--border-radius` ระบบ (modal / input บางจุด) |
+| Large soft | 14–22px | `--radius-soft-*` | Hero carousel, modal — **ไม่** ใช้กับ card รายการ feed หลัก |
 
-**Elevation:** เน้น **เงาบางบนการ์ดขาว** (`0 1px 4px rgba(0,0,0,0.08)`) ไม่ใช่ borderless dark ambient แบบ Legend/Thrill — มี **เส้นขอบส้ม** บนปุ่ม outline ชัดเจน
+### 4.1 นโยบาย `rounded-full` (บังคับ — อัปเดต ต.ค. 2026)
+
+**ห้ามใช้ `rounded-full` กับการ์ดและองค์ประกอบภายในการ์ด** — ใช้มุมมนแบบ Solidx (`rounded-lg` ≈ 8px, `--radius-soft-sm` 14px, `--radius-soft-md` 18px)
+
+| ห้าม (`rounded-full`) | ใช้แทน |
+|------------------------|--------|
+| กล่องการ์ด (`soft-card`, รายการเมนู, grid เมนู) | `rounded-lg` หรือ `rounded-[var(--radius-soft-md)]` |
+| แถวรายการในการ์ด (list row, hover) | `rounded-lg` |
+| ปุ่ม CTA ในการ์ด / drawer (ฝาก, ถอน, ยืนยัน) | `soft-btn-primary` / `soft-btn-outline` |
+| แท็กสถานะในการ์ด (VIP, HOT, %) | `rounded-md` |
+| avatar / chevron ในการ์ด | `rounded-lg` |
+
+| ยังใช้ `rounded-full` ได้ (ข้อยกเว้นเท่านั้น) | เหตุผล |
+|-----------------------------------------------|--------|
+| วงกลมกลาง Bottom Nav (ปุ่มเมนู) | สเปก Solidx FAB |
+| Spinner / progress วงกลม (wheel, VIP bar) | รูปทรงวงกลมจริง |
+| Toggle thumb (สวิตช์) | control ระบบ |
+| จุด carousel แบบ dot (ถ้ามี) | องค์ประกอบเล็กมาก |
+
+**Elevation:** เน้น **เงาบางบนการ์ดขาว** (`0 1px 4px rgba(0,0,0,0.08)`) บน **item** เท่านั้น — ไม่ซ้อน shadow ทั้ง section
+
+### 4.2 ความคมชัดข้อความ (Contrast)
+
+| พื้นหลัง | ข้อความหลัก | ข้อความรอง |
+|----------|-------------|------------|
+| `--soft-card`, `--soft-card-elevated`, `#fff` | `text-[var(--text-on-light)]` | `text-[var(--text-muted)]` |
+| `--soft-chrome`, `--header`, `#050608` | `text-white` / `text-[var(--text-on-dark)]` | `text-white/70` |
+
+**ห้าม** ใช้ `text-white`, `text-zinc-300`, `text-[var(--text-on-dark)]` บนการ์ดอ่อน — จะอ่านไม่ออก  
+`soft-card`, `soft-panel`, `.gaming-lobby-panel` ตั้ง `color: var(--text-on-light)` ใน `globals.css`
 
 ---
 

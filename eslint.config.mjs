@@ -12,6 +12,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    "lottery-kit/**",
+    "lottery-kit-from-app/**",
+    "app/lottery-kit/**",
   ]),
 ]);
 

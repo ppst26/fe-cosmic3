@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { SubPageShell } from "@/components/layout/SubPageShell";
-import { useMember } from "@/components/member/MemberProvider";
+import { useAuth } from "@/context/AuthContext";
 import { SheetFrame } from "@/components/wallet/SheetFrame";
 import { DEPOSIT_AMOUNTS } from "@/data/member";
 import { DEPOSIT_RECEIVING_ACCOUNT } from "@/data/signup";
@@ -42,7 +42,7 @@ function localToday(): string {
 export function WalletScreen() {
   const params = useSearchParams();
   const tabParam = params.get("tab");
-  const { state, dispatch } = useMember();
+  const { state, dispatch } = useAuth();
 
   const [mainTab, setMainTab] = useState<MainTab>(tabParam === "history" ? "history" : "dw");
   const [sheet, setSheet] = useState<SheetKind>(tabParam === "deposit" ? "deposit" : null);
@@ -135,7 +135,7 @@ export function WalletScreen() {
   }
 
   return (
-    <SubPageShell title="ฝาก-ถอน" nav="wallet">
+    <SubPageShell title="ฝาก-ถอน" nav="wallet" requiresAuth sessionMode="none">
       <p className="mb-3 text-sm font-semibold text-[var(--text-on-light)]">
         ยอดคงเหลือ {state.balance.toLocaleString("th-TH")} บาท
       </p>
@@ -152,7 +152,7 @@ export function WalletScreen() {
             key={key}
             type="button"
             onClick={() => setMainTab(key)}
-            className={`h-10 flex-1 rounded-full text-xs font-semibold ${
+            className={`h-10 flex-1 rounded-lg text-xs font-semibold ${
               mainTab === key ? "bg-[var(--brand)] text-white" : "bg-[var(--soft-card-elevated)]"
             }`}
           >
@@ -209,7 +209,7 @@ export function WalletScreen() {
                   setHistoryKind(kind);
                   setHistoryPage(0);
                 }}
-                className={`h-10 rounded-full text-xs font-semibold ${
+                className={`h-10 rounded-lg text-xs font-semibold ${
                   historyKind === kind ? "bg-[var(--brand)] text-white" : "bg-[var(--soft-card-elevated)]"
                 }`}
               >

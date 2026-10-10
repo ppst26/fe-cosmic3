@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useMember } from "@/components/member/MemberProvider";
+import { useAuth } from "@/context/AuthContext";
 import { GEMS_PER_SPIN, WHEEL_SEGMENTS } from "@/data/wheel";
 
 function localToday(): string {
@@ -13,7 +13,7 @@ function localToday(): string {
 }
 
 export function WheelScreen() {
-  const { state, dispatch } = useMember();
+  const { state, dispatch } = useAuth();
   const [method, setMethod] = useState<"ticket" | "gems">("ticket");
   const [spinning, setSpinning] = useState(false);
   const [rotation, setRotation] = useState(0);

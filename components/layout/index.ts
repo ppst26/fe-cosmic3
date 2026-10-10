@@ -1,6 +1,8 @@
 export { BottomNav } from "./BottomNav";
 export { CategoryIconNav } from "./CategoryIconNav";
+export { CategoryNav } from "./CategoryNav";
 export { FloatingControls } from "./FloatingControls";
+export { Footer } from "./Footer";
 export { GameSearchBar } from "./GameSearchBar";
 export { HeaderBar } from "./HeaderBar";
 export { HeroCarousel } from "./HeroCarousel";

@@ -1,21 +1,34 @@
 "use client";
 
+import {
+  CategoryNavIcon,
+  type CategoryNavIconId,
+} from "@/components/layout/CategoryNavIcons";
+
 type CategoryItem = {
   id: string;
   label: string;
-  emoji: string;
+  icon: CategoryNavIconId;
 };
 
 type CategoryIconNavProps = {
   items: readonly CategoryItem[];
   active: string;
   onSelect: (id: string) => void;
+  className?: string;
 };
 
-export function CategoryIconNav({ items, active, onSelect }: CategoryIconNavProps) {
+export function CategoryIconNav({
+  items,
+  active,
+  onSelect,
+  className = "",
+}: CategoryIconNavProps) {
   return (
-    <nav className="soft-panel mx-3">
-      <ul className="flex snap-x gap-1 overflow-x-auto px-2 py-2 scrollbar-none sm:px-3">
+    <nav
+      className={`w-full border-b border-[#e8e8e8] bg-white ${className}`.trim()}
+    >
+      <ul className="mx-auto flex min-w-full max-w-[1200px] snap-x snap-mandatory justify-start gap-0 overflow-x-auto px-1 py-2.5 scrollbar-none sm:px-2 md:justify-center md:gap-1 md:px-6 md:py-3">
         {items.map((cat) => {
           const isActive = cat.id === active;
           return (
@@ -23,23 +36,22 @@ export function CategoryIconNav({ items, active, onSelect }: CategoryIconNavProp
               <button
                 type="button"
                 onClick={() => onSelect(cat.id)}
-                className={`flex min-w-[56px] flex-col items-center gap-0.5 rounded-[var(--radius-soft-sm)] px-2 pb-1.5 pt-1.5 transition-colors ${
-                  isActive
-                    ? "bg-[var(--soft-card-elevated)] text-[var(--brand)] shadow-[var(--shadow-soft-sm)]"
-                    : "text-[var(--tab-inactive)]"
+                className={`flex min-w-[62px] flex-col items-center gap-1 px-2.5 py-1 transition-colors sm:min-w-[68px] ${
+                  isActive ? "text-[var(--brand)]" : "text-[#5f5f5f]"
                 }`}
               >
-                <span className="text-lg leading-none" aria-hidden>
-                  {cat.emoji}
-                </span>
-                <span className="text-[10px] font-medium leading-tight sm:text-[11px]">
+                <CategoryNavIcon
+                  id={cat.icon}
+                  className={isActive ? "text-[var(--brand)]" : "text-[#5f5f5f]"}
+                  aria-hidden
+                />
+                <span
+                  className={`max-w-[72px] truncate text-center text-[10px] leading-tight sm:text-[11px] ${
+                    isActive ? "font-bold" : "font-medium"
+                  }`}
+                >
                   {cat.label}
                 </span>
-                <span
-                  className={`mt-0.5 h-1 w-full max-w-[36px] rounded-full ${
-                    isActive ? "bg-[var(--brand)]" : "opacity-0"
-                  }`}
-                />
               </button>
             </li>
           );

@@ -1,0 +1,151 @@
+/* Category bar — โครง BP + สี Orange Light Solid */
+
+.category-nav-desktop {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  background: var(--soft-card-elevated);
+  border-top: 1px solid rgba(0, 0, 0, 0.04);
+  border-bottom: 1px solid #e8e8e8;
+  user-select: none;
+}
+
+.category-nav-desktop__track {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  min-height: 52px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.category-nav-desktop__track::-webkit-scrollbar {
+  display: none;
+}
+
+.category-nav-desktop__item {
+  position: relative;
+  display: flex;
+  flex: 1 1 0;
+  min-width: 5.5rem;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.35rem 0.55rem;
+  color: var(--text-muted);
+  text-decoration: none;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.category-nav-desktop__item:hover {
+  color: var(--text-on-light);
+}
+
+.category-nav-desktop__item.is-active {
+  color: var(--brand);
+}
+
+.category-nav-desktop__glow {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  background: radial-gradient(
+    ellipse 85% 120% at 50% 100%,
+    color-mix(in srgb, var(--brand) 28%, transparent) 0%,
+    transparent 72%
+  );
+  transition: opacity 0.2s ease;
+}
+
+.category-nav-desktop__item.is-active .category-nav-desktop__glow {
+  opacity: 1;
+}
+
+.category-nav-desktop__indicator {
+  pointer-events: none;
+  position: absolute;
+  left: 12%;
+  right: 12%;
+  bottom: 0;
+  height: 3px;
+  border-radius: 3px 3px 0 0;
+  opacity: 0;
+  background: linear-gradient(90deg, var(--brand-strong), var(--brand));
+  box-shadow: 0 0 10px color-mix(in srgb, var(--brand) 45%, transparent);
+  transition: opacity 0.2s ease;
+}
+
+.category-nav-desktop__item.is-active .category-nav-desktop__indicator {
+  opacity: 1;
+}
+
+.category-nav-desktop__icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  flex-shrink: 0;
+  z-index: 1;
+}
+
+.category-nav-desktop__label {
+  position: relative;
+  z-index: 1;
+  font-size: 0.875rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.category-nav-mobile__track {
+  display: flex;
+  gap: 0.35rem;
+  overflow-x: auto;
+  padding: 0.35rem 0.25rem 0.5rem;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  scroll-snap-type: x proximity;
+}
+
+.category-nav-mobile__track::-webkit-scrollbar {
+  display: none;
+}
+
+.category-nav-mobile__item {
+  position: relative;
+  display: flex;
+  flex: 0 0 auto;
+  scroll-snap-align: start;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.45rem 0.75rem 0.55rem;
+  border-radius: 0.75rem;
+  color: var(--text-muted);
+  text-decoration: none;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.category-nav-mobile__item.is-active {
+  color: var(--brand);
+}
+
+.category-nav-mobile__item .category-nav-desktop__glow {
+  border-radius: 0.75rem;
+}
+
+.category-nav-mobile__item .category-nav-desktop__indicator {
+  left: 18%;
+  right: 18%;
+  height: 2px;
+}

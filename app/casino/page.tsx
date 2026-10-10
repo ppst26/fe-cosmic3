@@ -1,12 +1,7 @@
 "use client";
 
-import { CategoryLobby } from "@/components/games/CategoryLobby";
-import { SubPageShell } from "@/components/layout/SubPageShell";
+import { GamingProvidersView } from "@/components/gaming/GamingProvidersView";
 
 export default function CasinoPage() {
-  return (
-    <SubPageShell title="คาสิโน">
-      <CategoryLobby category="casino" title="คาสิโน" />
-    </SubPageShell>
-  );
+  return <GamingProvidersView categoryId="casino" />;
 }

@@ -1,4 +1,6 @@
 @import "tailwindcss";
+@import "./styles/lottery-hub-sport.css";
+@import "./styles/lottery-thai-sport.css";
 
 :root,
 [data-theme="orange"] {
@@ -7,7 +9,7 @@
   --soft-surface: #dfe4ed;
   --soft-card: #e9edf4;
   --soft-card-elevated: #f3f6fa;
-  --soft-chrome: #3f4858;
+  --soft-chrome: #323c4d;
 
   --body: var(--soft-canvas);
   --header: var(--soft-chrome);
@@ -49,16 +51,28 @@ body {
   font-family: var(--font-kanit), Kanit, sans-serif;
 }
 
+@media (max-width: 1023px) {
+  body:not(.bottom-nav-suppressed) {
+    padding-bottom: calc(92px + env(safe-area-inset-bottom, 0px));
+  }
+}
+
 @utility soft-panel {
   background-color: var(--soft-card);
   border-radius: var(--radius-soft-lg);
   box-shadow: var(--shadow-soft-sm);
+  color: var(--text-on-light);
 }
 
 @utility soft-card {
   background-color: var(--soft-card-elevated);
   border-radius: var(--radius-soft-md);
   box-shadow: var(--shadow-soft-sm);
+  color: var(--text-on-light);
+}
+
+.gaming-lobby-panel {
+  color: var(--text-on-light);
 }
 
 @utility soft-btn-primary {
@@ -70,9 +84,17 @@ body {
 
 @utility soft-btn-outline {
   background-color: var(--soft-card-elevated);
-  color: var(--brand);
+  color: var(--brand-strong);
   border: 2px solid rgba(245, 135, 30, 0.45);
   border-radius: var(--radius-soft-sm);
+}
+
+/* ปุ่มหลัก (แทน class legacy จากธีม BP) */
+@utility button-dark-purple {
+  background-color: var(--brand);
+  color: #fff;
+  border-radius: var(--radius-soft-sm);
+  box-shadow: 0 4px 12px rgba(245, 135, 30, 0.35);
 }
 
 @utility scrollbar-none {
@@ -93,4 +115,32 @@ body {
 
 .animate-marquee {
   animation: marquee 28s linear infinite;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scale-up {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.2s ease-out;
+}
+
+.animate-scale-up {
+  animation: scale-up 0.22s ease-out;
 }

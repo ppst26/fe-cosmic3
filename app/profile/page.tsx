@@ -5,7 +5,7 @@ import { ProfileScreen } from "@/components/profile/ProfileScreen";
 
 export default function ProfilePage() {
   return (
-    <SubPageShell title="โปรไฟล์">
+    <SubPageShell title="โปรไฟล์" requiresAuth sessionMode="none">
       <ProfileScreen />
     </SubPageShell>
   );

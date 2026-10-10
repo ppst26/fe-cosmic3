@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { useMember } from "@/components/member/MemberProvider";
+import { useAuth } from "@/context/AuthContext";
 import { SheetFrame } from "@/components/wallet/SheetFrame";
 import type { GameCategory, ProviderGame } from "@/data/providers";
 import { getProvider } from "@/data/providers";
@@ -11,9 +11,9 @@ import { filterProviderGames } from "@/lib/games/filterGames";
 const CATEGORY_TITLES: Record<GameCategory, string> = {
   slots: "สล็อต",
   casino: "คาสิโน",
-  fishing: "ยิงปลา",
-  cards: "ไพ่",
-  "sport-games": "กีฬา",
+  fish: "ยิงปลา",
+  card: "ไพ่",
+  sports: "กีฬา",
 };
 
 const TABS: { key: "all" | "hot" | "new" | "favorite"; label: string }[] = [
@@ -29,7 +29,7 @@ type ProviderGamesScreenProps = {
 };
 
 export function ProviderGamesScreen({ category, providerId }: ProviderGamesScreenProps) {
-  const { state, dispatch } = useMember();
+  const { state, dispatch } = useAuth();
   const [query, setQuery] = useState("");
   const [tab, setTab] = useState<"all" | "hot" | "new" | "favorite">("all");
   const [launchGame, setLaunchGame] = useState<ProviderGame | null>(null);

@@ -1,0 +1,45 @@
+{
+  "generatedAt": "2026-09-29T09:32:25.444Z",
+  "source": "cosmicbet-glass",
+  "flows": [
+    "hub",
+    "yiki-5/15/30",
+    "thai-government",
+    "market-rounds",
+    "slips",
+    "mock-api"
+  ],
+  "copyIntoTarget": "Merge เนื้อหาใน dist/ กับ root โปรเจกต์ Next (คง path app/, lib/)",
+  "routes": [
+    "/lottery",
+    "/lottery/thai-government",
+    "/lottery/thai-government/[roundId]",
+    "/lottery/yiki-5",
+    "/lottery/yiki-5/[roundId]",
+    "/lottery/yiki-15",
+    "/lottery/yiki-15/[roundId]",
+    "/lottery/yiki-30",
+    "/lottery/yiki-30/[roundId]",
+    "/lottery/[marketId]",
+    "/lottery/[marketId]/[roundId]",
+    "/lottery/slips",
+    "/lottery/slips/[slipId]"
+  ],
+  "api": [
+    "/api/lottery/bets",
+    "/api/lottery/slips",
+    "/api/lottery/slips/[slipId]"
+  ],
+  "dependencies": {
+    "npm": [
+      "next",
+      "react",
+      "react-dom",
+      "radix-ui",
+      "tailwindcss",
+      "class-variance-authority",
+      "cn"
+    ],
+    "note": "โปรเจกต์ปลายทางต้องมี @/ alias ชี้ root เหมือน Cosmicbet"
+  }
+}

@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { VIP_TIERS } from "@/data/member";
+import { useAuth } from "@/context/AuthContext";
+import { MEMBER, VIP_TIERS } from "@/data/member";
 
 type VipTab = "my-tier" | "rank" | "benefits";
 
@@ -18,6 +19,7 @@ const TABS: { key: VipTab; label: string }[] = [
 const CONDITION_TEXT = "รักษาแรงค์ด้วยเทิร์นสะสม";
 
 export function VipScreen() {
+  const { state } = useAuth();
   const [tab, setTab] = useState<VipTab>("my-tier");
   const [rankIndex, setRankIndex] = useState(0);
 
@@ -35,6 +37,15 @@ export function VipScreen() {
 
   return (
     <div className="space-y-3">
+      <section className="soft-panel p-4">
+        <p className="text-sm font-bold text-[var(--text-on-light)]">
+          {state.displayName}
+        </p>
+        <p className="text-xs text-[var(--text-muted)]">
+          ระดับปัจจุบัน {MEMBER.vipTier} · เทิร์นสะสม {CURRENT_TURNOVER.toLocaleString("th-TH")}
+        </p>
+      </section>
+
       <div className="grid grid-cols-3 gap-2">
         {TABS.map(({ key, label }) => (
           <button

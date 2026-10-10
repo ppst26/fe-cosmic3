@@ -1,10 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useMember } from "@/components/member/MemberProvider";
+import { useAuth } from "@/context/AuthContext";
 
 export function SlipListScreen() {
-  const { state } = useMember();
+  const { state } = useAuth();
   const slips = state.lotterySlips;
 
   if (slips.length === 0) {

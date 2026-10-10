@@ -1,12 +1,6 @@
-"use client";
+import { redirect } from "next/navigation";
 
-import { SubPageShell } from "@/components/layout/SubPageShell";
-import { CommissionScreen } from "@/components/commission/CommissionScreen";
-
+/** เมนู BP ชี้ /commission — เนื้อหาคืนยอดรวมอยู่ที่ /cashback */
 export default function CommissionPage() {
-  return (
-    <SubPageShell title="คอมมิชชั่น">
-      <CommissionScreen />
-    </SubPageShell>
-  );
+  redirect("/cashback");
 }

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
+import type React from "react";
 import { Kanit } from "next/font/google";
-import { MemberProvider } from "@/components/member/MemberProvider";
+import { AppProviders } from "@/components/AppProviders";
 import "./globals.css";
 
 const kanit = Kanit({
@@ -14,7 +15,7 @@ export const metadata: Metadata = {
   description: "Mock หน้าแรกธีม Orange Light Solid",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html
       lang="th"
@@ -22,7 +23,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       data-theme="orange"
     >
       <body className="min-h-full flex flex-col">
-        <MemberProvider>{children}</MemberProvider>
+        <AppProviders>{children}</AppProviders>
       </body>
     </html>
   );
