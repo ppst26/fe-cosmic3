@@ -48,7 +48,7 @@ export const GAMING_CATEGORIES: Record<GamingCategoryId, GamingCategoryMeta> = {
     id: "card",
     title: "ไพ่",
     subtitle: "เกมไพ่และโต๊ะ — เลือกค่ายเกม",
-    lobbyCategory: "card",
+    lobbyCategory: "table",
     basePath: "/card",
     breadcrumb: "ไพ่",
   },

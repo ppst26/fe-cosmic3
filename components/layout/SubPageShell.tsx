@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 import { type ReactNode } from "react";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { MemberAuthPrompt } from "@/components/member/MemberAuthPrompt";

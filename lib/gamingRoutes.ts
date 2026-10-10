@@ -1,15 +1,14 @@
-import { LOBBY_GAMES, type LobbyGame } from "@/data/lobbyGames";
-import type { CategoryKey } from "@/data/homeLobby";
+import { LOBBY_GAMES } from "@/data/lobbyGames";
+import type { LobbyGame } from "@/data/homeLobby";
 import { PROVIDERS } from "@/data/homeLobby";
 import { getGamingCategory, type GamingCategoryId } from "@/lib/gamingCategories";
 
-const CATEGORY_TO_GAMING: Partial<Record<CategoryKey, GamingCategoryId>> = {
+const CATEGORY_TO_GAMING: Partial<Record<LobbyGame["category"], GamingCategoryId>> = {
   slot: "slot",
   casino: "casino",
   sport: "sport",
   fish: "fish",
-  table: "card",
-  fight: "card",
+  card: "card",
 };
 
 const PROVIDER_ALIASES: Record<string, { gamingId: GamingCategoryId; key: string }> = {

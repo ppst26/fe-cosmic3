@@ -38,7 +38,8 @@
   ],
   "exclude": [
     "node_modules",
-    "app/lottery-kit/dist/**",
+    "lottery-kit-from-app",
+    "lottery-kit-from-app/**",
     "lottery-kit",
     "lottery-kit/**"
   ]

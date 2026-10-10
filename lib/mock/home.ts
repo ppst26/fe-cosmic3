@@ -135,6 +135,7 @@ export const ACTIVITY_THUMBS: MockSportCategory[] = [
     playersTone: "green",
     activity: 145,
     activityTone: "green",
+    gradient: "linear-gradient(165deg, #0c4a6e 0%, #0284c7 50%, #7dd3fc 100%)",
     href: "/activities",
   },
   {
