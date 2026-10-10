@@ -1,50 +1,50 @@
 import { NextResponse } from "next/server";
-import { MEMBER } from "@/data/member";
-import { DEMO_LOGIN_PHONE, isDemoLogin } from "@/lib/auth/demoLogin";
+import { findUserByPhone, toSessionUser } from "@/lib/auth/userStore";
+import { verifyPassword } from "@/lib/auth/password";
+import { attachSessionCookie } from "@/lib/auth/session";
+import type { AuthActionResponse } from "@/app/types/auth";
+import { isThaiMobilePhone, sanitizePhone } from "@/lib/fieldInput";
+import { clientIp, readJsonObject, readString } from "@/lib/server/request";
+import { rateLimit } from "@/lib/server/rateLimit";
 
+/** รหัสผ่านยาวเกินนี้ไม่ต้อง hash (กัน scrypt บล็อก event loop) */
+const PASSWORD_MAX_LENGTH = 128;
+
+function fail(error: string, status: number, headers?: HeadersInit) {
+  return NextResponse.json<AuthActionResponse>({ ok: false, error }, { status, headers });
+}
+
+/**
+ * POST /api/auth/login — เข้าสู่ระบบด้วยเบอร์ + รหัสผ่าน
+ * จำกัด 10 ครั้ง / 5 นาที ต่อ IP และต่อเบอร์
+ */
 export async function POST(request: Request) {
-  try {
-    const body = await request.json();
-    const { username, password } = body as { username?: string; password?: string };
-
-    await new Promise((resolve) => setTimeout(resolve, 400));
-
-    if (!username?.trim()) {
-      return NextResponse.json(
-        { success: false, message: "กรุณากรอกชื่อผู้ใช้หรือเบอร์โทรศัพท์" },
-        { status: 400 },
-      );
-    }
-
-    if (!password) {
-      return NextResponse.json(
-        { success: false, message: "กรุณากรอกรหัสผ่าน" },
-        { status: 400 },
-      );
-    }
-
-    if (!isDemoLogin(username, password)) {
-      return NextResponse.json(
-        { success: false, message: "เบอร์โทรหรือรหัสผ่านไม่ถูกต้อง" },
-        { status: 401 },
-      );
-    }
-
-    return NextResponse.json({
-      success: true,
-      message: "เข้าสู่ระบบสำเร็จ ยินดีต้อนรับกลับค่ะ!",
-      user: {
-        id: "demo-user-0999999999",
-        username: DEMO_LOGIN_PHONE,
-        displayName: MEMBER.displayName,
-        balance: MEMBER.balance,
-      },
-      token: "mock_jwt_token_sport",
-    });
-  } catch {
-    return NextResponse.json(
-      { success: false, message: "เกิดข้อผิดพลาดในการเข้าสู่ระบบ" },
-      { status: 500 },
-    );
+  const ipLimit = rateLimit(`login:ip:${clientIp(request)}`, 10, 5 * 60_000);
+  if (!ipLimit.ok) {
+    return fail("พยายามเข้าสู่ระบบบ่อยเกินไป กรุณารอสักครู่", 429, { "Retry-After": String(ipLimit.retryAfterSec) });
   }
+
+  const body = await readJsonObject(request);
+  if (!body) return fail("ข้อมูลไม่ถูกต้อง", 400);
+
+  const phone = sanitizePhone(readString(body.phone, 20) ?? "");
+  const password = typeof body.password === "string" ? body.password : "";
+
+  if (!isThaiMobilePhone(phone) || !password) {
+    return fail("กรุณากรอกเบอร์โทร 10 หลักและรหัสผ่าน", 400);
+  }
+
+  const phoneLimit = rateLimit(`login:phone:${phone}`, 10, 5 * 60_000);
+  if (!phoneLimit.ok) {
+    return fail("พยายามเข้าสู่ระบบบ่อยเกินไป กรุณารอสักครู่", 429, { "Retry-After": String(phoneLimit.retryAfterSec) });
+  }
+
+  const user = password.length <= PASSWORD_MAX_LENGTH ? await findUserByPhone(phone) : undefined;
+  if (!user || !verifyPassword(password, user.passwordHash)) {
+    return fail("เบอร์หรือรหัสผ่านไม่ถูกต้อง", 401);
+  }
+
+  const response = NextResponse.json<AuthActionResponse>({ ok: true, user: toSessionUser(user) });
+  attachSessionCookie(response, user.id);
+  return response;
 }
