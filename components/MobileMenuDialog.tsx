@@ -7,6 +7,7 @@ import { X } from "lucide-react";
 import { useAuth } from "@/app/components/auth/AuthProvider";
 import { useProfile, useWallet } from "@/app/hooks/api/account";
 import { useProfileHubStats } from "@/app/hooks/api/member";
+import { SportHubLink } from "@/app/components/hub/SportHubLink";
 import { useLogoutConfirm } from "@/app/hooks/useLogoutConfirm";
 import { LocaleFlag } from "@/app/components/i18n/LocaleFlag";
 import { useLanguagePicker } from "@/app/components/i18n/LanguagePickerProvider";
@@ -278,9 +279,9 @@ export function MobileMenuDialog({
 
             if (item.href) {
               return (
-                <Link key={item.id} href={item.href} onClick={onClose} className={`${rowClass} no-underline`}>
+                <SportHubLink key={item.id} href={item.href} onClick={onClose} className={`${rowClass} no-underline`}>
                   {inner}
-                </Link>
+                </SportHubLink>
               );
             }
 
@@ -306,14 +307,14 @@ export function MobileMenuDialog({
 
               if (item.href) {
                 return (
-                  <Link
+                  <SportHubLink
                     key={item.id}
                     href={item.href}
                     onClick={onClose}
                     className="group flex flex-col items-center justify-center gap-1.5 rounded-lg border-0 p-2 text-center no-underline transition-all hover:bg-[var(--soft-card)]"
                   >
                     {gridInner}
-                  </Link>
+                  </SportHubLink>
                 );
               }
 

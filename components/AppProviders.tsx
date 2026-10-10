@@ -16,6 +16,7 @@ import { GlobalBottomNav } from "@/components/layout/GlobalBottomNav";
 import { GlobalAuthOverlays } from "@/components/GlobalAuthOverlays";
 import { GlobalCouponOverlay } from "@/components/GlobalCouponOverlay";
 import { GlobalMobileMenu } from "@/components/GlobalMobileMenu";
+import { DesktopHubModalProvider } from "@/app/components/hub/DesktopHubModalProvider";
 import { NotificationProvider } from "@/app/components/notifications/NotificationProvider";
 import { LanguagePickerProvider } from "@/app/components/i18n/LanguagePickerProvider";
 import { PwaInstallProvider } from "@/app/components/pwa/PwaInstallProvider";
@@ -48,6 +49,7 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
           <PwaInstallProvider>
           <LanguagePickerProvider>
           <NotificationProvider>
+          <DesktopHubModalProvider>
             
               <AuthUIProvider>
                 <CouponUIProvider>
@@ -67,6 +69,7 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
                 </CouponUIProvider>
               </AuthUIProvider>
             
+          </DesktopHubModalProvider>
           </NotificationProvider>
           </LanguagePickerProvider>
           </PwaInstallProvider>

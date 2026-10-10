@@ -35,14 +35,16 @@ function kindFromSearchParam(value: string | null): TransactionKind {
 interface TransactionsPageContentProps {
   /** ใน hub modal — แท็บเป็น state ในเครื่อง ไม่เขียน URL และไม่มีกรอบการ์ดของหน้า */
   embedded?: boolean;
+  /** แท็บเริ่มต้นของโหมด embedded */
+  initialKind?: TransactionKind;
 }
 
 /**
  * เนื้อหาหน้ารายการธุรกรรม — แท็บ · ฟิลเตอร์วันที่ · ตาราง ( /transactions · hub )
  */
-export function TransactionsPageContent({ embedded = false }: TransactionsPageContentProps) {
+export function TransactionsPageContent({ embedded = false, initialKind = "deposit" }: TransactionsPageContentProps) {
   const [urlKind, selectUrlKind] = useUrlTab<TransactionKind>("kind", kindFromSearchParam, "deposit");
-  const [localKind, setLocalKind] = useState<TransactionKind>("deposit");
+  const [localKind, setLocalKind] = useState<TransactionKind>(initialKind);
   const activeKind = embedded ? localKind : urlKind;
   const onSelectKind = embedded ? setLocalKind : selectUrlKind;
 
