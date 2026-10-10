@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import type React from "react";
 import { Kanit } from "next/font/google";
 import { AppProviders } from "@/components/AppProviders";
@@ -13,6 +13,10 @@ const kanit = Kanit({
 export const metadata: Metadata = {
   title: "Solidx Platform - หน้าหลัก",
   description: "Mock หน้าแรกธีม Orange Light Solid",
+};
+
+export const viewport: Viewport = {
+  themeColor: "#323c4d",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
