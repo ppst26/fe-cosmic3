@@ -2,8 +2,8 @@
 
 import React, { useMemo } from "react";
 import Image from "next/image";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import Link from "@/lib/i18n/navigation";
+import { usePathname } from "@/lib/i18n/navigation";
 import "@/app/styles/category-nav.css";
 
 export interface CategoryItem {

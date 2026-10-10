@@ -1,7 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/lib/i18n/navigation";
 import type { MockSportCategory } from "@/lib/mock/home";
 import { HomeHorizontalScroll } from "./HomeHorizontalScroll";
 import { HomePageSection } from "./HomePageSection";

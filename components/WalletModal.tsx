@@ -25,7 +25,7 @@ import {
 import { useAuth } from "@/context/AuthContext";
 import { useToast } from "@/context/ToastContext";
 import { usePendingTransaction } from "@/context/PendingTransactionContext";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/lib/i18n/navigation";
 import { WalletConfirmDialog, type WalletConfirmKind } from "@/components/WalletConfirmDialog";
 
 export interface WalletModalProps {

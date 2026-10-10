@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/lib/i18n/navigation";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import type { LobbyGame } from "@/data/homeLobby";
 import { LOBBY_GAMES } from "@/data/lobbyGames";

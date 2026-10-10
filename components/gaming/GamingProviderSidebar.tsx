@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import Link from "next/link";
+import Link from "@/lib/i18n/navigation";
 import { GamingProviderNavTile } from "@/components/gaming/GamingProviderNavTile";
 import type { GamingCategoryMeta } from "@/lib/gamingCategories";
 import type { GamingProviderEntry } from "@/lib/gamingProviders";

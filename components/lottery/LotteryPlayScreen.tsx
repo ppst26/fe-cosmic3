@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/lib/i18n/navigation";
 import { useEffect, useState } from "react";
 import { getLotteryCatalogEntry } from "@/data/lotteryCatalog";
 import { getLotteryPlayRoundById, getLotteryPlayRounds } from "@/data/lotteryRounds";

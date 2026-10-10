@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/lib/i18n/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { ActivityCarouselItem } from "@/lib/mock/home";
 import { HomePageSection } from "./HomePageSection";

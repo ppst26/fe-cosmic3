@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/lib/i18n/navigation";
 import { useRef } from "react";
 import type { LotteryCatalogEntry } from "@/types/lotteryHub";
 import { LOTTERY_CATALOG_ENTRIES } from "@/data/lotteryCatalog";

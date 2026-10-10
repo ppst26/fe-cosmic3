@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/lib/i18n/navigation";
 import { ArrowLeft } from "lucide-react";
 import { type ReactNode } from "react";
 import { Breadcrumb } from "@/components/Breadcrumb";

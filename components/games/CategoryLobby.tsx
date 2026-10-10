@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/lib/i18n/navigation";
 import type { GameCategory } from "@/data/providers";
 import { listProviders } from "@/data/providers";
 

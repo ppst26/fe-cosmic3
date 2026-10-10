@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/lib/i18n/navigation";
 import { useEffect, useMemo, useState } from "react";
 import type { LotteryPlayRound } from "@/types/lotteryHub";
 import {

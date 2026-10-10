@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/lib/i18n/navigation";
 import type { LotteryResultRow } from "@/types/lotteryHub";
 import { LotteryFlagOrb } from "./LotteryFlagOrb";
 

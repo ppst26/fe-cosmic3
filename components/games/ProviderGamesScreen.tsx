@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/lib/i18n/navigation";
 import { useMemo, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { SheetFrame } from "@/components/wallet/SheetFrame";

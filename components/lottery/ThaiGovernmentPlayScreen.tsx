@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/lib/i18n/navigation";
 import { useMemo, useState } from "react";
 import { THAI_LOTTO_BET_TYPES, THAI_LOTTO_GROUPS } from "@/data/thaiLotto";
 import { getThaiLottoDrawByRoundId } from "@/data/lotteryRounds";

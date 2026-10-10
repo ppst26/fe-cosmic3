@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import Link from "next/link";
+import Link from "@/lib/i18n/navigation";
 import { Share2, Check, ChevronRight } from "lucide-react";
 
 export interface BreadcrumbItem {

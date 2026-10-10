@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/lib/i18n/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { MEMBER } from "@/data/member";
 

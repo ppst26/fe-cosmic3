@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/lib/i18n/navigation";
 import { HeaderBar, NoticeMarquee } from "@/components/layout";
 import { HomeMainContainer } from "./HomeMainContainer";
 import { HomeTopFeed } from "./HomeTopFeed";
