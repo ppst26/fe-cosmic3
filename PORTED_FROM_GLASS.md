@@ -256,3 +256,7 @@
 | 8-13 | `app/lib/categoryProviderFromPath.ts` | 132f1b4 | a3e05b1 | ลอกตามเดิม |
 | 8-13 | `app/lib/gameCardEnterMotion.ts` | 132f1b4 | a3e05b1 | ลอกตามเดิม |
 | 8-13 | `app/lib/lobbyCategoryFromPath.ts` | 132f1b4 | a3e05b1 | ลอกตามเดิม |
+| 14 | `app/sw.ts` | 132f1b4 | 646aee2 | ลอกตามเดิม (manifest: ชื่อแบรนด์/สี; next.config: เพิ่ม redirects ของ sport) |
+| 14 | `app/serwist/[path]/route.ts` | 132f1b4 | 646aee2 | ลอกตามเดิม (manifest: ชื่อแบรนด์/สี; next.config: เพิ่ม redirects ของ sport) |
+| 14 | `next.config.ts` | 132f1b4 | 646aee2 | ลอกตามเดิม (manifest: ชื่อแบรนด์/สี; next.config: เพิ่ม redirects ของ sport) |
+| 14 | `app/manifest.ts` | 132f1b4 | 646aee2 | ลอกตามเดิม (manifest: ชื่อแบรนด์/สี; next.config: เพิ่ม redirects ของ sport) |
