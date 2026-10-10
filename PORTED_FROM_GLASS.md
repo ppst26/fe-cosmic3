@@ -238,3 +238,21 @@
 | 5-7,11 | `scripts/export-promotions-catalog.mjs` | 132f1b4 | cad9456 | ลอกตามเดิม (auth login/logout เขียนทับของเดิมใน sport) |
 | 5-7,11 | `app/api/auth/login/route.ts` | 132f1b4 | cad9456 | ลอกตามเดิม (auth login/logout เขียนทับของเดิมใน sport) |
 | 5-7,11 | `app/api/auth/logout/route.ts` | 132f1b4 | cad9456 | ลอกตามเดิม (auth login/logout เขียนทับของเดิมใน sport) |
+| 8-13 | `app/components/notifications/NotificationProvider.tsx` | 132f1b4 | a3e05b1 | ลอกตามเดิม |
+| 8-13 | `app/components/i18n/LanguagePickerProvider.tsx` | 132f1b4 | a3e05b1 | ลอกตามเดิม |
+| 8-13 | `app/components/i18n/LocaleFlag.tsx` | 132f1b4 | a3e05b1 | ลอกตามเดิม |
+| 8-13 | `app/components/pwa/PwaInstallProvider.tsx` | 132f1b4 | a3e05b1 | ลอกตามเดิม |
+| 8-13 | `app/data/notificationsMockData.ts` | 132f1b4 | a3e05b1 | ลอกตามเดิม |
+| 8-13 | `app/components/promotions/PromotionsCatalogProvider.tsx` | 132f1b4 | a3e05b1 | ลอกตามเดิม |
+| 8-13 | `app/components/promotions/promotionDetailHref.ts` | 132f1b4 | a3e05b1 | ลอกตามเดิม |
+| 8-13 | `lib/vipRoutes.ts` | 132f1b4 | a3e05b1 | ลอกตามเดิม |
+| 8-13 | `app/components/vip/StackedAlphaVideo.tsx` | 132f1b4 | a3e05b1 | ลอกตามเดิม |
+| 8-13 | `app/components/lottery/lotteryUtils.ts` | 132f1b4 | a3e05b1 | ลอกตามเดิม |
+| 8-13 | `app/data/cardsProvidersData.ts` | 132f1b4 | a3e05b1 | ลอกตามเดิม |
+| 8-13 | `app/data/hallOfFameGenerator.ts` | 132f1b4 | a3e05b1 | ลอกตามเดิม |
+| 8-13 | `app/data/homeProviderLogosData.ts` | 132f1b4 | a3e05b1 | ลอกตามเดิม |
+| 8-13 | `app/data/providerGamesData.ts` | 132f1b4 | a3e05b1 | ลอกตามเดิม |
+| 8-13 | `app/data/tournamentImagePaths.ts` | 132f1b4 | a3e05b1 | ลอกตามเดิม |
+| 8-13 | `app/lib/categoryProviderFromPath.ts` | 132f1b4 | a3e05b1 | ลอกตามเดิม |
+| 8-13 | `app/lib/gameCardEnterMotion.ts` | 132f1b4 | a3e05b1 | ลอกตามเดิม |
+| 8-13 | `app/lib/lobbyCategoryFromPath.ts` | 132f1b4 | a3e05b1 | ลอกตามเดิม |
