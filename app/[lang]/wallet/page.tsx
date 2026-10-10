@@ -1,10 +1,5 @@
-import { Suspense } from "react";
-import { WalletScreen } from "@/components/wallet/WalletScreen";
+import { localizedRedirect } from "@/lib/i18n/server";
 
-export default function WalletPage() {
-  return (
-    <Suspense fallback={null}>
-      <WalletScreen />
-    </Suspense>
-  );
+export default async function WalletPage() {
+  await localizedRedirect("/?layer=deposit");
 }

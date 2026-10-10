@@ -1,41 +1,36 @@
 "use client";
 
 import { SubPageShell } from "@/components/layout/SubPageShell";
-import { getLotteryCatalogEntry } from "@/data/lotteryCatalog";
-import { getLotteryPlayRoundById } from "@/data/lotteryRounds";
-import { getMarket } from "@/data/lottery";
-import { LotteryPlayScreen } from "./LotteryPlayScreen";
+import { getThaiLottoDrawByRoundId } from "@/app/data/lotteryRoundsMockData";
+import { lotteryPlayMarketMeta, resolveLotteryPlayRound } from "@/lib/lottery/resolvePlayRound";
+import { useLotteryI18n } from "@/app/components/lottery/useLotteryI18n";
+import { LotteryYikiPlayBoard } from "@/app/components/lottery/LotteryYikiPlayBoard";
 import { ThaiGovernmentPlayScreen } from "./ThaiGovernmentPlayScreen";
 
 type LotteryPlayPageProps = {
   marketId: string;
   roundId: string;
-  showYikiHelp?: boolean;
 };
 
-export function LotteryPlayPage({
-  marketId,
-  roundId,
-  showYikiHelp = false,
-}: LotteryPlayPageProps) {
-  const catalog = getLotteryCatalogEntry(marketId);
-  const market = getMarket(marketId);
-  const playRound = getLotteryPlayRoundById(marketId, roundId);
-  const name = catalog?.title ?? market?.name;
-  const title =
-    playRound && name ? `${name} · ${playRound.drawLabel}` : "แทงหวย";
+/** Step 3 — หน้าแทง: หวยรัฐบาลใช้กระดาน Thai · ตลาดอื่น/ยี่กี ใช้กระดานยี่กี */
+export function LotteryPlayPage({ marketId, roundId }: LotteryPlayPageProps) {
+  const { t, roundLabel } = useLotteryI18n();
+  const isThai = marketId === "thai-government";
+  const meta = lotteryPlayMarketMeta(marketId);
+  const drawLabel = isThai
+    ? getThaiLottoDrawByRoundId(roundId)?.drawLabel
+    : resolveLotteryPlayRound(marketId, roundId)?.label;
+  const name = t(meta.titleKey);
+  const title = drawLabel ? `${name} · ${roundLabel(drawLabel)}` : name;
+  const backHref = `/lottery/${marketId}`;
 
   return (
-    <SubPageShell title={title} sessionMode="default" requiresAuth>
+    <SubPageShell title={title} backHref={backHref}>
       <div className="lottery-hub-theme">
-        {marketId === "thai-government" ? (
+        {isThai ? (
           <ThaiGovernmentPlayScreen roundId={roundId} />
         ) : (
-          <LotteryPlayScreen
-            marketId={marketId}
-            roundId={roundId}
-            showYikiHelp={showYikiHelp}
-          />
+          <LotteryYikiPlayBoard marketSlug={marketId} roundId={roundId} backHref={backHref} />
         )}
       </div>
     </SubPageShell>

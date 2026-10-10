@@ -3,9 +3,8 @@
 import React from "react";
 import { SWRConfig } from "swr";
 import { UrlSearchParamsProvider } from "@/app/hooks/useUrlSearchParams";
-import { AuthProvider as SessionAuthProvider } from "@/app/components/auth/AuthProvider";
+import { AuthProvider } from "@/app/components/auth/AuthProvider";
 import type { ApiError } from "@/lib/api/http";
-import { AuthProvider } from "@/context/AuthContext";
 import { AuthUIProvider } from "@/context/AuthUIContext";
 import { DepositProvider } from "@/context/DepositContext";
 import { MenuUIProvider } from "@/context/MenuUIContext";
@@ -17,6 +16,9 @@ import { GlobalBottomNav } from "@/components/layout/GlobalBottomNav";
 import { GlobalAuthOverlays } from "@/components/GlobalAuthOverlays";
 import { GlobalCouponOverlay } from "@/components/GlobalCouponOverlay";
 import { GlobalMobileMenu } from "@/components/GlobalMobileMenu";
+import { NotificationProvider } from "@/app/components/notifications/NotificationProvider";
+import { LanguagePickerProvider } from "@/app/components/i18n/LanguagePickerProvider";
+import { PwaInstallProvider } from "@/app/components/pwa/PwaInstallProvider";
 
 /**
  * ค่าเริ่มต้น SWR ทั้งแอป (เหมือน glass app/providers.tsx) — ไม่ดึงใหม่ทุกครั้งที่สลับแท็บ · 401 / 4xx ไม่ retry
@@ -37,17 +39,16 @@ const SWR_DEFAULTS = {
   },
 };
 
-/**
- * ระหว่างย้ายเป็น logic ของ glass: SessionAuthProvider (session cookie) ทำงานคู่กับ AuthProvider เดิม (reducer)
- * จนกว่าทุกหน้าจะเลิกใช้ @/context/AuthContext แล้วจึงลบของเดิมออก
- */
 export function AppProviders({ children }: { children: React.ReactNode }) {
   return (
     <UrlSearchParamsProvider>
       <SWRConfig value={SWR_DEFAULTS}>
         <ToastProvider>
-          <SessionAuthProvider>
-            <AuthProvider>
+          <AuthProvider>
+          <PwaInstallProvider>
+          <LanguagePickerProvider>
+          <NotificationProvider>
+            
               <AuthUIProvider>
                 <CouponUIProvider>
                   <MenuUIProvider>
@@ -65,8 +66,11 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
                   </MenuUIProvider>
                 </CouponUIProvider>
               </AuthUIProvider>
-            </AuthProvider>
-          </SessionAuthProvider>
+            
+          </NotificationProvider>
+          </LanguagePickerProvider>
+          </PwaInstallProvider>
+          </AuthProvider>
         </ToastProvider>
       </SWRConfig>
     </UrlSearchParamsProvider>

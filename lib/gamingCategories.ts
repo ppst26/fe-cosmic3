@@ -1,56 +1,55 @@
-import type { CategoryKey } from "@/data/homeLobby";
+import type { MessageKey } from "@/lib/i18n/messages";
+import type { CategoryId } from "@/app/types/lobby";
 
 export type GamingCategoryId = "slot" | "casino" | "sport" | "fish" | "card";
 
 export interface GamingCategoryMeta {
   id: GamingCategoryId;
-  title: string;
-  subtitle: string;
-  lobbyCategory: CategoryKey;
+  /** key แปลชื่อหมวด — render ด้วย useT("home")(labelKey) */
+  labelKey: MessageKey<"home">;
+  /** key placeholder ช่องค้นหาของหมวด (glass: categoryProviders.searchPlaceholder.*) */
+  searchPlaceholderKey: MessageKey<"home">;
+  /** id หมวดแบบ glass (CategoryId ใน app/types/lobby) */
+  lobbyCategoryId: CategoryId;
+  /** path ของ sport (glass ใช้ /sport /fishing /cards — แปลงด้วย toSportHref) */
   basePath: string;
-  breadcrumb: string;
 }
 
 export const GAMING_CATEGORIES: Record<GamingCategoryId, GamingCategoryMeta> = {
   slot: {
     id: "slot",
-    title: "สล็อต",
-    subtitle: "เลือกค่ายเกมสล็อตชั้นนำ ทุกค่ายในที่เดียว",
-    lobbyCategory: "slot",
+    labelKey: "categories.slots",
+    searchPlaceholderKey: "categoryProviders.searchPlaceholder.default",
+    lobbyCategoryId: "slots",
     basePath: "/slots",
-    breadcrumb: "สล็อต",
   },
   casino: {
     id: "casino",
-    title: "คาสิโน",
-    subtitle: "คาสิโนสดและเกมโต๊ะ — เลือกค่ายที่ชอบ",
-    lobbyCategory: "casino",
+    labelKey: "categories.casino",
+    searchPlaceholderKey: "categoryProviders.searchPlaceholder.casino",
+    lobbyCategoryId: "casino",
     basePath: "/casino",
-    breadcrumb: "คาสิโน",
   },
   sport: {
     id: "sport",
-    title: "กีฬา",
-    subtitle: "เดิมพันกีฬาออนไลน์ ราคาต่อรองแบบเรียลไทม์",
-    lobbyCategory: "sport",
+    labelKey: "categories.sports",
+    searchPlaceholderKey: "categoryProviders.searchPlaceholder.sports",
+    lobbyCategoryId: "sports",
     basePath: "/sports",
-    breadcrumb: "กีฬา",
   },
   fish: {
     id: "fish",
-    title: "ยิงปลา",
-    subtitle: "เกมยิงปลาและอาร์เคด — ล่าปลาใหญ่รับโบนัส",
-    lobbyCategory: "fish",
+    labelKey: "categories.fishing",
+    searchPlaceholderKey: "categoryProviders.searchPlaceholder.fishing",
+    lobbyCategoryId: "fishing",
     basePath: "/fish",
-    breadcrumb: "ยิงปลา",
   },
   card: {
     id: "card",
-    title: "ไพ่",
-    subtitle: "เกมไพ่และโต๊ะ — เลือกค่ายเกม",
-    lobbyCategory: "table",
+    labelKey: "categories.cards",
+    searchPlaceholderKey: "categoryProviders.searchPlaceholder.cards",
+    lobbyCategoryId: "cards",
     basePath: "/card",
-    breadcrumb: "ไพ่",
   },
 };
 

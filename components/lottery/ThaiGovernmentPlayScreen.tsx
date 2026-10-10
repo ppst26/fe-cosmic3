@@ -1,118 +1,63 @@
 "use client";
 
-import Link from "@/lib/i18n/navigation";
-import { useMemo, useState } from "react";
-import { THAI_LOTTO_BET_TYPES, THAI_LOTTO_GROUPS } from "@/data/thaiLotto";
-import { getThaiLottoDrawByRoundId } from "@/data/lotteryRounds";
-import { canConfirmSlip, slipTotal } from "@/lib/lottery/slip";
-import type { LotterySlipLine } from "@/lib/member/types";
-import type { ThaiLottoBetEntry, ThaiLottoBetTypeId } from "@/types/thaiLotto";
-import { useAuth } from "@/context/AuthContext";
+import { useMemo } from "react";
+import { getThaiLottoDrawByRoundId } from "@/app/data/lotteryRoundsMockData";
+import { useThaiLottoBoard } from "@/app/hooks/api/lottery";
+import { useThaiGovernmentBetSubmit } from "@/app/hooks/useLotteryBetSubmit";
+import { useLotteryI18n } from "@/app/components/lottery/useLotteryI18n";
+import { LotteryBetResultDialog } from "@/app/components/lottery/LotteryBetResultDialog";
+import { EmptyState, LoadingState } from "@/app/components/ui/StatusState";
 import { ThaiLottoBetBoard } from "@/components/lottery/thai/ThaiLottoBetBoard";
-
-function localToday(): string {
-  const d = new Date();
-  const y = d.getFullYear();
-  const m = String(d.getMonth() + 1).padStart(2, "0");
-  const day = String(d.getDate()).padStart(2, "0");
-  return `${y}-${m}-${day}`;
-}
-
-const typeLabelById = new Map(
-  THAI_LOTTO_BET_TYPES.map((type) => [type.id, type.label] as const),
-);
-
-function entriesToLines(entries: ThaiLottoBetEntry[]): LotterySlipLine[] {
-  return entries.map((entry) => ({
-    id: entry.id,
-    betType: typeLabelById.get(entry.typeId as ThaiLottoBetTypeId) ?? entry.typeId,
-    number: entry.number,
-    price: entry.amount,
-  }));
-}
 
 type ThaiGovernmentPlayScreenProps = {
   roundId: string;
+  onStepChange?: (step: "pick" | "price") => void;
 };
 
-export function ThaiGovernmentPlayScreen({ roundId }: ThaiGovernmentPlayScreenProps) {
-  const { state, dispatch } = useAuth();
+/** Step 3 — แทงหวยรัฐบาลไทยตามรอบที่เลือก (ส่งโพยผ่าน useThaiGovernmentBetSubmit → /api/lottery/bets) */
+export function ThaiGovernmentPlayScreen({ roundId, onStepChange }: ThaiGovernmentPlayScreenProps) {
+  const { t, roundLabel } = useLotteryI18n();
+  const thaiBoard = useThaiLottoBoard().data;
   const draw = useMemo(() => getThaiLottoDrawByRoundId(roundId), [roundId]);
-  const [confirmed, setConfirmed] = useState(false);
-  const [submitError, setSubmitError] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const betMeta = draw
+    ? {
+        drawLabel: roundLabel(draw.drawLabel),
+        drawCloseAt: draw.closeAt,
+        continuePlayHref: `/lottery/thai-government/${roundId}`,
+      }
+    : null;
+  const { onSubmit, dialog, closeDialog, isSubmitting } = useThaiGovernmentBetSubmit(
+    roundId,
+    betMeta ?? { drawLabel: "", drawCloseAt: "", continuePlayHref: "/lottery/thai-government" },
+  );
 
   if (!draw) {
     return (
-      <div className="soft-card space-y-3 p-4 text-center">
-        <p className="text-sm text-[var(--text-on-light)]">ไม่พบรอบ</p>
-        <Link
-          href="/lottery/thai-government"
-          className="soft-btn-outline inline-flex h-10 items-center px-4 text-sm font-semibold"
-        >
-          กลับรายการรอบ
-        </Link>
-      </div>
+      <EmptyState
+        className="mt-4"
+        title={t("board.roundNotFoundTitle")}
+        description={t("board.roundNotFoundOther")}
+        primaryAction={{ label: t("board.viewAllRounds"), href: "/lottery/thai-government" }}
+      />
     );
   }
 
-  if (confirmed) {
-    return (
-      <div className="soft-card space-y-3 p-4 text-center">
-        <p className="text-sm font-semibold text-[var(--text-on-light)]">บันทึกสลิปแล้ว</p>
-        <Link
-          href="/lottery/slips"
-          className="soft-btn-primary inline-flex h-10 items-center px-4 text-sm font-semibold"
-        >
-          ดูสลิปของฉัน
-        </Link>
-      </div>
-    );
-  }
-
-  async function handleSubmit(entries: ThaiLottoBetEntry[]): Promise<boolean> {
-    setSubmitError("");
-    const lines = entriesToLines(entries);
-    const total = slipTotal(lines);
-    if (!canConfirmSlip(lines.length, total, state.balance)) {
-      setSubmitError(total > state.balance ? "ยอดไม่พอ" : "กรุณาใส่ราคาทุกรายการ");
-      return false;
-    }
-
-    setIsSubmitting(true);
-    try {
-      const slip = {
-        id: `slip-${Date.now()}`,
-        marketId: "thai-government",
-        roundId,
-        lines,
-        total,
-        status: "บันทึกแล้ว" as const,
-        at: localToday(),
-      };
-      dispatch({ type: "confirmSlip", slip });
-      setConfirmed(true);
-      return true;
-    } finally {
-      setIsSubmitting(false);
-    }
+  if (!thaiBoard) {
+    return <LoadingState label={t("board.loading")} />;
   }
 
   return (
     <div className="lottery-thai-theme flex flex-col gap-2">
-      {submitError ? (
-        <p className="m-0 rounded-[var(--radius-soft-sm)] bg-[var(--brand-soft)] px-3 py-2 text-center text-xs font-semibold text-[var(--brand)]">
-          {submitError}
-        </p>
-      ) : null}
       <ThaiLottoBetBoard
         draw={draw}
-        groups={THAI_LOTTO_GROUPS}
-        betTypes={THAI_LOTTO_BET_TYPES}
+        groups={thaiBoard.groups}
+        betTypes={thaiBoard.betTypes}
         backHref="/lottery/thai-government"
-        onSubmit={handleSubmit}
+        onStepChange={onStepChange}
+        onSubmit={onSubmit}
         isSubmitting={isSubmitting}
       />
+      <LotteryBetResultDialog state={dialog} onClose={closeDialog} />
     </div>
   );
 }

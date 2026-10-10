@@ -1,15 +1,18 @@
 "use client";
 
-import { useMemo } from "react";
-import type { ThaiLottoBetEntry, ThaiLottoBetType, ThaiLottoBetTypeId } from "@/types/thaiLotto";
+import { useMemo, type Ref } from "react";
+import type { ThaiLottoBetEntry, ThaiLottoBetType, ThaiLottoBetTypeId } from "@/app/types/lottery";
+import { useT } from "@/lib/i18n/I18nProvider";
 import {
   LotteryPriceSlipPanel,
   type LotteryPriceSlipGroup,
+  type LotteryPriceSlipHandle,
 } from "@/components/lottery/play/LotteryPriceSlipPanel";
 
 export function ThaiLottoPricePanel({
   entries,
   betTypes,
+  handleRef,
   selectedEntryId,
   onSelectEntry,
   onAmountChange,
@@ -17,11 +20,13 @@ export function ThaiLottoPricePanel({
 }: {
   entries: ThaiLottoBetEntry[];
   betTypes: ThaiLottoBetType[];
+  handleRef?: Ref<LotteryPriceSlipHandle>;
   selectedEntryId: string | null;
   onSelectEntry: (entryId: string) => void;
   onAmountChange: (entryId: string, amount: number) => void;
   onRemove: (entryId: string) => void;
 }) {
+  const t = useT("lottery");
   const typeById = useMemo(
     () => new Map<ThaiLottoBetTypeId, ThaiLottoBetType>(betTypes.map((type) => [type.id, type])),
     [betTypes],
@@ -41,7 +46,7 @@ export function ThaiLottoPricePanel({
       const type = typeById.get(typeId);
       return {
         key: typeId,
-        label: type?.label ?? typeId,
+        label: type ? t(type.labelKey) : typeId,
         entries: map.get(typeId)!.map((entry) => ({
           id: entry.id,
           number: entry.number,
@@ -50,11 +55,12 @@ export function ThaiLottoPricePanel({
         })),
       };
     });
-  }, [entries, typeById]);
+  }, [entries, typeById, t]);
 
   return (
     <LotteryPriceSlipPanel
       groups={groups}
+      handleRef={handleRef}
       selectedEntryId={selectedEntryId}
       onSelectEntry={onSelectEntry}
       onAmountChange={onAmountChange}

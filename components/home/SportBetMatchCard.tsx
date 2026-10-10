@@ -1,3 +1,4 @@
+import Link from "@/lib/i18n/navigation";
 import type { MockSportBetMatch } from "@/lib/mock/home";
 
 function formatOdd(value: number) {
@@ -37,21 +38,18 @@ export function SportBetMatchCard({ match }: { match: MockSportBetMatch }) {
           <OddCell label="2" value={match.odds.away} />
         </div>
 
-        <button
-          type="button"
-          className="flex w-full items-center justify-center gap-1.5 rounded-lg bg-[#f4f4f4] py-2 text-xs font-semibold text-[var(--text-muted)]"
-        >
+        <p className="flex w-full items-center justify-center gap-1.5 rounded-lg bg-[#f4f4f4] py-2 text-xs font-semibold text-[var(--text-muted)]">
           <span aria-hidden>🕒</span>
           เริ่มใน {match.startsInLabel}
-        </button>
+        </p>
 
-        <button
-          type="button"
+        <Link
+          href="/sports"
           className="flex w-full items-center justify-center gap-1.5 rounded-lg bg-[var(--brand)] py-2.5 text-sm font-bold text-white"
         >
           <TicketIcon />
           แทงคู่นี้
-        </button>
+        </Link>
       </div>
     </article>
   );

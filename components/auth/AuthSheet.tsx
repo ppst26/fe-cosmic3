@@ -1,23 +1,32 @@
 "use client";
 
 import { useState } from "react";
-import { useAuth } from "@/context/AuthContext";
-import { SheetFrame } from "@/components/wallet/SheetFrame";
-import { BANKS } from "@/data/member";
-import { SIGNUP_CHANNELS } from "@/data/signup";
+import { OverlayPanel } from "@/app/components/ui/OverlayPanel";
+import { ResourceGate } from "@/app/components/ui/ResourceGate";
+import { useAuth } from "@/app/components/auth/AuthProvider";
+import { useSignUpOptions } from "@/app/hooks/api/member";
+import { useToast } from "@/context/ToastContext";
 import {
   BANK_ACCOUNT_MAX_DIGITS,
-  bankAccountError,
-  digitsOnly,
-  passwordError,
-  personNameError,
-  phoneError,
+  isBankAccountNumber,
+  isPasswordLengthOk,
+  isPersonName,
+  isThaiMobilePhone,
+  PASSWORD_MAX_LENGTH,
+  PERSON_NAME_MAX_LENGTH,
   PHONE_DIGIT_LENGTH,
-} from "@/lib/fieldRules";
-import { DEMO_LOGIN_PASSWORD, DEMO_LOGIN_PHONE } from "@/lib/auth/demoLogin";
+  sanitizeBankAccount,
+  sanitizePassword,
+  sanitizePersonName,
+  sanitizePhone,
+} from "@/lib/fieldInput";
+import { useT } from "@/lib/i18n/I18nProvider";
 
 const inputClass =
   "h-11 w-full rounded-[var(--radius-soft-sm)] bg-[var(--soft-card)] px-3 text-sm outline-none";
+
+const linkButtonClass =
+  "cursor-pointer border-0 bg-transparent p-0 text-sm font-semibold text-[var(--brand)]";
 
 type AuthMode = "login" | "register";
 
@@ -30,12 +39,15 @@ export function AuthSheet({
   onClose: () => void;
   onSwitch: (mode: AuthMode) => void;
 }) {
-  const { dispatch } = useAuth();
-  const [message, setMessage] = useState("");
+  const t = useT("auth");
+  const tCommon = useT("common");
+  const { login, register } = useAuth();
+  const { showToast } = useToast();
+  const signUpOptions = useSignUpOptions();
   const [pending, setPending] = useState(false);
 
-  const [username, setUsername] = useState(DEMO_LOGIN_PHONE);
-  const [password, setPassword] = useState(DEMO_LOGIN_PASSWORD);
+  const [loginPhone, setLoginPhone] = useState("");
+  const [loginPassword, setLoginPassword] = useState("");
 
   const [step, setStep] = useState<1 | 2>(1);
   const [phone, setPhone] = useState("");
@@ -43,113 +55,121 @@ export function AuthSheet({
   const [confirmPassword, setConfirmPassword] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [bankCode, setBankCode] = useState("");
+  const [bankId, setBankId] = useState("");
   const [accountNumber, setAccountNumber] = useState("");
-  const [channel, setChannel] = useState("");
+  const [channelId, setChannelId] = useState("");
 
   function switchMode(next: AuthMode) {
-    setMessage("");
     setStep(1);
     onSwitch(next);
   }
 
   async function submitLogin(event: React.FormEvent) {
     event.preventDefault();
-    setPending(true);
-    setMessage("");
-    try {
-      const response = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }),
-      });
-      const data = (await response.json()) as {
-        success?: boolean;
-        message?: string;
-        user?: { username?: string };
-      };
-      if (response.ok && data.success) {
-        const loginUsername = data.user?.username ?? username;
-        dispatch({ type: "loginSuccess", username: loginUsername });
-        onClose();
-        return;
-      }
-      setMessage(data.message ?? "เข้าสู่ระบบไม่สำเร็จ");
-    } catch {
-      setMessage("เชื่อมต่อเซิร์ฟเวอร์ไม่ได้");
-    } finally {
-      setPending(false);
+    const normalizedPhone = sanitizePhone(loginPhone);
+    if (!isThaiMobilePhone(normalizedPhone)) {
+      showToast(t("validation.phone"), "error");
+      return;
     }
+    if (!loginPassword) {
+      showToast(t("validation.passwordRequired"), "error");
+      return;
+    }
+    setPending(true);
+    const result = await login({ phone: normalizedPhone, password: loginPassword });
+    setPending(false);
+    if (!result.ok) {
+      showToast(result.error ?? t("loginSheet.failed"), "error");
+      return;
+    }
+    showToast(t("loginSheet.success"), "success");
+    onClose();
   }
 
   function continueRegisterStep1(event: React.FormEvent) {
     event.preventDefault();
-    const phoneMsg = phoneError(phone);
-    const passwordMsg = passwordError(regPassword);
-    if (phoneMsg) {
-      setMessage(phoneMsg);
+    if (!isThaiMobilePhone(sanitizePhone(phone))) {
+      showToast(t("validation.phone"), "error");
       return;
     }
-    if (passwordMsg) {
-      setMessage(passwordMsg);
+    if (!isPasswordLengthOk(regPassword)) {
+      showToast(t("validation.passwordLength"), "error");
       return;
     }
     if (regPassword !== confirmPassword) {
-      setMessage("รหัสผ่านไม่ตรงกัน");
+      showToast(t("validation.passwordMismatch"), "error");
       return;
     }
-    setMessage("");
     setStep(2);
   }
 
-  function submitRegister(event: React.FormEvent) {
+  async function submitRegister(event: React.FormEvent) {
     event.preventDefault();
-    const firstMsg = personNameError(firstName);
-    const lastMsg = personNameError(lastName);
-    const accountMsg = bankAccountError(accountNumber);
-    if (firstMsg) {
-      setMessage(firstMsg);
+    if (!isPersonName(firstName)) {
+      showToast(t("validation.firstName"), "error");
       return;
     }
-    if (lastMsg) {
-      setMessage(lastMsg);
+    if (!isPersonName(lastName)) {
+      showToast(t("validation.lastName"), "error");
       return;
     }
-    if (accountMsg) {
-      setMessage(accountMsg);
+    if (!isBankAccountNumber(accountNumber)) {
+      showToast(t("validation.bankAccount"), "error");
       return;
     }
-    if (!channel) {
-      setMessage("กรุณาเลือกช่องทาง");
+    if (!bankId) {
+      showToast(t("validation.bankRequired"), "error");
       return;
     }
-    if (!bankCode) {
-      setMessage("กรุณาเลือกธนาคาร");
+    if (!channelId) {
+      showToast(t("validation.channelRequired"), "error");
       return;
     }
-    const displayName = `${firstName.trim()} ${lastName.trim()}`;
-    dispatch({ type: "signUp", displayName, phone, password: regPassword });
+    setPending(true);
+    const result = await register({
+      phone: sanitizePhone(phone),
+      password: regPassword,
+      firstName: firstName.trim(),
+      lastName: lastName.trim(),
+      bankAccountNumber: accountNumber,
+      bankId,
+      channelId,
+    });
+    setPending(false);
+    if (!result.ok) {
+      showToast(result.error ?? t("signUpSheet.failed"), "error");
+      return;
+    }
+    showToast(t("signUpSheet.success"), "success");
     onClose();
   }
 
-  const title = mode === "login" ? "เข้าสู่ระบบ" : "สมัครสมาชิก";
+  const title = mode === "login" ? t("login") : t("signUp");
+  const closeLabel = mode === "login" ? t("loginSheet.close") : t("signUpSheet.close");
 
   return (
-    <SheetFrame title={title} onClose={onClose}>
+    <OverlayPanel title={title} onClose={onClose} closeLabel={closeLabel}>
       {mode === "login" ? (
         <form onSubmit={submitLogin} className="space-y-3">
+          <p className="text-xs text-[var(--text-muted)]">{t("loginSheet.subtitle")}</p>
           <input
-            value={username}
-            onChange={(event) => setUsername(event.target.value)}
-            placeholder="บัญชีผู้ใช้ หรือ เบอร์โทรศัพท์"
+            type="tel"
+            value={loginPhone}
+            onChange={(event) => setLoginPhone(sanitizePhone(event.target.value))}
+            placeholder={t("fields.phonePlaceholder")}
+            aria-label={t("fields.phone")}
+            inputMode="tel"
+            maxLength={PHONE_DIGIT_LENGTH}
             className={inputClass}
-            autoComplete="username"
+            autoComplete="tel"
           />
           <input
             type="password"
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-            placeholder="รหัสผ่าน"
+            value={loginPassword}
+            onChange={(event) => setLoginPassword(sanitizePassword(event.target.value))}
+            placeholder={t("fields.passwordPlaceholder")}
+            aria-label={t("fields.password")}
+            maxLength={PASSWORD_MAX_LENGTH}
             className={inputClass}
             autoComplete="current-password"
           />
@@ -158,129 +178,146 @@ export function AuthSheet({
             disabled={pending}
             className="soft-btn-primary h-11 w-full text-sm font-semibold"
           >
-            {pending ? "กำลังตรวจสอบ..." : "เข้าสู่ระบบ"}
+            {pending ? t("loginSheet.submitting") : t("login")}
           </button>
-          {message ? <p className="text-sm text-[var(--text-on-light)]">{message}</p> : null}
-          <button
-            type="button"
-            className="w-full text-sm font-semibold text-[var(--brand)]"
-            onClick={() => switchMode("register")}
-          >
-            ยังไม่มีบัญชี? สมัครสมาชิก
-          </button>
+          <p className="text-center text-sm text-[var(--text-muted)]">
+            {t("loginSheet.noAccount")}{" "}
+            <button type="button" className={linkButtonClass} onClick={() => switchMode("register")}>
+              {t("signUp")}
+            </button>
+          </p>
         </form>
       ) : step === 1 ? (
         <form onSubmit={continueRegisterStep1} className="space-y-3">
           <input
+            type="tel"
             value={phone}
-            onChange={(event) => setPhone(digitsOnly(event.target.value, PHONE_DIGIT_LENGTH))}
-            placeholder="เบอร์โทรศัพท์"
-            inputMode="numeric"
+            onChange={(event) => setPhone(sanitizePhone(event.target.value))}
+            placeholder={t("fields.phonePlaceholder")}
+            aria-label={t("fields.phone")}
+            inputMode="tel"
+            maxLength={PHONE_DIGIT_LENGTH}
             className={inputClass}
             autoComplete="tel"
           />
           <input
             type="password"
             value={regPassword}
-            onChange={(event) => setRegPassword(event.target.value)}
-            placeholder="รหัสผ่าน"
+            onChange={(event) => setRegPassword(sanitizePassword(event.target.value))}
+            placeholder={t("fields.passwordPlaceholder")}
+            aria-label={t("fields.password")}
+            maxLength={PASSWORD_MAX_LENGTH}
             className={inputClass}
             autoComplete="new-password"
           />
           <input
             type="password"
             value={confirmPassword}
-            onChange={(event) => setConfirmPassword(event.target.value)}
-            placeholder="ยืนยันรหัสผ่าน"
+            onChange={(event) => setConfirmPassword(sanitizePassword(event.target.value))}
+            placeholder={t("fields.confirmPasswordPlaceholder")}
+            aria-label={t("fields.confirmPassword")}
+            maxLength={PASSWORD_MAX_LENGTH}
             className={inputClass}
             autoComplete="new-password"
           />
           <button type="submit" className="soft-btn-primary h-11 w-full text-sm font-semibold">
-            ถัดไป
+            {tCommon("next")}
           </button>
-          {message ? <p className="text-sm text-[var(--text-on-light)]">{message}</p> : null}
-          <button
-            type="button"
-            className="w-full text-sm font-semibold text-[var(--brand)]"
-            onClick={() => switchMode("login")}
-          >
-            มีบัญชีแล้ว? เข้าสู่ระบบ
-          </button>
+          <p className="text-center text-sm text-[var(--text-muted)]">
+            {t("signUpSheet.haveAccount")}{" "}
+            <button type="button" className={linkButtonClass} onClick={() => switchMode("login")}>
+              {t("login")}
+            </button>
+          </p>
         </form>
       ) : (
-        <form onSubmit={submitRegister} className="space-y-3">
-          <input
-            value={firstName}
-            onChange={(event) => setFirstName(event.target.value)}
-            placeholder="ชื่อ"
-            className={inputClass}
-            autoComplete="given-name"
-          />
-          <input
-            value={lastName}
-            onChange={(event) => setLastName(event.target.value)}
-            placeholder="นามสกุล"
-            className={inputClass}
-            autoComplete="family-name"
-          />
-          <select
-            value={bankCode}
-            onChange={(event) => setBankCode(event.target.value)}
-            className={inputClass}
-          >
-            <option value="">เลือกธนาคาร</option>
-            {BANKS.map((bank) => (
-              <option key={bank.code} value={bank.code}>
-                {bank.name}
-              </option>
-            ))}
-          </select>
-          <input
-            value={accountNumber}
-            onChange={(event) =>
-              setAccountNumber(digitsOnly(event.target.value, BANK_ACCOUNT_MAX_DIGITS))
-            }
-            placeholder="เลขบัญชี"
-            inputMode="numeric"
-            className={inputClass}
-          />
-          <select
-            value={channel}
-            onChange={(event) => setChannel(event.target.value)}
-            className={inputClass}
-          >
-            <option value="">ช่องทางที่รู้จักเรา</option>
-            {SIGNUP_CHANNELS.map((item) => (
-              <option key={item} value={item}>
-                {item}
-              </option>
-            ))}
-          </select>
-          <div className="flex gap-2">
-            <button
-              type="button"
-              onClick={() => {
-                setMessage("");
-                setStep(1);
-              }}
-              className="soft-btn-outline h-11 flex-1 text-sm font-semibold"
-            >
-              ย้อนกลับ
-            </button>
-            <button type="submit" className="soft-btn-primary h-11 flex-1 text-sm font-semibold">
-              สมัครสมาชิก
-            </button>
-          </div>
-          {message ? <p className="text-sm text-[var(--text-on-light)]">{message}</p> : null}
-          <button
-            type="button"
-            className="w-full text-sm font-semibold text-[var(--brand)]"
-            onClick={() => switchMode("login")}
-          >
-            มีบัญชีแล้ว? เข้าสู่ระบบ
-          </button>
-        </form>
+        <ResourceGate
+          resource={signUpOptions}
+          loadingLabel={t("signUpSheet.loadingBanks")}
+          errorTitle={t("signUpSheet.banksFailed")}
+        >
+          {({ banks, channels }) => (
+            <form onSubmit={submitRegister} className="space-y-3">
+              <input
+                value={firstName}
+                onChange={(event) => setFirstName(sanitizePersonName(event.target.value))}
+                placeholder={t("fields.firstName")}
+                aria-label={t("fields.firstName")}
+                maxLength={PERSON_NAME_MAX_LENGTH}
+                className={inputClass}
+                autoComplete="given-name"
+              />
+              <input
+                value={lastName}
+                onChange={(event) => setLastName(sanitizePersonName(event.target.value))}
+                placeholder={t("fields.lastName")}
+                aria-label={t("fields.lastName")}
+                maxLength={PERSON_NAME_MAX_LENGTH}
+                className={inputClass}
+                autoComplete="family-name"
+              />
+              <select
+                value={bankId}
+                onChange={(event) => setBankId(event.target.value)}
+                aria-label={t("fields.bank")}
+                className={inputClass}
+              >
+                <option value="">{t("fields.bankPlaceholder")}</option>
+                {banks.map((bank) => (
+                  <option key={bank.id} value={bank.id}>
+                    {bank.label}
+                  </option>
+                ))}
+              </select>
+              <input
+                value={accountNumber}
+                onChange={(event) => setAccountNumber(sanitizeBankAccount(event.target.value))}
+                placeholder={t("fields.bankAccountPlaceholder")}
+                aria-label={t("fields.bankAccount")}
+                inputMode="numeric"
+                maxLength={BANK_ACCOUNT_MAX_DIGITS}
+                className={inputClass}
+                autoComplete="off"
+              />
+              <select
+                value={channelId}
+                onChange={(event) => setChannelId(event.target.value)}
+                aria-label={t("fields.channel")}
+                className={inputClass}
+              >
+                <option value="">{t("fields.channelPlaceholder")}</option>
+                {channels.map((item) => (
+                  <option key={item.id} value={item.id}>
+                    {item.label}
+                  </option>
+                ))}
+              </select>
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => setStep(1)}
+                  className="soft-btn-outline h-11 flex-1 text-sm font-semibold"
+                >
+                  {tCommon("back")}
+                </button>
+                <button
+                  type="submit"
+                  disabled={pending}
+                  className="soft-btn-primary h-11 flex-1 text-sm font-semibold"
+                >
+                  {pending ? t("signUpSheet.submitting") : t("signUp")}
+                </button>
+              </div>
+              <p className="text-center text-sm text-[var(--text-muted)]">
+                {t("signUpSheet.haveAccount")}{" "}
+                <button type="button" className={linkButtonClass} onClick={() => switchMode("login")}>
+                  {t("login")}
+                </button>
+              </p>
+            </form>
+          )}
+        </ResourceGate>
       )}
-    </SheetFrame>
+    </OverlayPanel>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef } from "react";
+import { useLotteryI18n } from "@/app/components/lottery/useLotteryI18n";
 
 export type LotteryInputMode = "manual" | "grid";
 
@@ -15,6 +16,7 @@ export function LotteryInputModeTabs({
   onChange: (mode: LotteryInputMode) => void;
   panelId: string;
 }) {
+  const { t } = useLotteryI18n();
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
   const focusTab = (index: number) => {
@@ -33,7 +35,7 @@ export function LotteryInputModeTabs({
   };
 
   return (
-    <div className="lottery-mode-tabs grid grid-cols-2 gap-1" role="tablist" aria-label="วิธีใส่เลข">
+    <div className="lottery-mode-tabs grid grid-cols-2 gap-1" role="tablist" aria-label={t("inputMode.aria")}>
       {modes.map((mode, index) => {
         const isActive = mode.id === activeMode;
         return (

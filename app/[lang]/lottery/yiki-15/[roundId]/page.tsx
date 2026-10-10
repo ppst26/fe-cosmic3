@@ -9,5 +9,5 @@ type PageProps = {
 
 export default function Yiki15PlayPage({ params }: PageProps) {
   const { roundId } = use(params);
-  return <LotteryPlayPage marketId="yiki-15" roundId={roundId} showYikiHelp />;
+  return <LotteryPlayPage marketId="yiki-15" roundId={roundId} />;
 }

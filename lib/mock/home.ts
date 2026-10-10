@@ -1,23 +1,3 @@
-export const NOTICE_TEXT =
-  "คาสิโนเว็บตรง รวมเกมฮิตจากหลายค่าย ทีมบริการลูกค้าพร้อมให้บริการตลอด 24 ชั่วโมง";
-
-export const CATEGORIES = [
-  { id: "hot", label: "มาแรง", emoji: "🔥" },
-  { id: "new", label: "เกมมาใหม่", emoji: "✨" },
-  { id: "providers", label: "ค่ายเกม", emoji: "🎮" },
-  { id: "sport", label: "กีฬา", emoji: "⚽" },
-  { id: "slots", label: "สล็อต", emoji: "🎰" },
-  { id: "casino", label: "คาสิโน", emoji: "🎲" },
-  { id: "cards", label: "ไพ่", emoji: "🃏" },
-  { id: "arcade", label: "อาร์เคด", emoji: "👾" },
-  { id: "fight", label: "ต่อสู้", emoji: "🥊" },
-  { id: "crash", label: "แครช", emoji: "📈" },
-  { id: "fish", label: "ยิงปลา", emoji: "🐟" },
-  { id: "lottery", label: "หวย", emoji: "🎱" },
-  { id: "crypto", label: "คริปโต", emoji: "₿" },
-  { id: "fav", label: "เกมโปรด", emoji: "❤️" },
-] as const;
-
 export const SPORT_PROVIDERS = [
   { name: "ONE BX", count: 158 },
   { name: "Sportbook", count: 241 },
@@ -27,175 +7,21 @@ export const SPORT_PROVIDERS = [
   { name: "E-Sport", count: 167 },
 ] as const;
 
-export type GameTag = "hot" | "new";
-
-export type MockGame = {
-  id: string;
-  title: string;
-  players: number;
-  tag?: GameTag;
-  hue: number;
-};
-
 export type SportStatTone = "red" | "green";
 
 export type MockSportCategory = {
   id: string;
   overlayTitle: string;
   label: string;
-  players: number;
-  playersTone: SportStatTone;
-  activity: number;
-  activityTone: SportStatTone;
+  /** ตัวเลขผู้เล่น/กิจกรรม — ไม่ระบุเมื่อไม่มีข้อมูลจริง (การ์ดจาก lobby API) */
+  players?: number;
+  playersTone?: SportStatTone;
+  activity?: number;
+  activityTone?: SportStatTone;
   gradient: string;
-  favorited?: boolean;
   imageUrl?: string;
   href?: string;
 };
-
-export type ActivityCarouselItem = {
-  id: string;
-  categoryLabel: string;
-  categoryIcon: string;
-  dateBadge: string;
-  headline: string;
-  gradient: string;
-  href: string;
-};
-
-/** การ์ด carousel กิจกรรม (หน้าแรก — 3–4 ใบ) */
-export const ACTIVITY_CAROUSEL_ITEMS: ActivityCarouselItem[] = [
-  {
-    id: "carousel-checkin",
-    categoryLabel: "กิจกรรม",
-    categoryIcon: "🎁",
-    dateBadge: "ทุกวัน 00:00 – 23:59",
-    headline: "เช็คอินรายวัน รับเพชร & โบนัส",
-    gradient: "linear-gradient(160deg, #431407 0%, #c2410c 45%, #fdba74 100%)",
-    href: "/activities",
-  },
-  {
-    id: "carousel-tournament",
-    categoryLabel: "ทัวร์นาเมนต์",
-    categoryIcon: "🏆",
-    dateBadge: "1 – 30 เม.ย. 2569",
-    headline: "แข่งขันยอดเทิร์น แจกรางวัลใหญ่",
-    gradient: "linear-gradient(160deg, #1e1b4b 0%, #4338ca 50%, #f97316 100%)",
-    href: "/activities",
-  },
-  {
-    id: "carousel-wheel",
-    categoryLabel: "กิจกรรม",
-    categoryIcon: "🎡",
-    dateBadge: "เปิดตลอด 24 ชม.",
-    headline: "หมุนกงล้อนำโชค ลุ้นเครดิตฟรี",
-    gradient: "linear-gradient(160deg, #4c1d95 0%, #7c3aed 55%, #e9d5ff 100%)",
-    href: "/activities",
-  },
-  {
-    id: "carousel-promo",
-    categoryLabel: "โปรโมชั่น",
-    categoryIcon: "✨",
-    dateBadge: "ฉลองเปิดซีซัน",
-    headline: "ฝากครั้งแรกรับโบนัสพิเศษ",
-    gradient: "linear-gradient(160deg, #14532d 0%, #15803d 50%, #86efac 100%)",
-    href: "/promotions",
-  },
-];
-
-/** แถบกิจกรรม — thumbnail เลื่อนแนวนอน */
-export const ACTIVITY_THUMBS: MockSportCategory[] = [
-  {
-    id: "act-checkin",
-    overlayTitle: "เช็คอินรายวัน",
-    label: "เช็คอินรายวัน",
-    players: 1240,
-    playersTone: "green",
-    activity: 312,
-    activityTone: "green",
-    gradient: "linear-gradient(165deg, #7c2d12 0%, #ea580c 50%, #fdba74 100%)",
-    href: "/activities",
-  },
-  {
-    id: "act-wheel",
-    overlayTitle: "กงล้อนำโชค",
-    label: "กงล้อนำโชค",
-    players: 892,
-    playersTone: "red",
-    activity: 201,
-    activityTone: "green",
-    gradient: "linear-gradient(165deg, #4c1d95 0%, #7c3aed 50%, #c4b5fd 100%)",
-    href: "/activities",
-  },
-  {
-    id: "act-mission",
-    overlayTitle: "ภารกิจรายสัปดาห์",
-    label: "ภารกิจรายสัปดาห์",
-    players: 654,
-    playersTone: "green",
-    activity: 145,
-    activityTone: "green",
-    gradient: "linear-gradient(165deg, #0c4a6e 0%, #0284c7 50%, #7dd3fc 100%)",
-    href: "/activities",
-  },
-  {
-    id: "act-tournament",
-    overlayTitle: "ทัวร์นาเมนต์",
-    label: "ทัวร์นาเมนต์",
-    players: 1103,
-    playersTone: "green",
-    activity: 278,
-    activityTone: "green",
-    favorited: true,
-    gradient: "linear-gradient(165deg, #0f172a 0%, #1e40af 55%, #38bdf8 100%)",
-    href: "/activities",
-  },
-  {
-    id: "act-coupon",
-    overlayTitle: "คูปองพิเศษ",
-    label: "คูปองพิเศษ",
-    players: 445,
-    playersTone: "red",
-    activity: 88,
-    activityTone: "green",
-    gradient: "linear-gradient(165deg, #831843 0%, #db2777 50%, #fbcfe8 100%)",
-    href: "/promotions",
-  },
-  {
-    id: "act-vip",
-    overlayTitle: "VIP CHALLENGE",
-    label: "VIP Challenge",
-    players: 321,
-    playersTone: "green",
-    activity: 67,
-    activityTone: "red",
-    gradient: "linear-gradient(165deg, #422006 0%, #ca8a04 50%, #fef08a 100%)",
-    href: "/vip",
-  },
-  {
-    id: "act-referral",
-    overlayTitle: "แนะนำเพื่อน",
-    label: "แนะนำเพื่อน",
-    players: 567,
-    playersTone: "green",
-    activity: 134,
-    activityTone: "green",
-    gradient: "linear-gradient(165deg, #14532d 0%, #16a34a 50%, #86efac 100%)",
-    href: "/referral",
-  },
-  {
-    id: "act-lucky",
-    overlayTitle: "LUCKY DRAW",
-    label: "Lucky Draw",
-    players: 978,
-    playersTone: "red",
-    activity: 256,
-    activityTone: "green",
-    favorited: true,
-    gradient: "linear-gradient(165deg, #1e1b4b 0%, #4338ca 50%, #f97316 100%)",
-    href: "/activities",
-  },
-];
 
 export const SPORT_CATEGORIES: MockSportCategory[] = [
   {
@@ -206,7 +32,6 @@ export const SPORT_CATEGORIES: MockSportCategory[] = [
     playersTone: "red",
     activity: 42,
     activityTone: "green",
-    favorited: true,
     gradient:
       "linear-gradient(165deg, #1a0505 0%, #7c2d12 35%, #ea580c 70%, #451a03 100%)",
   },
@@ -240,7 +65,6 @@ export const SPORT_CATEGORIES: MockSportCategory[] = [
     playersTone: "green",
     activity: 156,
     activityTone: "green",
-    favorited: true,
     gradient:
       "linear-gradient(165deg, #1a0a2e 0%, #5b21b6 45%, #7c3aed 100%)",
   },
@@ -318,141 +142,12 @@ export const SPORT_CATEGORIES: MockSportCategory[] = [
     playersTone: "green",
     activity: 118,
     activityTone: "green",
-    favorited: true,
     gradient:
       "linear-gradient(165deg, #1e1b4b 0%, #4338ca 50%, #f97316 100%)",
   },
 ];
 
 /** แถบมาแรง — thumbnail แนวตั้งเลื่อนแนวนอน (mock) */
-export const TRENDING_THUMBS: MockSportCategory[] = [
-  {
-    id: "treasures-aztec",
-    overlayTitle: "TREASURES OF AZTEC",
-    label: "Treasures of Aztec",
-    players: 807,
-    playersTone: "red",
-    activity: 142,
-    activityTone: "green",
-    favorited: true,
-    gradient:
-      "linear-gradient(165deg, #1a0f2e 0%, #6d28d9 45%, #a855f7 100%)",
-  },
-  {
-    id: "fortune-ox",
-    overlayTitle: "FORTUNE OX",
-    label: "Fortune Ox",
-    players: 976,
-    playersTone: "green",
-    activity: 201,
-    activityTone: "green",
-    gradient:
-      "linear-gradient(165deg, #451a03 0%, #ea580c 50%, #fbbf24 100%)",
-  },
-  {
-    id: "lucky-neko",
-    overlayTitle: "LUCKY NEKO",
-    label: "Lucky Neko",
-    players: 1000,
-    playersTone: "red",
-    activity: 318,
-    activityTone: "green",
-    favorited: true,
-    gradient:
-      "linear-gradient(165deg, #500724 0%, #be123c 50%, #fb7185 100%)",
-  },
-  {
-    id: "wild-bounty",
-    overlayTitle: "WILD BOUNTY",
-    label: "Wild Bounty",
-    players: 791,
-    playersTone: "green",
-    activity: 96,
-    activityTone: "green",
-    gradient:
-      "linear-gradient(165deg, #0c4a6e 0%, #0284c7 55%, #38bdf8 100%)",
-  },
-  {
-    id: "golden-empire",
-    overlayTitle: "GOLDEN EMPIRE",
-    label: "Golden Empire",
-    players: 856,
-    playersTone: "red",
-    activity: 177,
-    activityTone: "green",
-    gradient:
-      "linear-gradient(165deg, #422006 0%, #b45309 50%, #fcd34d 100%)",
-  },
-  {
-    id: "dragon-hatch",
-    overlayTitle: "DRAGON HATCH",
-    label: "Dragon Hatch",
-    players: 882,
-    playersTone: "green",
-    activity: 133,
-    activityTone: "green",
-    gradient:
-      "linear-gradient(165deg, #064e3b 0%, #059669 50%, #6ee7b7 100%)",
-  },
-  {
-    id: "candy-burst",
-    overlayTitle: "CANDY BURST",
-    label: "Candy Burst",
-    players: 714,
-    playersTone: "green",
-    activity: 88,
-    activityTone: "red",
-    gradient:
-      "linear-gradient(165deg, #701a75 0%, #c026d3 50%, #f0abfc 100%)",
-  },
-  {
-    id: "speed-winner",
-    overlayTitle: "SPEED WINNER",
-    label: "Speed Winner",
-    players: 972,
-    playersTone: "red",
-    activity: 245,
-    activityTone: "green",
-    favorited: true,
-    gradient:
-      "linear-gradient(165deg, #1e3a8a 0%, #2563eb 50%, #93c5fd 100%)",
-  },
-  {
-    id: "roma-legacy",
-    overlayTitle: "ROMA LEGACY",
-    label: "Roma Legacy",
-    players: 335,
-    playersTone: "green",
-    activity: 52,
-    activityTone: "green",
-    gradient:
-      "linear-gradient(165deg, #292524 0%, #78716c 50%, #d6d3d1 100%)",
-  },
-  {
-    id: "mahjong-ways",
-    overlayTitle: "MAHJONG WAYS",
-    label: "Mahjong Ways",
-    players: 923,
-    playersTone: "green",
-    activity: 190,
-    activityTone: "green",
-    gradient:
-      "linear-gradient(165deg, #14532d 0%, #16a34a 45%, #86efac 100%)",
-  },
-  {
-    id: "gates-olympus",
-    overlayTitle: "GATES OF OLYMPUS",
-    label: "Gates of Olympus",
-    players: 1044,
-    playersTone: "red",
-    activity: 276,
-    activityTone: "green",
-    favorited: true,
-    gradient:
-      "linear-gradient(165deg, #312e81 0%, #6366f1 50%, #fde047 100%)",
-  },
-];
-
 export type MockSportBetSide = {
   role: "H" | "A";
   name: string;
@@ -571,14 +266,3 @@ export const SPORT_BET_MATCHES: MockSportBetMatch[] = [
   },
 ];
 
-export const HOT_GAMES: MockGame[] = [
-  { id: "1", title: "Treasures of Aztec", players: 807, tag: "hot", hue: 280 },
-  { id: "2", title: "Fortune Ox", players: 976, tag: "hot", hue: 35 },
-  { id: "3", title: "Lucky Neko", players: 1000, tag: "new", hue: 340 },
-  { id: "4", title: "Wild Bounty", players: 791, hue: 200 },
-  { id: "5", title: "Golden Empire", players: 856, tag: "hot", hue: 45 },
-  { id: "6", title: "Dragon Hatch", players: 882, hue: 160 },
-  { id: "7", title: "Candy Burst", players: 714, tag: "new", hue: 310 },
-  { id: "8", title: "Speed Winner", players: 972, hue: 220 },
-  { id: "9", title: "Roma Legacy", players: 335, hue: 15 },
-];

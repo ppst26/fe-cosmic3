@@ -1,10 +1,14 @@
-import type { ThaiLottoResult } from "@/types/lotteryHub";
+"use client";
+
+import type { ThaiLottoResult } from "@/app/types/lottery";
+import { useLotteryI18n } from "@/app/components/lottery/useLotteryI18n";
 
 export function ThaiLottoResultPanel({ result }: { result: ThaiLottoResult }) {
+  const { t, roundLabel } = useLotteryI18n();
   const subPrizes = [
-    { id: "front3", label: "3 ตัวหน้า", values: result.front3 },
-    { id: "back3", label: "3 ตัวท้าย", values: result.back3 },
-    { id: "bottom2", label: "2 ตัวล่าง", values: [result.bottom2] },
+    { id: "front3", label: t("betTypes.threeFront"), values: result.front3 },
+    { id: "back3", label: t("thaiResult.back3"), values: result.back3 },
+    { id: "bottom2", label: t("betTypes.twoBottom"), values: [result.bottom2] },
   ];
 
   return (
@@ -17,13 +21,13 @@ export function ThaiLottoResultPanel({ result }: { result: ThaiLottoResult }) {
           id="thai-lotto-result-title"
           className="m-0 text-sm font-bold text-[var(--text-on-light)]"
         >
-          ผลรางวัลงวดก่อน
+          {t("thaiResult.title")}
         </h2>
-        <span className="text-xs text-[var(--text-muted)]">{result.drawLabel}</span>
+        <span className="text-xs text-[var(--text-muted)]">{roundLabel(result.drawLabel)}</span>
       </div>
 
       <div className="thai-lotto-result__first flex flex-col items-center gap-1 rounded-[var(--radius-soft-sm)] bg-[var(--soft-card)] p-3">
-        <span className="text-xs text-[var(--text-muted)]">รางวัลที่ 1</span>
+        <span className="text-xs text-[var(--text-muted)]">{t("thaiResult.firstPrize")}</span>
         <span className="text-2xl font-bold tracking-widest text-[var(--brand)]">
           {result.firstPrize}
         </span>

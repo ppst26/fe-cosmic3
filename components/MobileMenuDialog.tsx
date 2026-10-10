@@ -1,11 +1,19 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import Link from "@/lib/i18n/navigation";
-import { useRouter } from "@/lib/i18n/navigation";
+import { useLocale, useRouter } from "@/lib/i18n/navigation";
 import { X } from "lucide-react";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/app/components/auth/AuthProvider";
+import { useProfile, useWallet } from "@/app/hooks/api/account";
+import { useProfileHubStats } from "@/app/hooks/api/member";
+import { useLogoutConfirm } from "@/app/hooks/useLogoutConfirm";
+import { LocaleFlag } from "@/app/components/i18n/LocaleFlag";
+import { useLanguagePicker } from "@/app/components/i18n/LanguagePickerProvider";
+import { useNotifications } from "@/app/components/notifications/NotificationProvider";
 import { AssetIcon } from "@/components/ui/AssetIcon";
+import { formatMoney } from "@/lib/format";
+import { useT } from "@/lib/i18n/I18nProvider";
 
 export interface MobileMenuDialogProps {
   isOpen: boolean;
@@ -20,7 +28,7 @@ export interface MobileMenuDialogProps {
 type MenuIconItem = {
   id: string;
   icon?: string;
-  emoji?: string;
+  locale?: ReturnType<typeof useLocale>;
 };
 
 function MenuListIcon({ item, size = 28 }: { item: MenuIconItem; size?: number }) {
@@ -34,11 +42,15 @@ function MenuListIcon({ item, size = 28 }: { item: MenuIconItem; size?: number }
       />
     );
   }
-  return (
-    <span className="text-xl leading-none transition-transform group-hover:scale-110 sm:text-2xl">
-      {item.emoji}
-    </span>
-  );
+  if (item.locale) {
+    return (
+      <LocaleFlag
+        locale={item.locale}
+        className="h-7 w-7 transition-transform group-hover:scale-110"
+      />
+    );
+  }
+  return null;
 }
 
 export function MobileMenuDialog({
@@ -50,157 +62,127 @@ export function MobileMenuDialog({
   onOpenWithdraw,
   onOpenCoupon,
 }: MobileMenuDialogProps) {
+  const t = useT("nav");
+  const tAuth = useT("auth");
+  const tCommon = useT("common");
   const router = useRouter();
-  const { user, isLoggedIn, logout } = useAuth();
-  const [selectedLang, setSelectedLang] = useState<"TH" | "EN">("TH");
+  const locale = useLocale();
+  const { isAuthenticated: isLoggedIn, user } = useAuth();
+  const profile = useProfile();
+  const wallet = useWallet();
+  const hubStats = useProfileHubStats();
+  const { openLanguagePicker } = useLanguagePicker();
+  const { openNotifications } = useNotifications();
+  const { openLogoutConfirm, LogoutConfirmDialog } = useLogoutConfirm(onClose);
 
   if (!isOpen) return null;
+
+  const displayName =
+    profile.data?.displayName ?? (user ? `${user.firstName} ${user.lastName}`.trim() : "");
+  const vipLabel = hubStats.data?.vipLabel;
+  const diamonds = hubStats.data?.diamonds;
+
+  const goTo = (href: string) => () => {
+    onClose();
+    router.push(href);
+  };
 
   const verticalListItems = [
     {
       id: "vip",
-      title: "ระดับสมาชิก VIP",
+      title: t("menu.vipRank"),
       icon: "/menu-icon/diamond.avif",
-      tag: "VIP",
+      tag: vipLabel,
       href: "/vip",
-      action: () => {
-        onClose();
-        router.push("/vip");
-      },
     },
     {
       id: "commission",
-      title: "รายได้คอมมิชชั่น",
+      title: t("menu.referralEarnings"),
       icon: "/menu-icon/cashback.avif",
-      tag: "0.8%",
       href: "/cashback",
-      action: () => {
-        onClose();
-        router.push("/cashback");
-      },
     },
     {
       id: "referral",
-      title: "แนะนำเพื่อน",
+      title: t("menu.referFriend"),
       icon: "/menu-icon/referral.avif",
-      tag: "รับ 10%",
       href: "/referral",
-      action: () => {
-        onClose();
-        router.push("/referral");
-      },
     },
     {
       id: "coupon",
-      title: "คูปอง",
+      title: t("menu.coupon"),
       icon: "/assets/3d/menuicon/coupon.avif",
-      tag: "โค้ดฟรี",
       action: () => {
         onClose();
-        if (onOpenCoupon) {
-          onOpenCoupon();
-        } else {
-          alert("เปิดหน้ากรอกโค้ดและรับคูปอง");
-        }
+        onOpenCoupon?.();
       },
     },
     {
-      id: "bonus",
-      title: "โบนัสพิเศษ",
-      icon: "/menu-icon/rank.avif",
-      tag: "HOT",
-      action: () => alert("เปิดหน้ารายการโบนัสพิเศษประจำสัปดาห์"),
+      id: "reward",
+      title: t("menu.rewardHub"),
+      icon: "/assets/3d/menuicon/ticket.avif",
+      href: "/reward",
     },
     {
       id: "shop",
-      title: "ร้านค้าเพชร",
+      title: t("menu.gemsShop"),
       icon: "/menu-icon/diamond.avif",
-      tag: "HOT",
       href: "/shop",
-      action: () => {
-        onClose();
-        router.push("/shop");
-      },
     },
   ];
 
   const gridMenuItems = [
     {
       id: "promo",
-      label: "โปรโมชั่น",
+      label: t("menu.promotions"),
       icon: "/menu-icon/promotion.avif",
       href: "/promotions",
-      action: () => {
-        onClose();
-        router.push("/promotions");
-      },
-    },
-    {
-      id: "news",
-      label: "ข่าวสาร",
-      icon: "/assets/3d/menuicon/news.avif",
-      action: () => alert("เปิดหน้าข่าวสารและประกาศจากระบบ"),
     },
     {
       id: "activities",
-      label: "กิจกรรม",
+      label: t("menu.activities"),
       icon: "/menu-icon/event.avif",
       href: "/activities",
-      action: () => {
-        onClose();
-        router.push("/activities");
-      },
     },
     {
       id: "history",
-      label: "ประวัติ",
+      label: t("menu.history"),
       icon: "/menu-icon/transactions.avif",
       href: "/transactions",
-      action: () => {
-        onClose();
-        router.push("/transactions");
-      },
     },
     {
       id: "notifications",
-      label: "แจ้งเตือน",
+      label: tCommon("notifications.title"),
       icon: "/assets/3d/menuicon/bell.avif",
-      action: () => alert("คุณไม่มีการแจ้งเตือนใหม่ในขณะนี้"),
+      action: () => {
+        onClose();
+        openNotifications();
+      },
     },
     {
       id: "checkin",
-      label: "เช็คอิน",
+      label: t("menu.checkIn"),
       icon: "/menu-icon/checkin.avif",
       href: "/check-in",
-      action: () => {
-        onClose();
-        router.push("/check-in");
-      },
-    },
-    {
-      id: "guide",
-      label: "แนะนำการใช้งาน",
-      icon: "/assets/3d/menuicon/doc.avif",
-      action: () => alert("เปิดคู่มือการใช้งานและคำถามที่พบบ่อย (FAQ)"),
     },
     {
       id: "wheel",
-      label: "วงล้อ",
+      label: t("menu.wheel"),
       icon: "/assets/3d/menuicon/wheel.avif",
       href: "/wheel",
-      action: () => {
-        onClose();
-        router.push("/wheel");
-      },
+    },
+    {
+      id: "profile",
+      label: t("menu.profile"),
+      icon: "/assets/3d/menuicon/profile.avif",
+      href: "/profile/account",
     },
     {
       id: "lang",
-      label: "เปลี่ยนภาษา",
-      emoji: selectedLang === "TH" ? "🇹🇭" : "🇬🇧",
+      label: t("menu.language"),
+      locale,
       action: () => {
-        const next = selectedLang === "TH" ? "EN" : "TH";
-        setSelectedLang(next);
-        alert(`เปลี่ยนภาษาเป็น ${next === "TH" ? "ภาษาไทย" : "English"}`);
+        onClose();
+        openLanguagePicker();
       },
     },
   ];
@@ -219,18 +201,18 @@ export function MobileMenuDialog({
       <div className="relative z-[101] flex h-full w-full max-w-[340px] flex-col overflow-y-auto border-l border-black/10 bg-[var(--soft-chrome)] p-4 text-[var(--text-on-dark)] shadow-[-12px_0_35px_rgba(0,0,0,0.45)] sm:max-w-[380px] sm:p-5">
         <div className="mb-2 flex items-center justify-between border-b border-white/10 pb-3.5">
           <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--brand)] text-xs font-black text-white">
-              XG
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--brand)] text-[10px] font-black text-white">
+              CMB
             </div>
             <span className="text-xl font-black tracking-wider text-white">
-              XGAMBET <span className="text-[var(--brand)]">PRO</span>
+              CMB-<span className="text-[var(--brand)]">Jupiter</span>
             </span>
           </div>
 
           <button
             type="button"
             onClick={onClose}
-            aria-label="ปิดเมนู"
+            aria-label={t("drawer.close")}
             className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg border-0 bg-white/10 text-white/90 transition-all hover:bg-white/15 active:scale-95"
           >
             <X className="h-5 w-5" aria-hidden />
@@ -242,33 +224,27 @@ export function MobileMenuDialog({
             <div
               onClick={() => {
                 onClose();
-                router.push("/profile");
+                router.push("/profile/account");
               }}
               className="flex min-w-0 cursor-pointer items-center gap-2.5 transition-opacity hover:opacity-85"
             >
               <AssetIcon src="/assets/3d/menuicon/profile.avif" alt="" size={32} />
               <div className="flex min-w-0 flex-col text-left">
                 <span className="truncate text-xs font-bold leading-tight text-[var(--text-on-light)]">
-                  {user?.displayName || "Test User"}
+                  {displayName}
                 </span>
                 <span className="font-mono text-[10px] font-medium text-[var(--text-muted)]">
-                  ฿
-                  {(user?.balance ?? 0).toLocaleString("th-TH", {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2,
-                  })}
+                  ฿{formatMoney(wallet.data?.amount ?? 0)}
+                  {diamonds !== undefined ? ` · ${t("drawer.gems")} ${diamonds}` : ""}
                 </span>
               </div>
             </div>
             <button
               type="button"
-              onClick={async () => {
-                onClose();
-                await logout();
-              }}
+              onClick={openLogoutConfirm}
               className="shrink-0 cursor-pointer rounded-lg border-0 bg-rose-50 px-3 py-1.5 text-[11px] font-bold text-rose-600 hover:bg-rose-100"
             >
-              ออกจากระบบ
+              {tAuth("logout")}
             </button>
           </div>
         ) : null}
@@ -346,7 +322,7 @@ export function MobileMenuDialog({
                   key={item.id}
                   type="button"
                   onClick={item.action}
-                  className="group flex flex-col items-center justify-center gap-1.5 rounded-lg border-0 p-2 text-center transition-all hover:bg-[var(--soft-card)]"
+                  className="group flex flex-col items-center justify-center gap-1.5 rounded-lg border-0 bg-transparent p-2 text-center transition-all hover:bg-[var(--soft-card)]"
                 >
                   {gridInner}
                 </button>
@@ -368,7 +344,7 @@ export function MobileMenuDialog({
             }}
             className="soft-btn-primary flex h-12 w-full cursor-pointer items-center justify-center whitespace-nowrap px-2 text-sm font-extrabold active:scale-[0.98] sm:text-[15px]"
           >
-            {isLoggedIn ? "เติมเงินด่วน" : "สมัครสมาชิก"}
+            {isLoggedIn ? t("drawer.deposit") : tAuth("signUp")}
           </button>
 
           <button
@@ -383,10 +359,12 @@ export function MobileMenuDialog({
             }}
             className="soft-btn-outline flex h-12 w-full cursor-pointer items-center justify-center whitespace-nowrap px-2 text-sm font-extrabold active:scale-[0.98] sm:text-[15px]"
           >
-            {isLoggedIn ? "ถอนเงิน" : "เข้าสู่ระบบ"}
+            {isLoggedIn ? t("drawer.withdraw") : tAuth("login")}
           </button>
         </div>
       </div>
+
+      <LogoutConfirmDialog />
     </div>
   );
 }

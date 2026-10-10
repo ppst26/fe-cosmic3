@@ -1,17 +1,11 @@
 "use client";
 
-import React, {
-  createContext,
-  useCallback,
-  useContext,
-  useMemo,
-  useState,
-} from "react";
-import type { PendingTransactionPayload } from "@/data/pendingTransactionMockData";
+import React, { createContext, useCallback, useContext, useMemo, useState } from "react";
 import {
   buildPendingDepositPayload,
   buildPendingWithdrawPayload,
-} from "@/data/pendingTransactionMockData";
+} from "@/app/data/pendingTransactionMockData";
+import type { PendingTransactionPayload } from "@/app/types/transaction";
 import { PendingTransactionDialog } from "@/components/PendingTransactionDialog";
 
 interface PendingTransactionContextValue {
@@ -21,6 +15,7 @@ interface PendingTransactionContextValue {
 
 const PendingTransactionContext = createContext<PendingTransactionContextValue | null>(null);
 
+/** เปิด dialog รายการรอดำเนินการ — เรียกจาก flow ฝาก/ถอน */
 export function PendingTransactionProvider({ children }: { children: React.ReactNode }) {
   const [payload, setPayload] = useState<PendingTransactionPayload | null>(null);
 

@@ -24,17 +24,7 @@ export function GamingProviderNavTile({ provider, href, active }: GamingProvider
       aria-current={active ? "page" : undefined}
     >
       {provider.image ? (
-        <Image
-          src={provider.image}
-          alt=""
-          fill
-          sizes="72px"
-          className={
-            provider.navLogo
-              ? "object-contain object-center p-1"
-              : "object-cover object-center"
-          }
-        />
+        <Image src={provider.image} alt="" fill sizes="72px" className="object-cover object-center" />
       ) : (
         <span className="text-[10px] font-bold text-[var(--brand)]">{label}</span>
       )}

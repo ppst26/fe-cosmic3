@@ -1,18 +1,19 @@
 "use client";
 
-import { useMemo } from "react";
-import { LOBBY_GAMES } from "@/data/lobbyGames";
-import { useAuth } from "@/context/AuthContext";
-import { lobbyToSportCard } from "@/lib/home/lobbyToSportCard";
-import {
-  ACTIVITY_CAROUSEL_ITEMS,
-  SPORT_CATEGORIES,
-  TRENDING_THUMBS,
-  type MockSportCategory,
-} from "@/lib/mock/home";
+import { Fragment } from "react";
+import { useT } from "@/lib/i18n/I18nProvider";
+import { AuthGate } from "@/app/components/auth/AuthProvider";
+import { HOME_LOBBY_GAME_CAROUSEL_MAX } from "@/lib/uiConstants";
+import { lobbyGameToSportCard } from "@/lib/home/lobbyToSportCard";
+import { viewAllLink } from "@/lib/gamingRoutes";
+import type { LobbyContent } from "@/lib/api/lobby";
+import type { SectionIconId } from "@/app/types/lobby";
 import { HomeActivityCarousel } from "./HomeActivityCarousel";
 import { HomeCatalogRailSection } from "./HomeCatalogRailSection";
-import { HomeScreenShortcutBanner } from "./HomeScreenShortcutBanner";
+import { HallOfFame } from "./HallOfFame";
+import { MostOnlineSection } from "./MostOnlineSection";
+import { ProvidersSection } from "./ProvidersSection";
+import { HomePageSection } from "./HomePageSection";
 
 function BasketballIcon() {
   return (
@@ -26,56 +27,65 @@ function BasketballIcon() {
   );
 }
 
-function lobbyRail(
-  category: "casino" | "slot" | "fish" | "sport",
-  favoriteIds: string[],
-  limit = 12,
-): MockSportCategory[] {
-  return LOBBY_GAMES.filter((g) => g.category === category)
-    .slice(0, limit)
-    .map((g) => lobbyToSportCard(g, favoriteIds.includes(String(g.id))));
-}
+/** ไอคอน emoji ต่อ icon id ของ section จาก lobby API */
+const SECTION_EMOJI: Record<SectionIconId, string> = {
+  sparkle: "✨",
+  flame: "🔥",
+  cherries: "🎰",
+  cards: "🎲",
+  fish: "🐟",
+  football: "⚽",
+  network: "🎮",
+};
 
-export function HomeCatalogSections() {
-  const { state } = useAuth();
-  const favoriteIds = state.favoriteGameIds;
-
-  const sports = useMemo(
-    () =>
-      SPORT_CATEGORIES.map((item) => ({
-        ...item,
-        href: `/sports/${item.id}`,
-      })),
-    [],
-  );
-
-  const trending = useMemo(
-    () =>
-      TRENDING_THUMBS.map((item) => ({
-        ...item,
-        href: item.href ?? "/slots",
-      })),
-    [],
-  );
-
-  const casino = useMemo(() => lobbyRail("casino", favoriteIds), [favoriteIds]);
-  const slots = useMemo(() => lobbyRail("slot", favoriteIds), [favoriteIds]);
-  const fish = useMemo(() => lobbyRail("fish", favoriteIds), [favoriteIds]);
+/** เนื้อหาหน้าแรกทั้งหมดมาจาก lobby layer ของ glass (loadLobbyContent) */
+export function HomeCatalogSections({ content }: { content: LobbyContent }) {
+  const t = useT("home");
 
   return (
     <>
-      <HomeCatalogRailSection
-        title="กีฬา"
-        leading={<BasketballIcon />}
-        viewAllHref="/sports"
-        items={sports}
-      />
-      <HomeCatalogRailSection title="มาแรง" icon="🔥" viewAllHref="/slots" items={trending} />
-      <HomeCatalogRailSection title="คาสิโน" icon="🎲" viewAllHref="/casino" items={casino} />
-      <HomeCatalogRailSection title="สล็อต" icon="🎰" viewAllHref="/slots" items={slots} />
-      <HomeCatalogRailSection title="ยิงปลา" icon="🐟" viewAllHref="/fish" items={fish} />
-      <HomeActivityCarousel items={ACTIVITY_CAROUSEL_ITEMS} />
-      <HomeScreenShortcutBanner />
+      {content.games.sections.map((section) => {
+        const items = section.games
+          .slice(0, section.carouselMax ?? HOME_LOBBY_GAME_CAROUSEL_MAX)
+          .map(lobbyGameToSportCard);
+        const title = section.titleKey ? t(section.titleKey) : section.title;
+        const isSports = section.id === "section-sports";
+        const viewAllHref = viewAllLink(section.viewAllHref);
+
+        return (
+          <Fragment key={section.id}>
+            {items.length === 0 ? (
+              <HomePageSection title={title} icon={SECTION_EMOJI[section.icon]} viewAllHref={viewAllHref}>
+                <p className="py-4 text-center text-sm text-[var(--text-muted)]">{t("sections.empty")}</p>
+              </HomePageSection>
+            ) : (
+              <HomeCatalogRailSection
+                title={title}
+                icon={SECTION_EMOJI[section.icon]}
+                leading={isSports ? <BasketballIcon /> : undefined}
+                viewAllHref={viewAllHref}
+                items={items}
+              />
+            )}
+            {isSports ? <MostOnlineSection items={content.mostOnline} /> : null}
+          </Fragment>
+        );
+      })}
+
+      <AuthGate
+        fallback={
+          <section className="px-3 pt-3 md:px-6">
+            <p className="rounded-[var(--radius-soft-md)] bg-[var(--soft-card-elevated)] px-4 py-6 text-center text-sm text-[var(--text-muted)]">
+              {t("auth.loginToSeeEvents")}
+            </p>
+          </section>
+        }
+      >
+        <HomeActivityCarousel items={content.tournaments} />
+      </AuthGate>
+
+      <HallOfFame datasets={content.hallOfFame} />
+      <ProvidersSection />
     </>
   );
 }

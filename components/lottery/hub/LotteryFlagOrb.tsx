@@ -1,4 +1,4 @@
-import type { LotteryFlagTone } from "@/types/lotteryHub";
+import type { LotteryFlagTone } from "@/app/types/lottery";
 
 const FLAG_SIZE_CLASS: Record<"sm" | "md" | "lg", string> = {
   sm: "w-10 h-10",

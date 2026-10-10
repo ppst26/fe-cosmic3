@@ -1,5 +1,6 @@
 "use client";
 
+import { useLotteryI18n } from "@/app/components/lottery/useLotteryI18n";
 const PAD_DIGITS = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
 
 type LotteryNumberPadProps = {
@@ -17,12 +18,13 @@ export function LotteryNumberPad({
   onBackspace,
   onClear,
 }: LotteryNumberPadProps) {
+  const { t } = useLotteryI18n();
   return (
     <div className="lottery-number-pad flex flex-col gap-2">
       <div
         className="thai-lotto-slots flex justify-center gap-1.5"
         aria-live="polite"
-        aria-label={`เลขที่กรอก ${value || "ว่าง"}`}
+        aria-label={t("pad.enteredAria", { value: value || t("pad.empty") })}
       >
         {Array.from({ length: digits }, (_, index) => {
           const char = value[index];
@@ -56,7 +58,7 @@ export function LotteryNumberPad({
           onClick={onClear}
           disabled={!value}
         >
-          ล้าง
+          {t("pad.clear")}
         </button>
         <button
           type="button"
@@ -70,7 +72,7 @@ export function LotteryNumberPad({
           className="thai-lotto-pad__key thai-lotto-pad__key--muted min-h-10"
           onClick={onBackspace}
           disabled={!value}
-          aria-label="ลบตัวเลขล่าสุด"
+          aria-label={t("pad.backspace")}
         >
           ⌫
         </button>

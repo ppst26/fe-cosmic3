@@ -6,15 +6,14 @@ export function SportProviderRow() {
       <ul className="flex gap-2">
         {SPORT_PROVIDERS.map((p) => (
           <li key={p.name} className="shrink-0">
-            <button
-              type="button"
+            <div
               className="flex w-[88px] flex-col items-center gap-1 rounded-[var(--radius-soft-md)] bg-[var(--soft-card-elevated)] p-2 shadow-[var(--shadow-soft-sm)]"
             >
               <span className="flex h-12 w-full items-center justify-center rounded-[var(--radius-soft-sm)] bg-[var(--soft-surface)] text-[10px] font-bold text-[var(--text-on-light)]">
                 {p.name.slice(0, 6)}
               </span>
               <span className="text-[10px] text-[var(--text-muted)]">{p.count}</span>
-            </button>
+            </div>
           </li>
         ))}
       </ul>

@@ -28,7 +28,7 @@ export function Breadcrumb({
 
   const handleShare = async () => {
     const url = typeof window !== "undefined" ? window.location.href : "";
-    const title = shareTitle || (items[items.length - 1]?.label ?? "XGAMBET");
+    const title = shareTitle || (items[items.length - 1]?.label ?? "CMB-Jupiter");
 
     if (typeof navigator !== "undefined" && navigator.share) {
       try {

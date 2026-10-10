@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useRef, useState } from "react";
 import {
   X,
   ChevronLeft,
@@ -9,890 +9,639 @@ import {
   Smartphone,
   Copy,
   Check,
-  Clock,
-  Sparkles,
-  Bell,
-  Coins,
   ChevronRight,
-  ShieldCheck,
-  AlertCircle,
   ImageIcon,
   Plus,
-  Upload,
   CheckCircle2,
   ArrowUpRight,
+  History,
 } from "lucide-react";
-import { useAuth } from "@/context/AuthContext";
-import { useToast } from "@/context/ToastContext";
-import { usePendingTransaction } from "@/context/PendingTransactionContext";
-import { useRouter } from "@/lib/i18n/navigation";
-import { WalletConfirmDialog, type WalletConfirmKind } from "@/components/WalletConfirmDialog";
+import Link from "@/lib/i18n/navigation";
+import { WalletConfirmDialog } from "@/components/WalletConfirmDialog";
+import { ResourceGate } from "@/app/components/ui/ResourceGate";
+import { MONEY_AMOUNT_MAX_DIGITS, sanitizeMoneyAmount } from "@/lib/fieldInput";
+import { submitDeposit } from "@/lib/api/deposit";
+import { submitWithdraw } from "@/lib/api/withdraw";
+import {
+  useDepositBankAccount,
+  useDepositMethods,
+  useDepositQuickAmounts,
+  useWithdrawAccount,
+  useWithdrawBalance,
+  useWithdrawQuickAmounts,
+} from "@/app/hooks/api/money";
+import { useWallet } from "@/app/hooks/api/account";
+import {
+  formatDepositAmount,
+  formatDepositTransferAmount,
+  formatWithdrawAmount,
+  formatWithdrawMoney,
+} from "@/lib/format";
+import { useT } from "@/lib/i18n/I18nProvider";
+import type { DepositBankAccountMock, DepositMethodId } from "@/app/types/wallet";
+
+export type WalletActionTab = "deposit" | "withdraw";
 
 export interface WalletModalProps {
   isOpen: boolean;
   onClose: () => void;
-  initialTab?: "deposit-withdraw" | "promo" | "history";
-  initialSubTab?: "deposit" | "withdraw";
-  initialHistorySubTab?: "deposit-history" | "withdraw-history";
+  tab: WalletActionTab;
+  onTabChange: (tab: WalletActionTab) => void;
   onDepositCompleted?: (amount: number) => void;
   onWithdrawCompleted?: (amount: number) => void;
 }
 
+const METHOD_ICONS: Record<DepositMethodId, { Icon: typeof Landmark; color: string }> = {
+  bank: { Icon: Landmark, color: "text-emerald-600" },
+  gateway: { Icon: QrCode, color: "text-blue-600" },
+  truemoney: { Icon: Smartphone, color: "text-amber-600" },
+};
+
+const errorBoxClass =
+  "rounded-xl border border-rose-500/25 bg-rose-50 px-3 py-2 text-xs font-medium text-rose-700 sm:text-sm";
+
 export function WalletModal({
   isOpen,
   onClose,
-  initialTab = "deposit-withdraw",
-  initialSubTab = "withdraw",
-  initialHistorySubTab = "deposit-history",
+  tab,
+  onTabChange,
   onDepositCompleted,
   onWithdrawCompleted,
 }: WalletModalProps) {
-  const router = useRouter();
-  const { user } = useAuth();
-  const { showToast } = useToast();
-  const { showPendingDeposit, showPendingWithdraw } = usePendingTransaction();
-  const [confirmKind, setConfirmKind] = useState<WalletConfirmKind | null>(null);
+  const t = useT("wallet");
+  const tc = useT("common");
+  /* ขั้นตอนฝากอยู่ในโมดัลชั้นนอกเพื่อสลับหัวข้อ/ปุ่มย้อนกลับ */
+  const [depositStep, setDepositStep] = useState<"methods" | "bank" | "confirm">("methods");
 
-  // Top level tabs: "deposit-withdraw" | "promo" | "history"
-  const [activeMainTab, setActiveMainTab] = useState<"deposit-withdraw" | "promo" | "history">(initialTab);
+  if (!isOpen) {
+    if (depositStep !== "methods") setDepositStep("methods");
+    return null;
+  }
 
-  // Sub-tabs for deposit-withdraw: "deposit" | "withdraw"
-  const [activeActionTab, setActiveActionTab] = useState<"deposit" | "withdraw">(initialSubTab);
+  const showBack = tab === "deposit" && depositStep !== "methods";
 
-  // Sub-tabs for history: "deposit-history" | "withdraw-history"
-  const [historySubTab, setHistorySubTab] = useState<"deposit-history" | "withdraw-history">(
-    initialHistorySubTab,
+  return (
+    <div className="fixed inset-0 z-[110] flex animate-fade-in select-none items-center justify-center p-3 sm:p-4">
+      <div className="fixed inset-0 bg-black/60 transition-opacity" onClick={onClose} aria-hidden="true" />
+
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-label={tab === "deposit" ? t("deposit.title") : t("withdraw.title")}
+        className="relative z-10 flex max-h-[92vh] w-full max-w-[440px] flex-col overflow-y-auto rounded-[var(--radius-soft-xl)] border border-black/10 bg-[var(--soft-card-elevated)] p-4 text-[var(--text-on-light)] shadow-[var(--shadow-soft)] sm:p-5"
+      >
+        <div className="mb-3 flex items-center justify-between">
+          {showBack ? (
+            <button
+              type="button"
+              onClick={() => setDepositStep(depositStep === "confirm" ? "bank" : "methods")}
+              aria-label={tc("back")}
+              className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border-0 bg-[var(--soft-card)] text-[var(--text-muted)] transition-all hover:text-[var(--text-on-light)] active:scale-95"
+            >
+              <ChevronLeft className="h-5 w-5 stroke-[2.5]" />
+            </button>
+          ) : (
+            <div className="h-8 w-8" />
+          )}
+          <h2 className="text-base font-extrabold leading-tight">
+            {tab === "deposit"
+              ? depositStep === "confirm"
+                ? t("deposit.confirm.title")
+                : t("deposit.title")
+              : t("withdraw.title")}
+          </h2>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label={tab === "deposit" ? t("deposit.close") : t("withdraw.close")}
+            className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border-0 bg-[var(--soft-card)] text-[var(--text-muted)] transition-all hover:text-[var(--text-on-light)] active:scale-95"
+          >
+            <X className="h-5 w-5 stroke-[2.2]" />
+          </button>
+        </div>
+
+        {!showBack && (
+          <div className="relative mb-3 flex border-b border-black/10">
+            {(["deposit", "withdraw"] as const).map((id) => (
+              <button
+                key={id}
+                type="button"
+                onClick={() => onTabChange(id)}
+                className={`relative flex-1 cursor-pointer border-0 bg-transparent py-2.5 text-center text-sm font-extrabold transition-all sm:text-base ${
+                  tab === id ? "text-[var(--text-on-light)]" : "text-[var(--tab-inactive)] hover:text-[var(--text-on-light)]"
+                }`}
+              >
+                {id === "deposit" ? t("deposit.title") : t("withdraw.title")}
+                {tab === id && (
+                  <span className="absolute inset-x-4 bottom-0 h-[2.5px] rounded-full bg-[var(--brand)]" />
+                )}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {tab === "deposit" ? (
+          <DepositPanel
+            step={depositStep}
+            onStepChange={setDepositStep}
+            onCompleted={(amount) => {
+              onDepositCompleted?.(amount);
+              onClose();
+            }}
+          />
+        ) : (
+          <WithdrawPanel
+            onCompleted={(amount) => {
+              onWithdrawCompleted?.(amount);
+              onClose();
+            }}
+          />
+        )}
+
+        <Link
+          href="/transactions"
+          onClick={onClose}
+          className="mt-4 flex items-center justify-center gap-1.5 text-sm font-bold text-[var(--brand-strong)] underline-offset-4 hover:underline"
+        >
+          <History className="h-4 w-4" />
+          {t("pending.viewHistory")}
+        </Link>
+      </div>
+    </div>
+  );
+}
+
+/* ───────────────────────── ฝากเงิน ───────────────────────── */
+
+function DepositPanel({
+  step,
+  onStepChange,
+  onCompleted,
+}: {
+  step: "methods" | "bank" | "confirm";
+  onStepChange: (step: "methods" | "bank" | "confirm") => void;
+  onCompleted: (amount: number) => void;
+}) {
+  const t = useT("wallet");
+  const methods = useDepositMethods();
+  const quick = useDepositQuickAmounts();
+  const bankAccount = useDepositBankAccount();
+  const wallet = useWallet();
+  const defaultAmount = quick.data?.defaultAmount ?? 0;
+
+  const [amount, setAmount] = useState(defaultAmount);
+  const [amountInput, setAmountInput] = useState(defaultAmount ? String(defaultAmount) : "");
+  /** ยอดเริ่มต้นมาถึงหลัง mount — ตั้งค่าฟอร์มครั้งเดียวต่อค่า */
+  const [seededDefault, setSeededDefault] = useState(defaultAmount);
+  if (seededDefault !== defaultAmount) {
+    setSeededDefault(defaultAmount);
+    setAmount(defaultAmount);
+    setAmountInput(String(defaultAmount));
+  }
+  const [copied, setCopied] = useState(false);
+  const [slipFileName, setSlipFileName] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitMessage, setSubmitMessage] = useState<string | null>(null);
+  const [finalConfirmOpen, setFinalConfirmOpen] = useState(false);
+  const slipInputRef = useRef<HTMLInputElement>(null);
+
+  const handleQuickAmount = (value: number) => {
+    setAmount(value);
+    setAmountInput(String(value));
+  };
+
+  const handleAmountChange = (raw: string) => {
+    const digits = sanitizeMoneyAmount(raw);
+    setAmountInput(digits);
+    setAmount(digits ? Number.parseInt(digits, 10) : 0);
+  };
+
+  const handleCopyAccount = async () => {
+    try {
+      if (!bankAccount.data) return;
+      await navigator.clipboard.writeText(bankAccount.data.accountNumberCopy);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 2000);
+    } catch {
+      /* clipboard ไม่พร้อม */
+    }
+  };
+
+  const handleConfirmDeposit = async () => {
+    if (amount <= 0) return;
+    setSubmitting(true);
+    setSubmitMessage(null);
+    const result = await submitDeposit({ amount, methodId: "bank" });
+    setSubmitting(false);
+    setFinalConfirmOpen(false);
+    if (!result.ok) {
+      setSubmitMessage(result.error);
+      return;
+    }
+    wallet.refresh();
+    onCompleted(amount);
+  };
+
+  const bankCard = (bank: DepositBankAccountMock) => (
+    <div className="rounded-[var(--radius-soft-lg)] bg-[var(--soft-card)] p-4">
+      <div className="flex items-start gap-3">
+        <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl bg-[#12803b]">
+          <Landmark className="h-6 w-6 text-white" />
+        </div>
+        <div className="min-w-0 flex-1">
+          <h4 className="text-sm font-extrabold leading-tight sm:text-[15px]">{bank.bankName}</h4>
+          <p className="mt-0.5 truncate text-xs font-medium text-[var(--text-muted)]">
+            {t("deposit.confirm.accountNameLabel")}
+            {bank.accountName}
+          </p>
+          <div className="mt-2 flex items-center gap-2">
+            <span className="select-all font-mono text-sm font-black tracking-wider sm:text-base">
+              {bank.accountNumberDisplay}
+            </span>
+            <button
+              type="button"
+              onClick={handleCopyAccount}
+              className="cursor-pointer rounded-lg border-0 bg-transparent p-1 text-[var(--brand)] transition-colors hover:bg-[var(--brand-soft)]"
+              aria-label={t("shared.copyAccountNumber")}
+            >
+              {copied ? <Check className="h-4 w-4 text-emerald-600" /> : <Copy className="h-4 w-4" />}
+            </button>
+          </div>
+          {copied && (
+            <p className="mt-1 text-xs text-emerald-600" role="status">
+              {t("shared.copied")}
+            </p>
+          )}
+        </div>
+      </div>
+    </div>
   );
 
-  // Deposit Channel selection & amounts
-  const [depositChannel, setDepositChannel] = useState<"bank" | "promptpay" | "truemoney">("bank");
-  const [depositAmount, setDepositAmount] = useState<string>("500");
-  const [copiedBank, setCopiedBank] = useState(false);
+  if (step === "methods") {
+    return (
+      <ResourceGate resource={methods} loadingLabel={t("deposit.methodsLoading")} errorTitle={t("deposit.methodsError")}>
+        {(list) => (
+          <div className="space-y-3">
+            <p className="text-xs font-bold text-[var(--text-muted)]">{t("deposit.selectMethod")}</p>
+            <ul className="grid grid-cols-3 gap-2" aria-label={t("deposit.methodsAria")}>
+              {list.map((method) => {
+                const { Icon, color } = METHOD_ICONS[method.id];
+                return (
+                  <li key={method.id}>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        /* gateway / truemoney — ยังไม่มี step ถัดไป (เหมือน glass) */
+                        if (method.id === "bank") onStepChange("bank");
+                      }}
+                      className="flex w-full cursor-pointer flex-col items-center justify-center gap-1.5 rounded-2xl border-0 bg-[var(--soft-card)] p-2.5 text-[var(--text-on-light)] transition-all hover:ring-1 hover:ring-[var(--brand)]"
+                    >
+                      <Icon className={`h-5 w-5 ${color}`} />
+                      <span className="text-center text-[11px] font-bold">{t(method.titleKey)}</span>
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        )}
+      </ResourceGate>
+    );
+  }
 
-  // Deposit Steps: 1 (Select amount & channel) -> 2 (Confirm deposit & upload slip)
-  const [depositStep, setDepositStep] = useState<1 | 2>(1);
-  const [attachedSlip, setAttachedSlip] = useState<string | null>(null);
-  const [isSubmittingDeposit, setIsSubmittingDeposit] = useState(false);
+  if (step === "bank") {
+    return (
+      <ResourceGate resource={bankAccount} loadingLabel={t("deposit.bankAccountLoading")} errorTitle={t("deposit.bankAccountError")}>
+        {(bank) => (
+          <div className="space-y-3.5">
+            {bankCard(bank)}
 
-  // Withdraw Steps: 1 (Overview & Balance) -> 2 (Specify Amount & Confirm Withdraw - ตามภาพล่าสุด)
-  const [withdrawStep, setWithdrawStep] = useState<1 | 2>(1);
-  const [withdrawAmount, setWithdrawAmount] = useState<string>("500");
-  const [isSubmittingWithdraw, setIsSubmittingWithdraw] = useState(false);
+            <div className="rounded-[var(--radius-soft-lg)] bg-[var(--soft-card)] p-4">
+              <label htmlFor="deposit-amount" className="mb-2 block text-xs font-bold text-[var(--text-muted)]">
+                {t("deposit.bank.amountLabel")}
+              </label>
+              <div className="relative flex items-center">
+                <span className="absolute left-3.5 text-base font-black text-[var(--brand)]">฿</span>
+                <input
+                  id="deposit-amount"
+                  type="text"
+                  inputMode="numeric"
+                  value={amountInput}
+                  maxLength={MONEY_AMOUNT_MAX_DIGITS}
+                  onChange={(e) => handleAmountChange(e.target.value)}
+                  className="h-11 w-full rounded-xl border border-black/10 bg-[var(--soft-card-elevated)] pl-9 pr-14 font-mono text-sm font-bold text-[var(--text-on-light)] focus:outline-none focus:ring-2 focus:ring-[var(--brand)]/40"
+                />
+                <span className="absolute right-3 text-xs text-[var(--text-muted)]">{t("shared.currencyUnit")}</span>
+              </div>
 
-  // Synchronize state when modal is opened
-  useEffect(() => {
-    if (isOpen) {
-      setActiveMainTab(initialTab);
-      setActiveActionTab(initialSubTab);
-      setHistorySubTab(initialHistorySubTab);
-      setDepositStep(1);
-      setWithdrawStep(1);
-      setConfirmKind(null);
-    }
-  }, [isOpen, initialTab, initialSubTab, initialHistorySubTab]);
+              <p className="mb-2 mt-3 text-xs font-bold text-[var(--text-muted)]">{t("deposit.bank.quickAmount")}</p>
+              <div className="grid grid-cols-3 gap-2">
+                {(quick.data?.amounts ?? []).map((value) => (
+                  <button
+                    key={value}
+                    type="button"
+                    onClick={() => handleQuickAmount(value)}
+                    className={`cursor-pointer rounded-xl border-0 px-1 py-2 text-xs font-black transition-all ${
+                      amount === value
+                        ? "bg-[var(--brand)] text-white"
+                        : "bg-[var(--soft-card-elevated)] text-[var(--text-on-light)] hover:bg-[var(--brand-soft)]"
+                    }`}
+                  >
+                    ฿{formatDepositAmount(value)}
+                  </button>
+                ))}
+              </div>
+              <p className="mt-2 text-center text-[11px] text-[var(--text-muted)]">{t("deposit.bank.quickAmountHint")}</p>
 
-  const depositChannelLabel =
-    depositChannel === "bank"
-      ? "โอนธนาคาร"
-      : depositChannel === "promptpay"
-        ? "พร้อมเพย์ QR"
-        : "ทรูมันนี่";
-
-  const parsedDepositAmount = parseFloat(depositAmount || "0") || 0;
-  const parsedWithdrawAmount = parseFloat(withdrawAmount || "0") || 0;
-
-  // Quick preset amounts for deposit & withdraw
-  const quickAmounts = ["100", "300", "500", "1,000", "2,000", "5,000"];
-  const quickWithdrawAmounts = ["100", "300", "500", "1,000", "5,000"];
-
-  if (!isOpen) return null;
-
-  const handleCopyAccount = (text: string) => {
-    navigator.clipboard.writeText(text);
-    setCopiedBank(true);
-    setTimeout(() => setCopiedBank(false), 2000);
-  };
-
-  const handleSlipUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setAttachedSlip(file.name);
-    } else {
-      setAttachedSlip("slip_payment_success.png");
-    }
-  };
-
-  const requestWithdrawConfirm = () => {
-    const val = parsedWithdrawAmount;
-    if (!val || val <= 0) {
-      showToast("กรุณาระบุจำนวนเงินที่ต้องการถอน", "error");
-      return;
-    }
-    const maxAvailable = user?.balance ?? 0;
-    if (val > maxAvailable) {
-      showToast("ยอดเงินในบัญชีไม่เพียงพอสำหรับการถอน", "error");
-      return;
-    }
-    setConfirmKind("withdraw");
-  };
-
-  const requestDepositConfirm = () => {
-    if (!parsedDepositAmount || parsedDepositAmount <= 0) {
-      showToast("กรุณาระบุจำนวนเงินที่ต้องการฝาก", "error");
-      return;
-    }
-    setConfirmKind("deposit");
-  };
-
-  const handleConfirmDeposit = () => {
-    const amount = parsedDepositAmount;
-    setConfirmKind(null);
-    setIsSubmittingDeposit(true);
-    window.setTimeout(() => {
-      setIsSubmittingDeposit(false);
-      setDepositStep(1);
-      setAttachedSlip(null);
-      setDepositAmount("500");
-      onDepositCompleted?.(amount);
-      onClose();
-      showPendingDeposit(amount);
-    }, 600);
-  };
-
-  const handleConfirmWithdraw = () => {
-    const amount = parsedWithdrawAmount;
-    setConfirmKind(null);
-    setIsSubmittingWithdraw(true);
-    window.setTimeout(() => {
-      setIsSubmittingWithdraw(false);
-      setWithdrawStep(1);
-      setWithdrawAmount("500");
-      onWithdrawCompleted?.(amount);
-      onClose();
-      showPendingWithdraw(amount);
-    }, 600);
-  };
+              <button
+                type="button"
+                disabled={amount <= 0}
+                onClick={() => {
+                  if (amount <= 0) return;
+                  setSubmitMessage(null);
+                  onStepChange("confirm");
+                }}
+                className="soft-btn-primary mt-3.5 flex h-12 w-full cursor-pointer items-center justify-center gap-2 text-sm font-extrabold transition-transform active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                <span>{t("deposit.bank.next")}</span>
+                <ChevronRight className="h-4 w-4" />
+              </button>
+            </div>
+          </div>
+        )}
+      </ResourceGate>
+    );
+  }
 
   return (
     <>
-    <div className="fixed inset-0 z-[110] flex items-center justify-center p-3 sm:p-4 select-none animate-fade-in">
-      {/* 1. Backdrop */}
-      <div
-        className="fixed inset-0 bg-black/80 backdrop-blur-sm transition-opacity"
-        onClick={onClose}
-        aria-hidden="true"
-      />
+      <ResourceGate resource={bankAccount} loadingLabel={t("deposit.bankAccountLoading")} errorTitle={t("deposit.bankAccountError")}>
+        {(bank) => (
+          <div className="animate-fade-in space-y-3.5">
+            <div className="rounded-[var(--radius-soft-lg)] bg-[var(--soft-card)] p-4 text-center">
+              <span className="mb-1 block text-xs font-bold text-[var(--text-muted)]">
+                {t("deposit.confirm.transferAmount")}
+              </span>
+              <div className="my-1 inline-flex items-baseline justify-center gap-1.5">
+                <span className="text-xl font-black text-[var(--brand)] sm:text-2xl">฿</span>
+                <span className="font-mono text-3xl font-black tracking-tight sm:text-4xl">
+                  {formatDepositTransferAmount(amount)}
+                </span>
+              </div>
+            </div>
 
-      {/* 2. Modal Container (Black-Purple Theme & Thrill Borderless Aesthetic) */}
-      <div className="relative z-10 w-full max-w-[440px] bg-[var(--soft-card)] border border-white/[0.06] rounded-[26px] sm:rounded-[30px] shadow-[0_20px_60px_rgba(0,0,0,0.85)] p-4 sm:p-5 flex flex-col max-h-[92vh] overflow-y-auto">
-        {/* ========================================================= */}
-        {/* Step 2 Header: สำหรับฝากเงิน Step 2                          */}
-        {/* ========================================================= */}
-        {activeMainTab === "deposit-withdraw" && activeActionTab === "deposit" && depositStep === 2 ? (
-          <div className="relative flex items-center justify-between pb-3 mb-2 border-b border-white/[0.05]">
-            <button
-              type="button"
-              onClick={() => setDepositStep(1)}
-              aria-label="ย้อนกลับ"
-              className="w-8 h-8 rounded-full bg-[#1e1730] hover:bg-[#281e42] text-zinc-300 hover:text-white flex items-center justify-center transition-all cursor-pointer border-0 active:scale-95"
-            >
-              <ChevronLeft className="w-5 h-5 stroke-[2.5]" />
-            </button>
+            {bankCard(bank)}
 
-            <div className="text-center">
-              <h3 className="text-base font-extrabold text-white leading-tight">
-                ยืนยันการฝากเงิน
-              </h3>
-              <span className="text-[11px] text-zinc-400 font-medium">
-                ขั้นตอน 2 จาก 2
+            <div>
+              <span className="mb-2 block text-xs font-extrabold sm:text-[13px]">{t("deposit.confirm.slipTitle")}</span>
+              <input
+                ref={slipInputRef}
+                type="file"
+                accept="image/*"
+                className="sr-only"
+                onChange={(e) => setSlipFileName(e.target.files?.[0]?.name ?? null)}
+              />
+              <button
+                type="button"
+                onClick={() => slipInputRef.current?.click()}
+                className="group flex w-full cursor-pointer items-center justify-between rounded-[20px] border-2 border-dashed border-[var(--brand)]/40 bg-[var(--soft-card)] p-3.5 text-left transition-all hover:border-[var(--brand)]"
+              >
+                <span className="flex min-w-0 items-center gap-3">
+                  <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--brand-soft)] text-[var(--brand)]">
+                    {slipFileName ? <CheckCircle2 className="h-6 w-6 text-emerald-600" /> : <ImageIcon className="h-6 w-6" />}
+                  </span>
+                  <span className="min-w-0">
+                    <span className="block truncate text-xs font-bold sm:text-[13px]">
+                      {slipFileName ?? t("deposit.confirm.slipPick")}
+                    </span>
+                    <span className="block truncate text-[10px] text-[var(--text-muted)]">
+                      {slipFileName ? t("deposit.confirm.slipChange") : t("deposit.confirm.slipFromDevice")}
+                    </span>
+                  </span>
+                </span>
+                <span className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-[var(--brand)] text-white">
+                  <Plus className="h-4 w-4 stroke-[2.5]" />
+                </span>
+              </button>
+              <span className="mt-1.5 block text-[11px] font-medium text-[var(--text-muted)]">
+                {t("deposit.confirm.slipHint")}
               </span>
             </div>
 
-            <div className="w-8 h-8" />
-          </div>
-        ) : (
-          /* ========================================================= */
-          /* Standard Header & Tabs                                    */
-          /* ========================================================= */
-          <>
-            {/* Grabber Bar */}
-            <div className="w-10 h-1 rounded-full bg-white/20 mx-auto mb-3" />
+            {submitMessage && (
+              <p className={errorBoxClass} role="alert">
+                {submitMessage}
+              </p>
+            )}
 
-            <button
-              type="button"
-              onClick={onClose}
-              aria-label="ปิดหน้าต่าง"
-              className="absolute right-4 top-4 w-8 h-8 rounded-full bg-[#1e1730] hover:bg-[#281e42] text-zinc-300 hover:text-white flex items-center justify-center transition-all cursor-pointer border-0 z-20 active:scale-95"
-            >
-              <X className="w-5 h-5 stroke-[2.2]" />
-            </button>
-
-            {/* Top 3 Segmented Tabs: [ฝาก/ถอน]  [โปรโมชั่น]  [ประวัติ] */}
-            <div className="grid grid-cols-3 gap-1.5 p-1 rounded-2xl bg-[#0d0917] border-0 mb-4 pr-10">
+            <div className="pt-2">
               <button
                 type="button"
-                onClick={() => {
-                  setActiveMainTab("deposit-withdraw");
-                  setDepositStep(1);
-                  setWithdrawStep(1);
-                }}
-                className={`py-2 px-1 text-center rounded-xl text-xs sm:text-[13px] font-extrabold transition-all cursor-pointer border-0 ${
-                  activeMainTab === "deposit-withdraw"
-                    ? "button-dark-purple text-white shadow-none"
-                    : "text-zinc-400 hover:text-white"
-                }`}
+                disabled={submitting}
+                onClick={() => setFinalConfirmOpen(true)}
+                className="soft-btn-primary flex h-12 w-full cursor-pointer items-center justify-center gap-2 text-[15px] font-extrabold transition-transform active:scale-[0.98] disabled:opacity-60"
               >
-                ฝาก/ถอน
-              </button>
-
-              <button
-                type="button"
-                onClick={() => {
-                  setActiveMainTab("promo");
-                  setDepositStep(1);
-                  setWithdrawStep(1);
-                }}
-                className={`py-2 px-1 text-center rounded-xl text-xs sm:text-[13px] font-extrabold transition-all cursor-pointer border-0 ${
-                  activeMainTab === "promo"
-                    ? "button-dark-purple text-white shadow-none"
-                    : "text-zinc-400 hover:text-white"
-                }`}
-              >
-                โปรโมชั่น
-              </button>
-
-              <button
-                type="button"
-                onClick={() => {
-                  setActiveMainTab("history");
-                  setDepositStep(1);
-                  setWithdrawStep(1);
-                }}
-                className={`py-2 px-1 text-center rounded-xl text-xs sm:text-[13px] font-extrabold transition-all cursor-pointer border-0 ${
-                  activeMainTab === "history"
-                    ? "button-dark-purple text-white shadow-none"
-                    : "text-zinc-400 hover:text-white"
-                }`}
-              >
-                ประวัติ
+                {submitting ? t("shared.submitting") : t("deposit.confirm.submit")}
               </button>
             </div>
-          </>
-        )}
-
-        {/* ========================================================= */}
-        {/* TAB 1: ฝาก / ถอน (Deposit & Withdraw)                     */}
-        {/* ========================================================= */}
-        {activeMainTab === "deposit-withdraw" && (
-          <div className="flex-1 flex flex-col space-y-3.5">
-            {/* ซ่อนแถบ Sub-tabs ถ้าอยู่ใน Step 2 ของฝาก */}
-            {!(activeActionTab === "deposit" && depositStep === 2) && (
-              <div className="relative flex border-b border-white/[0.08] mb-1">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setActiveActionTab("deposit");
-                    setDepositStep(1);
-                  }}
-                  className={`flex-1 py-2.5 text-center text-sm sm:text-base font-extrabold transition-all cursor-pointer border-0 relative ${
-                    activeActionTab === "deposit"
-                      ? "text-white"
-                      : "text-zinc-400 hover:text-zinc-200"
-                  }`}
-                >
-                  ฝาก
-                  {activeActionTab === "deposit" && (
-                    <span className="absolute bottom-0 inset-x-4 h-[2.5px] bg-[var(--brand)] rounded-full" />
-                  )}
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    setActiveActionTab("withdraw");
-                    setDepositStep(1);
-                  }}
-                  className={`flex-1 py-2.5 text-center text-sm sm:text-base font-extrabold transition-all cursor-pointer border-0 relative ${
-                    activeActionTab === "withdraw"
-                      ? "text-white"
-                      : "text-zinc-400 hover:text-zinc-200"
-                  }`}
-                >
-                  ถอน
-                  {activeActionTab === "withdraw" && (
-                    <span className="absolute bottom-0 inset-x-4 h-[2.5px] bg-[var(--brand)] rounded-full" />
-                  )}
-                </button>
-              </div>
-            )}
-
-            {/* ----------------------------------------------------- */}
-            {/* 1.1 โหมด "ถอน" - แสดงแบบฟอร์มถอนเงินทันทีในขั้นตอนแรก     */}
-            {/* ----------------------------------------------------- */}
-            {activeActionTab === "withdraw" && (
-              <div className="space-y-4 animate-fade-in pt-1">
-                {/* 1. การ์ดบัญชีปลายทางของผู้ใช้ (โอนเข้าบัญชีของคุณ) */}
-                <div className="rounded-[20px] bg-[#151022] p-3.5 flex items-center justify-between border border-white/[0.04] shadow-sm">
-                  <div className="flex items-center gap-3 min-w-0">
-                    {/* Bank Logo Emblem */}
-                    <div className="w-11 h-11 rounded-full bg-white flex items-center justify-center p-1 shadow-sm shrink-0">
-                      <div className="w-full h-full rounded-full bg-[#12803b] flex items-center justify-center text-white font-bold text-xs">
-                        <Landmark className="w-5 h-5 text-white" />
-                      </div>
-                    </div>
-
-                    <div className="text-left min-w-0">
-                      <span className="text-[11px] text-zinc-400 font-medium block leading-tight">
-                        โอนเข้าบัญชีของคุณ
-                      </span>
-                      <span className="text-sm sm:text-[15px] font-extrabold text-white block leading-tight mt-0.5">
-                        กสิกรไทย
-                      </span>
-                      <span className="text-xs text-zinc-300 font-mono tracking-wider block leading-tight mt-0.5">
-                        090-0-00000-1
-                      </span>
-                      <span className="text-[11px] text-zinc-400 block truncate leading-tight mt-0.5">
-                        {user?.displayName ? `${user.displayName} (VIP 3)` : "คุณพีพี (VIP 3)"}
-                      </span>
-                    </div>
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      onClose();
-                      router.push("/profile");
-                    }}
-                    className="text-zinc-400 hover:text-white p-1 rounded-lg hover:bg-white/5 transition-colors border-0 cursor-pointer"
-                    title="จัดการบัญชีธนาคาร"
-                  >
-                    <ChevronRight className="w-5 h-5" />
-                  </button>
-                </div>
-
-                {/* 2. จำนวนเงินที่ต้องการถอน */}
-                <div className="text-center py-2">
-                  <span className="text-xs sm:text-[13px] font-bold text-zinc-400 block mb-2">
-                    จำนวนเงินที่ต้องการถอน
-                  </span>
-
-                  <div className="inline-flex items-baseline justify-center gap-1.5 sm:gap-2">
-                    <span className="text-2xl sm:text-3xl font-black text-[var(--brand)]">
-                      ฿
-                    </span>
-                    <input
-                      type="number"
-                      value={withdrawAmount}
-                      onChange={(e) => setWithdrawAmount(e.target.value)}
-                      className="text-4xl sm:text-5xl font-black text-white font-mono tracking-tight bg-transparent text-center w-48 sm:w-56 focus:outline-none border-b-2 border-transparent focus:border-purple-500/50"
-                    />
-                  </div>
-                </div>
-
-                {/* 3. ยอดถอนได้ & ปุ่มถอนทั้งหมด */}
-                <div className="flex items-center justify-between px-1 text-xs">
-                  <span className="text-zinc-300 font-bold">
-                    ถอนได้{" "}
-                    <span className="text-white font-mono font-black">
-                      ฿{(user?.balance ?? 0).toLocaleString("en-US", {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2,
-                      })}
-                    </span>
-                  </span>
-
-                  <button
-                    type="button"
-                    onClick={() => setWithdrawAmount((user?.balance ?? 0).toString())}
-                    className="text-[var(--brand)] hover:text-white font-bold text-xs cursor-pointer border-0 bg-transparent transition-colors"
-                  >
-                    ถอนทั้งหมด
-                  </button>
-                </div>
-
-                {/* 4. Quick Amount Pills (100, 300, 500, 1,000, 5,000) */}
-                <div>
-                  <div className="flex items-center justify-between gap-2 mb-2">
-                    {quickWithdrawAmounts.map((amt) => {
-                      const clean = amt.replace(/,/g, "");
-                      const isActive = withdrawAmount === clean;
-                      return (
-                        <button
-                          key={amt}
-                          type="button"
-                          onClick={() => setWithdrawAmount(clean)}
-                          className={`flex-1 py-2 rounded-full text-xs font-black transition-all cursor-pointer border-0 ${
-                            isActive
-                              ? "bg-white text-black shadow-sm scale-105"
-                              : "bg-[#1a1429] text-zinc-300 hover:bg-[#231b36] hover:text-white"
-                          }`}
-                        >
-                          {amt}
-                        </button>
-                      );
-                    })}
-                  </div>
-
-                  <span className="text-[11px] text-zinc-500 font-medium text-center block">
-                    แตะยอดเงินเพื่อแก้ไข
-                  </span>
-                </div>
-
-                {/* 5. Action Button: ยืนยันถอนเงิน (Electric Vivid Purple) */}
-                <div className="pt-2">
-                  <button
-                    type="button"
-                    disabled={isSubmittingWithdraw}
-                    onClick={requestWithdrawConfirm}
-                    className="w-full h-12 rounded-xl button-dark-purple flex items-center justify-center gap-2 text-[15px] font-extrabold cursor-pointer border-0 active:scale-98 disabled:opacity-60"
-                  >
-                    {isSubmittingWithdraw ? (
-                      <span className="flex items-center gap-2">
-                        <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                        <span>กำลังส่งคำขอถอนเงิน...</span>
-                      </span>
-                    ) : (
-                      <>
-                        <ArrowUpRight className="w-4.5 h-4.5 stroke-[2.5]" />
-                        <span>ยืนยันถอนเงิน</span>
-                      </>
-                    )}
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {/* ----------------------------------------------------- */}
-            {/* 1.2 โหมด "ฝาก" - STEP 1                               */}
-            {/* ----------------------------------------------------- */}
-            {activeActionTab === "deposit" && depositStep === 1 && (
-              <div className="space-y-3.5">
-                {/* เลือกช่องทางฝาก */}
-                <div className="grid grid-cols-3 gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setDepositChannel("bank")}
-                    className={`p-2.5 rounded-2xl flex flex-col items-center justify-center gap-1.5 transition-all cursor-pointer border-0 ${
-                      depositChannel === "bank"
-                        ? "bg-[#241738] ring-1 ring-[var(--brand)] text-white"
-                        : "bg-[#151022] text-zinc-400 hover:bg-[#1a1429]"
-                    }`}
-                  >
-                    <Landmark className="w-5 h-5 text-emerald-400" />
-                    <span className="text-[11px] font-bold">โอนธนาคาร</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setDepositChannel("promptpay")}
-                    className={`p-2.5 rounded-2xl flex flex-col items-center justify-center gap-1.5 transition-all cursor-pointer border-0 ${
-                      depositChannel === "promptpay"
-                        ? "bg-[#241738] ring-1 ring-[var(--brand)] text-white"
-                        : "bg-[#151022] text-zinc-400 hover:bg-[#1a1429]"
-                    }`}
-                  >
-                    <QrCode className="w-5 h-5 text-blue-400" />
-                    <span className="text-[11px] font-bold">พร้อมเพย์ QR</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setDepositChannel("truemoney")}
-                    className={`p-2.5 rounded-2xl flex flex-col items-center justify-center gap-1.5 transition-all cursor-pointer border-0 ${
-                      depositChannel === "truemoney"
-                        ? "bg-[#241738] ring-1 ring-[var(--brand)] text-white"
-                        : "bg-[#151022] text-zinc-400 hover:bg-[#1a1429]"
-                    }`}
-                  >
-                    <Smartphone className="w-5 h-5 text-amber-400" />
-                    <span className="text-[11px] font-bold">ทรูมันนี่</span>
-                  </button>
-                </div>
-
-                {/* กล่องจำนวนเงินที่ต้องการฝาก */}
-                <div className="rounded-[22px] bg-[#1a1429] p-4 border-0">
-                  <span className="text-xs font-bold text-zinc-400 block mb-2">
-                    เลือกหรือระบุจำนวนเงินฝาก (บาท)
-                  </span>
-
-                  <div className="grid grid-cols-3 gap-2 mb-3">
-                    {quickAmounts.map((amt) => {
-                      const cleanAmt = amt.replace(/,/g, "");
-                      const isActive = depositAmount === cleanAmt;
-                      return (
-                        <button
-                          key={amt}
-                          type="button"
-                          onClick={() => setDepositAmount(cleanAmt)}
-                          className={`py-2 px-1 rounded-xl text-xs font-black transition-all cursor-pointer border-0 ${
-                            isActive
-                              ? "bg-[var(--brand)] text-white"
-                              : "bg-[#120d1f] text-zinc-300 hover:bg-[#201633]"
-                          }`}
-                        >
-                          ฿{amt}
-                        </button>
-                      );
-                    })}
-                  </div>
-
-                  <div className="relative flex items-center">
-                    <span className="absolute left-3.5 text-base font-black text-[var(--brand)]">
-                      ฿
-                    </span>
-                    <input
-                      type="number"
-                      value={depositAmount}
-                      onChange={(e) => setDepositAmount(e.target.value)}
-                      placeholder="ระบุจำนวนเงิน (ขั้นต่ำ 100)"
-                      className="w-full h-11 pl-9 pr-3 rounded-xl bg-[#0e0918] border-0 text-white font-mono font-bold text-sm focus:outline-none focus:ring-1 focus:ring-[var(--brand)]"
-                    />
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      if (!parsedDepositAmount || parsedDepositAmount <= 0) {
-                        showToast("กรุณาระบุจำนวนเงินที่ต้องการฝาก", "error");
-                        return;
-                      }
-                      setDepositStep(2);
-                    }}
-                    className="w-full mt-3.5 h-12 rounded-xl button-dark-purple flex items-center justify-center gap-2 text-sm font-extrabold cursor-pointer border-0 active:scale-98"
-                  >
-                    <span>ขั้นตอนถัดไป (ยืนยันการฝาก)</span>
-                    <ChevronRight className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {/* ----------------------------------------------------- */}
-            {/* 1.3 โหมด "ฝาก" - STEP 2 (ยืนยันและแนบสลิป)             */}
-            {/* ----------------------------------------------------- */}
-            {activeActionTab === "deposit" && depositStep === 2 && (
-              <div className="space-y-3.5 animate-fade-in">
-                {/* 1. การ์ดยอดเงินที่ต้องโอน */}
-                <div className="rounded-[22px] bg-[#1a1429] p-4 text-center border-0">
-                  <span className="text-xs sm:text-[13px] font-bold text-zinc-400 block mb-1">
-                    ยอดเงินที่ต้องโอน
-                  </span>
-                  <div className="inline-flex items-baseline justify-center gap-1.5 my-1">
-                    <span className="text-xl sm:text-2xl font-black text-[var(--brand)]">
-                      ฿
-                    </span>
-                    <span className="text-3xl sm:text-4xl font-black text-white font-mono tracking-tight">
-                      {parseFloat(depositAmount || "500").toLocaleString("en-US", {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2,
-                      })}
-                    </span>
-                  </div>
-                </div>
-
-                {/* 2. การ์ดข้อมูลบัญชีรับเงินของระบบ */}
-                <div className="rounded-[22px] bg-[#151022] p-4 border-0">
-                  <div className="flex items-start gap-3">
-                    <div className="w-12 h-12 rounded-2xl bg-[#12803b] flex items-center justify-center flex-shrink-0 border border-white/10">
-                      <Landmark className="w-6 h-6 text-white" />
-                    </div>
-
-                    <div className="flex-1 min-w-0">
-                      <h4 className="text-sm sm:text-[15px] font-extrabold text-white leading-tight">
-                        ธนาคารกสิกรไทย
-                      </h4>
-                      <p className="text-xs text-zinc-300 font-medium mt-0.5 truncate">
-                        ชื่อบัญชี: บจก. ซีเอ็ม เทรดดิ้ง (ประเทศไทย)
-                      </p>
-
-                      <div className="flex items-center gap-2 mt-2">
-                        <span className="text-sm sm:text-base font-black text-white font-mono tracking-wider">
-                          090-0-00000-1
-                        </span>
-                        <button
-                          type="button"
-                          onClick={() => handleCopyAccount("090-0-00000-1")}
-                          className="p-1 rounded-lg hover:bg-white/10 text-[var(--brand)] hover:text-white transition-colors cursor-pointer border-0"
-                          title="คัดลอกเลขบัญชี"
-                        >
-                          {copiedBank ? (
-                            <Check className="w-4 h-4 text-emerald-400" />
-                          ) : (
-                            <Copy className="w-4 h-4" />
-                          )}
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="mt-3 pt-2 border-t border-white/[0.04] text-center">
-                    <span className="text-[10px] text-zinc-500 font-medium">
-                      * ข้อมูลบัญชีเป็นตัวอย่าง โอนตรงตามยอดและบัญชีที่ระบุเท่านั้น
-                    </span>
-                  </div>
-                </div>
-
-                {/* 3. ส่วนแนบสลิปการโอน */}
-                <div>
-                  <label className="text-xs sm:text-[13px] font-extrabold text-white mb-2 block">
-                    แนบสลิปการโอน
-                  </label>
-
-                  <label
-                    htmlFor="slip-upload-input"
-                    className="relative rounded-[20px] bg-[#1a1429] hover:bg-[#201833] border-2 border-dashed border-[var(--brand)]/30 hover:border-purple-500/60 p-3.5 flex items-center justify-between cursor-pointer transition-all group"
-                  >
-                    <input
-                      id="slip-upload-input"
-                      type="file"
-                      accept="image/*"
-                      onChange={handleSlipUpload}
-                      className="hidden"
-                    />
-
-                    <div className="flex items-center gap-3 min-w-0">
-                      <div className="w-10 h-10 rounded-xl bg-[#251738] flex items-center justify-center text-[var(--brand)] group-hover:text-white transition-colors">
-                        {attachedSlip ? (
-                          <CheckCircle2 className="w-6 h-6 text-emerald-400" />
-                        ) : (
-                          <ImageIcon className="w-6 h-6" />
-                        )}
-                      </div>
-
-                      <div className="min-w-0">
-                        <span className="text-xs sm:text-[13px] font-bold text-white block truncate">
-                          {attachedSlip ? attachedSlip : "แตะเพื่อแนบสลิป"}
-                        </span>
-                        <span className="text-[10px] text-zinc-400 block truncate">
-                          {attachedSlip ? "แนบไฟล์เรียบร้อยแล้ว (แตะเพื่อเปลี่ยน)" : "เลือกรูปภาพจากอุปกรณ์"}
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="w-7 h-7 rounded-full bg-[#251838] group-hover:bg-[var(--brand)] text-white flex items-center justify-center flex-shrink-0 transition-colors">
-                      <Plus className="w-4 h-4 stroke-[2.5]" />
-                    </div>
-                  </label>
-
-                  <span className="text-[10px] sm:text-[11px] font-medium text-zinc-400 mt-1.5 block">
-                    แนบสลิปหลังโอนเงินเรียบร้อยแล้ว
-                  </span>
-                </div>
-
-                {/* 4. Action Button: ยืนยันการฝากเงิน */}
-                <div className="pt-2">
-                  <button
-                    type="button"
-                    disabled={isSubmittingDeposit}
-                    onClick={requestDepositConfirm}
-                    className="w-full h-12 rounded-xl button-dark-purple flex items-center justify-center gap-2 text-[15px] font-extrabold cursor-pointer border-0 active:scale-98 disabled:opacity-60"
-                  >
-                    {isSubmittingDeposit ? (
-                      <span className="flex items-center gap-2">
-                        <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                        <span>กำลังตรวจสอบ...</span>
-                      </span>
-                    ) : (
-                      <span>ยืนยันการฝากเงิน</span>
-                    )}
-                  </button>
-                </div>
-              </div>
-            )}
           </div>
         )}
+      </ResourceGate>
 
-        {/* ========================================================= */}
-        {/* TAB 2: โปรโมชั่น (Turnover & Bonus Progress)              */}
-        {/* ========================================================= */}
-        {activeMainTab === "promo" && (
-          <div className="flex-1 flex flex-col space-y-3.5">
-            <div className="flex items-center justify-between p-3 rounded-2xl bg-[#151022] border-0">
-              <div className="flex items-center gap-2.5">
-                <Bell className="w-4 h-4 text-[var(--brand)]" />
-                <span className="text-xs sm:text-[13px] font-extrabold text-white">
-                  รับโปรโมชั่นด้วยตนเอง
+      <WalletConfirmDialog
+        kind="deposit"
+        open={finalConfirmOpen}
+        loading={submitting}
+        title={t("deposit.finalConfirm.title")}
+        description={t("deposit.finalConfirm.description")}
+        confirmLabel={t("deposit.finalConfirm.confirm")}
+        amountLabel={t("deposit.finalConfirm.amountLabel")}
+        amountDisplay={formatDepositTransferAmount(amount)}
+        onClose={() => setFinalConfirmOpen(false)}
+        onConfirm={handleConfirmDeposit}
+      />
+    </>
+  );
+}
+
+/* ───────────────────────── ถอนเงิน ───────────────────────── */
+
+function WithdrawPanel({ onCompleted }: { onCompleted: (amount: number) => void }) {
+  const t = useT("wallet");
+  const quick = useWithdrawQuickAmounts();
+  const account = useWithdrawAccount();
+  const balance = useWithdrawBalance();
+  const wallet = useWallet();
+  /** ยังโหลดยอดถอนได้ไม่เสร็จ = 0 → ปุ่มยืนยันกดไม่ได้ */
+  const available = balance.data ?? 0;
+  const defaultAmount = quick.data?.defaultAmount ?? 0;
+
+  const [amount, setAmount] = useState(defaultAmount);
+  const [amountInput, setAmountInput] = useState(defaultAmount ? String(defaultAmount) : "");
+  const [seededDefault, setSeededDefault] = useState(defaultAmount);
+  if (seededDefault !== defaultAmount) {
+    setSeededDefault(defaultAmount);
+    setAmount(defaultAmount);
+    setAmountInput(String(defaultAmount));
+  }
+  const [submitting, setSubmitting] = useState(false);
+  const [submitMessage, setSubmitMessage] = useState<string | null>(null);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+
+  const applyAmount = (value: number) => {
+    const capped = Math.min(Math.max(0, value), available);
+    setAmount(capped);
+    setAmountInput(capped > 0 ? String(capped) : "");
+  };
+
+  const handleAmountChange = (raw: string) => {
+    const digits = sanitizeMoneyAmount(raw);
+    setAmountInput(digits);
+    applyAmount(digits ? Number.parseInt(digits, 10) : 0);
+  };
+
+  const canConfirm = amount > 0 && amount <= available;
+
+  const handleConfirm = async () => {
+    if (amount <= 0 || amount > available) return;
+    setSubmitting(true);
+    setSubmitMessage(null);
+    const result = await submitWithdraw({ amount });
+    setSubmitting(false);
+    setConfirmOpen(false);
+    if (!result.ok) {
+      setSubmitMessage(result.error);
+      return;
+    }
+    wallet.refresh();
+    balance.refresh();
+    onCompleted(amount);
+  };
+
+  return (
+    <div className="animate-fade-in space-y-4 pt-1">
+      <ResourceGate resource={account} loadingLabel={t("withdraw.accountLoading")} errorTitle={t("withdraw.accountError")}>
+        {(bank) => (
+          <div className="flex items-center justify-between rounded-[var(--radius-soft-lg)] bg-[var(--soft-card)] p-3.5">
+            <div className="flex min-w-0 items-center gap-3">
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#12803b]">
+                <Landmark className="h-5 w-5 text-white" />
+              </div>
+              <div className="min-w-0 text-left">
+                <span className="block text-[11px] font-medium leading-tight text-[var(--text-muted)]">
+                  {t("withdraw.transferToYourAccount")}
+                </span>
+                <span className="mt-0.5 block text-sm font-extrabold leading-tight sm:text-[15px]">
+                  {bank.bankShortName}
+                </span>
+                <span className="mt-0.5 block font-mono text-xs leading-tight tracking-wider text-[var(--text-muted)]">
+                  {bank.accountNumberDisplay}
+                </span>
+                <span className="mt-0.5 block truncate text-[11px] leading-tight text-[var(--text-muted)]">
+                  {bank.holderLabel}
                 </span>
               </div>
-              <button
-                type="button"
-                onClick={() => alert("เปิดรายการเลือกโปรโมชั่นใหม่")}
-                className="text-xs font-bold text-[var(--brand)] hover:text-white underline cursor-pointer border-0 bg-transparent"
-              >
-                เปลี่ยน
-              </button>
-            </div>
-
-            <div className="rounded-[22px] bg-[#1a1429] p-4 border-0 space-y-3">
-              <div className="flex items-center justify-between text-xs font-bold">
-                <span className="text-white">-</span>
-                <span className="text-[var(--brand)] font-extrabold">เติมครั้งแรก</span>
-              </div>
-
-              <div className="p-2.5 rounded-xl bg-rose-500/15 border border-rose-500/25 flex items-center gap-2 text-[11px] font-bold text-rose-300 text-center justify-center">
-                <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" />
-                <span>ลูกค้าต้องทำตามเงื่อนไขที่กำหนดให้ครบถึงจะถอนได้</span>
-              </div>
-
-              <div className="space-y-2 pt-1 text-xs">
-                <div className="flex items-center justify-between font-bold">
-                  <span className="text-white font-extrabold">เงื่อนไขที่ 1</span>
-                </div>
-
-                <div className="flex items-center justify-between text-zinc-400">
-                  <span>ยอดเทิร์นที่ต้องทำ</span>
-                  <span className="font-mono font-bold text-white">฿0</span>
-                </div>
-
-                <div className="flex items-center justify-between text-zinc-400">
-                  <span className="text-[var(--brand)] font-bold">ยอดเทิร์นปัจจุบัน</span>
-                  <span className="font-mono font-bold text-[var(--brand)]">฿0 / ฿0</span>
-                </div>
-
-                <div className="flex items-center justify-between text-zinc-400">
-                  <span>ต้องทำเทิร์นอีก</span>
-                  <span className="font-mono font-bold text-white">฿0</span>
-                </div>
-              </div>
-
-              <div className="pt-2 text-center text-[10px] text-zinc-400 font-medium">
-                &gt;&gt;หมายเหตุ : นับเป็นจำนวนครั้งที่เดิมพัน&lt;&lt;
-              </div>
-            </div>
-
-            <div className="pt-2 mt-auto">
-              <button
-                type="button"
-                onClick={() => alert("เปิดหน้าต่างตั้งค่าและจัดการบัญชีธนาคาร")}
-                className="w-full h-12 rounded-xl button-dark-purple flex items-center justify-center text-[15px] font-extrabold cursor-pointer border-0 active:scale-98"
-              >
-                <span>จัดการบัญชี</span>
-              </button>
             </div>
           </div>
         )}
+      </ResourceGate>
 
-        {/* ========================================================= */}
-        {/* TAB 3: ประวัติ (History: Deposit & Withdraw)              */}
-        {/* ========================================================= */}
-        {activeMainTab === "history" && (
-          <div className="flex-1 flex flex-col space-y-3.5">
-            <div className="relative flex border-b border-white/[0.08] mb-1">
-              <button
-                type="button"
-                onClick={() => setHistorySubTab("deposit-history")}
-                className={`flex-1 py-2 text-center text-xs sm:text-sm font-extrabold transition-all cursor-pointer border-0 relative ${
-                  historySubTab === "deposit-history"
-                    ? "text-white"
-                    : "text-zinc-400 hover:text-zinc-200"
-                }`}
-              >
-                ประวัติการฝาก
-                {historySubTab === "deposit-history" && (
-                  <span className="absolute bottom-0 inset-x-4 h-[2px] bg-[var(--brand)] rounded-full" />
-                )}
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setHistorySubTab("withdraw-history")}
-                className={`flex-1 py-2 text-center text-xs sm:text-sm font-extrabold transition-all cursor-pointer border-0 relative ${
-                  historySubTab === "withdraw-history"
-                    ? "text-white"
-                    : "text-zinc-400 hover:text-zinc-200"
-                }`}
-              >
-                ประวัติการถอน
-                {historySubTab === "withdraw-history" && (
-                  <span className="absolute bottom-0 inset-x-4 h-[2px] bg-[var(--brand)] rounded-full" />
-                )}
-              </button>
-            </div>
-
-            <div className="text-center text-[11px] font-bold text-zinc-400">
-              ( 5 รายการล่าสุด )
-            </div>
-
-            <div className="space-y-2">
-              <div className="flex items-center justify-between p-3 rounded-xl bg-[#151022] hover:bg-[#1c152d] transition-colors border-0">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-xl bg-[#251838] flex items-center justify-center text-amber-400 border border-white/[0.04]">
-                    <Coins className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <span className="text-xs sm:text-[13px] font-bold text-white block">
-                      โอนแบบบัญชี
-                    </span>
-                    <span className="text-[10px] text-zinc-400 block font-mono">
-                      23 ก.ย. พ.ศ. 2569 17:00
-                    </span>
-                  </div>
-                </div>
-
-                <div className="text-right">
-                  <span className="text-xs sm:text-sm font-black text-emerald-400 font-mono block">
-                    ฿ 2,000.00
-                  </span>
-                  <span className="text-[9.5px] font-bold text-emerald-400/80">
-                    สำเร็จ
-                  </span>
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between p-3 rounded-xl bg-[#151022] hover:bg-[#1c152d] transition-colors border-0">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-xl bg-[#251838] flex items-center justify-center text-amber-400 border border-white/[0.04]">
-                    <Coins className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <span className="text-xs sm:text-[13px] font-bold text-white block">
-                      โอนแบบบัญชี
-                    </span>
-                    <span className="text-[10px] text-zinc-400 block font-mono">
-                      23 มิ.ย. พ.ศ. 2569 11:22
-                    </span>
-                  </div>
-                </div>
-
-                <div className="text-right">
-                  <span className="text-xs sm:text-sm font-black text-emerald-400 font-mono block">
-                    ฿ 100.00
-                  </span>
-                  <span className="text-[9.5px] font-bold text-emerald-400/80">
-                    สำเร็จ
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <div className="pt-2 mt-auto">
-              <button
-                type="button"
-                onClick={() => alert("เปิดหน้าต่างตั้งค่าและจัดการบัญชีธนาคาร")}
-                className="w-full h-12 rounded-xl button-dark-purple flex items-center justify-center text-[15px] font-extrabold cursor-pointer border-0 active:scale-98"
-              >
-                <span>จัดการบัญชี</span>
-              </button>
-            </div>
-          </div>
-        )}
+      <div className="py-2 text-center">
+        <label htmlFor="withdraw-amount" className="mb-2 block text-xs font-bold text-[var(--text-muted)] sm:text-[13px]">
+          {t("withdraw.amountLabel")}
+        </label>
+        <div className="inline-flex items-baseline justify-center gap-1.5 sm:gap-2">
+          <span className="text-2xl font-black text-[var(--brand)] sm:text-3xl">฿</span>
+          <input
+            id="withdraw-amount"
+            type="text"
+            inputMode="numeric"
+            value={amountInput}
+            maxLength={MONEY_AMOUNT_MAX_DIGITS}
+            onChange={(e) => handleAmountChange(e.target.value)}
+            className="w-48 border-b-2 border-transparent bg-transparent text-center font-mono text-4xl font-black tracking-tight text-[var(--text-on-light)] focus:border-[var(--brand)]/50 focus:outline-none sm:w-56 sm:text-5xl"
+          />
+        </div>
       </div>
-    </div>
 
-    <WalletConfirmDialog
-      kind={confirmKind ?? "deposit"}
-      amount={confirmKind === "withdraw" ? parsedWithdrawAmount : parsedDepositAmount}
-      open={confirmKind !== null}
-      loading={confirmKind === "deposit" ? isSubmittingDeposit : isSubmittingWithdraw}
-      channelLabel={depositChannelLabel}
-      onClose={() => {
-        if (!isSubmittingDeposit && !isSubmittingWithdraw) setConfirmKind(null);
-      }}
-      onConfirm={() => {
-        if (confirmKind === "deposit") handleConfirmDeposit();
-        else if (confirmKind === "withdraw") handleConfirmWithdraw();
-      }}
-    />
-    </>
+      <div className="flex items-center justify-between px-1 text-xs">
+        <span className="font-bold text-[var(--text-muted)]">
+          {t("withdraw.available", { amount: formatWithdrawMoney(available) })}
+        </span>
+        <button
+          type="button"
+          onClick={() => applyAmount(available)}
+          className="cursor-pointer border-0 bg-transparent text-xs font-bold text-[var(--brand-strong)] transition-colors hover:text-[var(--brand)]"
+        >
+          {t("withdraw.withdrawAll")}
+        </button>
+      </div>
+
+      <div>
+        <div className="mb-2 flex flex-wrap items-center justify-center gap-2">
+          {(quick.data?.amounts ?? []).map((value) => (
+            <button
+              key={value}
+              type="button"
+              onClick={() => applyAmount(value)}
+              className={`shrink-0 cursor-pointer rounded-full border-0 px-4 py-2 text-xs font-black transition-all ${
+                amount === value
+                  ? "scale-105 bg-[var(--brand)] text-white shadow-sm"
+                  : "bg-[var(--soft-card)] text-[var(--text-on-light)] hover:bg-[var(--brand-soft)]"
+              }`}
+            >
+              {formatWithdrawAmount(value)}
+            </button>
+          ))}
+        </div>
+        <span className="block text-center text-[11px] font-medium text-[var(--text-muted)]">
+          {t("withdraw.quickAmountHint")}
+        </span>
+      </div>
+
+      {submitMessage && (
+        <p className={errorBoxClass} role="alert">
+          {submitMessage}
+        </p>
+      )}
+
+      <div className="pt-2">
+        <button
+          type="button"
+          disabled={!canConfirm || submitting}
+          onClick={() => canConfirm && setConfirmOpen(true)}
+          className="soft-btn-primary flex h-12 w-full cursor-pointer items-center justify-center gap-2 text-[15px] font-extrabold transition-transform active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          {submitting ? (
+            t("shared.submitting")
+          ) : (
+            <>
+              <ArrowUpRight className="h-[18px] w-[18px] stroke-[2.5]" />
+              <span>{t("withdraw.submit")}</span>
+            </>
+          )}
+        </button>
+      </div>
+
+      <WalletConfirmDialog
+        kind="withdraw"
+        open={confirmOpen}
+        loading={submitting}
+        title={t("withdraw.confirm.title")}
+        description={
+          account.data
+            ? t("withdraw.confirm.description", {
+                bank: account.data.bankShortName,
+                account: account.data.accountNumberDisplay,
+              })
+            : undefined
+        }
+        confirmLabel={t("withdraw.confirm.confirm")}
+        amountLabel={t("withdraw.confirm.amountLabel")}
+        amountDisplay={formatWithdrawAmount(amount)}
+        onClose={() => setConfirmOpen(false)}
+        onConfirm={handleConfirm}
+      />
+    </div>
   );
 }

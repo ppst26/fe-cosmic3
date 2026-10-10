@@ -1,9 +1,13 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import Link from "@/lib/i18n/navigation";
-import { Check, Copy, X, Clock } from "lucide-react";
-import type { PendingTransactionPayload } from "@/data/pendingTransactionMockData";
+import { Copy, X } from "lucide-react";
+import type { PendingTransactionPayload } from "@/app/types/transaction";
+import { useToast } from "@/context/ToastContext";
+import { useT } from "@/lib/i18n/I18nProvider";
+import { useLocale } from "@/lib/i18n/navigation";
+import { formatTransactionDateTimeMedium } from "@/app/lib/transactionDateUtils";
 
 interface PendingTransactionDialogProps {
   payload: PendingTransactionPayload | null;
@@ -11,23 +15,24 @@ interface PendingTransactionDialogProps {
 }
 
 export function PendingTransactionDialog({ payload, onClose }: PendingTransactionDialogProps) {
-  const [copiedRef, setCopiedRef] = useState(false);
+  const t = useT("wallet");
+  const locale = useLocale();
+  const { showToast } = useToast();
 
   if (!payload) return null;
 
   const handleCopyRef = async () => {
     try {
       await navigator.clipboard.writeText(payload.referenceCopyValue);
-      setCopiedRef(true);
-      window.setTimeout(() => setCopiedRef(false), 2000);
+      showToast(t("pending.referenceCopied"), "success", 2500);
     } catch {
-      /* clipboard ไม่พร้อม */
+      showToast(t("pending.referenceCopyFailed"), "error");
     }
   };
 
   return (
     <div
-      className="fixed inset-0 z-[140] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in select-none"
+      className="fixed inset-0 z-[140] flex items-center justify-center p-4 bg-black/60 animate-fade-in select-none"
       role="presentation"
       onClick={onClose}
     >
@@ -42,7 +47,7 @@ export function PendingTransactionDialog({ payload, onClose }: PendingTransactio
           type="button"
           onClick={onClose}
           className="absolute right-3 top-3 flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg border-0 bg-[var(--soft-card)] text-[var(--text-muted)] transition-colors hover:text-[var(--text-on-light)]"
-          aria-label="ปิด"
+          aria-label={t("pending.close")}
         >
           <X className="w-4 h-4" />
         </button>
@@ -54,16 +59,12 @@ export function PendingTransactionDialog({ payload, onClose }: PendingTransactio
             <PendingWithdrawGraphic className="mb-3 h-24 w-24" />
           )}
 
-          <div className="mb-2 inline-flex items-center gap-1.5 rounded-md border border-amber-300/60 bg-amber-50 px-2.5 py-1 text-[11px] font-extrabold text-amber-800">
-            <Clock className="w-3.5 h-3.5" />
-            รอดำเนินการ
-          </div>
 
           <h2 id="pending-tx-title" className="text-lg font-black text-[var(--text-on-light)] sm:text-xl">
-            {payload.title}
+            {t(payload.titleKey)}
           </h2>
           <p id="pending-tx-desc" className="mt-1 text-sm font-medium text-[var(--text-muted)]">
-            {payload.subtitle}
+            {t(payload.subtitleKey)}
           </p>
         </div>
 
@@ -75,24 +76,25 @@ export function PendingTransactionDialog({ payload, onClose }: PendingTransactio
 
         <dl className="space-y-3 text-sm">
           {payload.rows.map((row) => {
-            const isRef = row.label === "เลขอ้างอิง";
+            const isRef = row.labelKey === "pending.rows.reference";
+            const value = row.valueKey
+              ? t(row.valueKey)
+              : row.dateTime
+                ? formatTransactionDateTimeMedium(row.dateTime, locale)
+                : row.value;
             return (
-              <div key={row.label} className="flex items-start justify-between gap-3">
-                <dt className="shrink-0 font-medium text-[var(--text-muted)]">{row.label}</dt>
+              <div key={row.labelKey} className="flex items-start justify-between gap-3">
+                <dt className="shrink-0 font-medium text-[var(--text-muted)]">{t(row.labelKey)}</dt>
                 <dd className="flex min-w-0 items-center justify-end gap-1.5 text-right font-bold text-[var(--text-on-light)]">
-                  <span className="truncate">{row.value}</span>
+                  <span className="truncate">{value}</span>
                   {isRef && (
                     <button
                       type="button"
                       onClick={handleCopyRef}
                       className="flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center rounded-md border-0 bg-[var(--soft-card)] text-[var(--brand)] hover:bg-[var(--brand-soft)]"
-                      aria-label="คัดลอกเลขอ้างอิง"
+                      aria-label={t("pending.copyReference")}
                     >
-                      {copiedRef ? (
-                        <Check className="h-3.5 w-3.5 text-emerald-400" />
-                      ) : (
-                        <Copy className="h-3.5 w-3.5" />
-                      )}
+                      <Copy className="h-3.5 w-3.5" />
                     </button>
                   )}
                 </dd>
@@ -100,18 +102,13 @@ export function PendingTransactionDialog({ payload, onClose }: PendingTransactio
             );
           })}
         </dl>
-        {copiedRef && (
-          <p className="mt-2 text-right text-xs text-emerald-400 font-semibold" role="status">
-            คัดลอกเลขอ้างอิงแล้ว
-          </p>
-        )}
 
         <button
           type="button"
           onClick={onClose}
           className="soft-btn-primary mt-6 flex h-12 w-full cursor-pointer items-center justify-center text-[15px] font-extrabold active:scale-[0.98]"
         >
-          เรียบร้อย
+          {t("pending.done")}
         </button>
 
         <Link
@@ -119,7 +116,7 @@ export function PendingTransactionDialog({ payload, onClose }: PendingTransactio
           onClick={onClose}
           className="mt-4 block text-center text-sm font-bold text-[var(--brand-strong)] underline underline-offset-4 transition-colors hover:text-[var(--brand)]"
         >
-          ดูประวัติรายการ
+          {t("pending.viewHistory")}
         </Link>
       </div>
     </div>
@@ -129,7 +126,7 @@ export function PendingTransactionDialog({ payload, onClose }: PendingTransactio
 function PendingDepositGraphic({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 96 96" className={className} aria-hidden="true">
-      <ellipse cx="48" cy="78" rx="28" ry="8" fill="#000" opacity="0.35" />
+      <ellipse cx="48" cy="78" rx="28" ry="8" fill="#000" opacity="0.15" />
       <rect x="22" y="36" width="52" height="38" rx="10" fill="#5b21b6" stroke="#a78bfa" strokeWidth="1.5" />
       <rect x="22" y="42" width="52" height="8" rx="2" fill="#4c1d95" />
       <circle cx="48" cy="24" r="14" fill="#fde047" stroke="#ca8a04" strokeWidth="1.5" />
@@ -144,7 +141,7 @@ function PendingDepositGraphic({ className }: { className?: string }) {
 function PendingWithdrawGraphic({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 96 96" className={className} aria-hidden="true">
-      <ellipse cx="48" cy="78" rx="28" ry="8" fill="#000" opacity="0.35" />
+      <ellipse cx="48" cy="78" rx="28" ry="8" fill="#000" opacity="0.15" />
       <path
         d="M28 38 48 28 68 38 V58 C68 68 48 76 48 76 C48 76 28 68 28 58 Z"
         fill="#6d28d9"

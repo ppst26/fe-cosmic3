@@ -10,6 +10,6 @@ type PageProps = {
 export default function ThaiGovernmentPlayPage({ params }: PageProps) {
   const { roundId } = use(params);
   return (
-    <LotteryPlayPage marketId="thai-government" roundId={roundId} showYikiHelp={false} />
+    <LotteryPlayPage marketId="thai-government" roundId={roundId} />
   );
 }

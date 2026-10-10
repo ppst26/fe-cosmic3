@@ -1,16 +1,21 @@
 "use client";
 
 import React, { useState } from "react";
+import { Search, X } from "lucide-react";
+import { useT } from "@/lib/i18n/I18nProvider";
 
 interface GameSearchBarProps {
   placeholder?: string;
   onSearch?: (query: string) => void;
+  className?: string;
+  id?: string;
 }
 
-export function GameSearchBar({
-  placeholder = "ค้นหาเกม | ค่ายเกม",
-  onSearch,
-}: GameSearchBarProps) {
+/**
+ * GameSearchBar — ช่องค้นหาค่าย/เกม (ตรรกะเดียวกับ glass: เก็บคำค้นใน state แล้วส่งผ่าน onSearch)
+ */
+export function GameSearchBar({ placeholder, onSearch, className = "", id = "game-search" }: GameSearchBarProps) {
+  const t = useT("home");
   const [query, setQuery] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -32,28 +37,24 @@ export function GameSearchBar({
   return (
     <form
       onSubmit={handleSubmit}
-      className="my-2.5 w-full"
+      className={`w-full ${className}`.trim()}
       role="search"
-      aria-label="แบบฟอร์มค้นหาเกมและผู้ให้บริการ"
+      aria-label={t("search.formAriaLabel")}
     >
-      <div
-        className="relative flex h-[46px] w-full items-center rounded-[14px] border border-white/[0.08] bg-[rgba(18,17,39,0.8)] px-3.5 transition-all duration-150 focus-within:border-[var(--brand)]/50"
-      >
-        <label htmlFor="game-search-input" className="sr-only">
-          ค้นหาเกมหรือผู้ให้บริการ
+      <div className="relative flex h-11 w-full items-center rounded-[var(--radius-soft-md)] border border-[#e3e3e3] bg-white px-3.5 shadow-sm transition-colors focus-within:border-[var(--brand)] md:h-12">
+        <label htmlFor={id} className="sr-only">
+          {t("search.label")}
         </label>
 
-        <span className="mr-2.5 shrink-0 text-base text-gray-400" aria-hidden="true">
-          🔍
-        </span>
+        <Search className="mr-2.5 h-4 w-4 shrink-0 text-[var(--text-muted)]" aria-hidden="true" />
 
         <input
-          id="game-search-input"
+          id={id}
           type="text"
           value={query}
           onChange={handleChange}
           placeholder={placeholder}
-          className="h-full w-full bg-transparent text-sm text-white placeholder-gray-400 outline-none focus:outline-none sm:text-base"
+          className="h-full w-full bg-transparent text-sm text-[var(--text-on-light)] outline-none placeholder:text-[var(--text-muted)]"
           autoComplete="off"
           spellCheck="false"
         />
@@ -62,10 +63,10 @@ export function GameSearchBar({
           <button
             type="button"
             onClick={handleClear}
-            className="rounded-md p-1 text-sm text-gray-400 transition-colors hover:bg-white/10 hover:text-white"
-            aria-label="ล้างคำค้นหา"
+            className="cursor-pointer rounded-md border-0 bg-transparent p-1 text-[var(--text-muted)] transition-colors hover:text-[var(--text-on-light)]"
+            aria-label={t("search.clear")}
           >
-            ×
+            <X className="h-4 w-4" />
           </button>
         ) : null}
       </div>

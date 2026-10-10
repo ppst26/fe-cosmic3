@@ -1,7 +1,8 @@
 "use client";
 
 import { useMemo } from "react";
-import { formatLotteryDigitsDisplay } from "@/lib/lottery/format";
+import { formatLotteryDigitsDisplay } from "@/app/components/lottery/lotteryUtils";
+import { useLotteryI18n } from "@/app/components/lottery/useLotteryI18n";
 import { LotterySlipToolbar } from "./LotterySlipToolbar";
 
 export type LotteryBetSlipPickEntry = {
@@ -36,6 +37,7 @@ export function LotteryBetSlip({
   canUndo = false,
   onUndo,
 }: LotteryBetSlipProps) {
+  const { t } = useLotteryI18n();
   const grouped = useMemo(() => {
     const order: string[] = [];
     const map = new Map<string, LotteryBetSlipPickEntry[]>();
@@ -55,7 +57,7 @@ export function LotteryBetSlip({
       aria-labelledby={titleId}
     >
       <h2 id={titleId} className="m-0 shrink-0 text-sm font-bold text-[var(--text-on-light)]">
-        {entries.length} รายการ
+        {t("slip.itemCount", { count: entries.length })}
       </h2>
 
       <div className="lottery-bet-slip__scroll flex min-h-0 flex-1 flex-col">
@@ -74,7 +76,7 @@ export function LotteryBetSlip({
                 <section key={groupKey} aria-label={label}>
                   <div className="mb-1 flex items-center justify-between px-1 text-xs font-semibold text-[var(--text-muted)]">
                     <span>{label}</span>
-                    <span>{groupEntries.length} รายการ</span>
+                    <span>{t("slip.itemCount", { count: groupEntries.length })}</span>
                   </div>
                   <ul className="m-0 flex list-none flex-col gap-1 p-0">
                     {groupEntries.map((entry) => (
@@ -90,7 +92,7 @@ export function LotteryBetSlip({
                           type="button"
                           className="grid h-8 w-8 shrink-0 place-items-center text-[var(--text-muted)]"
                           onClick={() => onRemove(entry.id)}
-                          aria-label={`ลบ ${label} ${entry.number}`}
+                          aria-label={t("slip.removeAria", { label, number: entry.number })}
                         >
                           ×
                         </button>

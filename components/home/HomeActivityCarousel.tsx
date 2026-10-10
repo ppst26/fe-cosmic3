@@ -1,21 +1,27 @@
 "use client";
 
+import Image from "next/image";
 import Link from "@/lib/i18n/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
-import type { ActivityCarouselItem } from "@/lib/mock/home";
+import { useT } from "@/lib/i18n/I18nProvider";
+import { toSportHref } from "@/lib/gamingRoutes";
+import type { HomeLobbyTournamentItem } from "@/app/types/lobby";
 import { HomePageSection } from "./HomePageSection";
 
 type HomeActivityCarouselProps = {
-  items: ActivityCarouselItem[];
+  /** กิจกรรม/ทัวร์นาเมนต์จาก lobby API (LobbyContent.tournaments) */
+  items: HomeLobbyTournamentItem[];
   title?: string;
   viewAllHref?: string;
 };
 
 export function HomeActivityCarousel({
   items,
-  title = "กิจกรรม",
+  title: titleProp,
   viewAllHref = "/activities",
 }: HomeActivityCarouselProps) {
+  const t = useT("home");
+  const title = titleProp ?? t("events.title");
   const trackRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
 
@@ -65,38 +71,34 @@ export function HomeActivityCarousel({
         ref={trackRef}
         className="flex gap-2.5 overflow-x-auto scroll-smooth px-3 snap-x snap-mandatory scrollbar-none sm:gap-3 md:px-6"
       >
-        {items.map((item) => (
-          <Link
-            key={item.id}
-            href={item.href}
-            className="relative w-[88%] max-w-none shrink-0 snap-start overflow-hidden rounded-xl sm:w-[78%] md:w-[70%]"
-          >
-            <div
-              className="relative flex min-h-[132px] flex-col justify-end p-4 sm:min-h-[148px]"
-              style={{ background: item.gradient }}
-            >
-              <div className="absolute inset-0 bg-gradient-to-r from-black/55 via-black/20 to-transparent" aria-hidden />
-
-              <div className="relative">
-                <div className="mb-1 flex items-center gap-1.5 text-[11px] font-semibold text-white/90">
-                  <span aria-hidden>{item.categoryIcon}</span>
-                  <span>{item.categoryLabel}</span>
-                  <span className="text-white/50">·</span>
-                  <span className="text-white/75">{item.dateBadge}</span>
-                </div>
-                <p className="text-base font-extrabold leading-snug text-white sm:text-lg">
-                  {item.headline}
-                </p>
-              </div>
-            </div>
-          </Link>
-        ))}
+        {items.map((item) => {
+          const cardClass =
+            "relative block aspect-[16/9] w-[88%] max-w-none shrink-0 snap-start overflow-hidden rounded-xl bg-[var(--soft-card)] sm:w-[78%] md:w-[48%] lg:w-[32%]";
+          const image = (
+            <Image
+              src={item.imageSrc}
+              alt={item.title}
+              fill
+              sizes="(min-width: 1024px) 32vw, (min-width: 768px) 48vw, 88vw"
+              className="object-cover object-center"
+            />
+          );
+          return item.href ? (
+            <Link key={item.id} href={toSportHref(item.href)} className={cardClass} aria-label={item.title}>
+              {image}
+            </Link>
+          ) : (
+            <article key={item.id} className={cardClass} aria-label={item.title}>
+              {image}
+            </article>
+          );
+        })}
       </div>
 
       <div
         className="mt-3 flex items-center justify-center gap-1.5 px-3 md:px-6"
         role="tablist"
-        aria-label="สไลด์กิจกรรม"
+        aria-label={t("events.slidesAriaLabel", { title })}
       >
         {items.map((item, idx) => (
           <button
@@ -104,7 +106,7 @@ export function HomeActivityCarousel({
             type="button"
             role="tab"
             aria-selected={idx === activeIndex}
-            aria-label={`สไลด์ ${idx + 1}`}
+            aria-label={t("events.goTo", { name: item.title })}
             onClick={() => scrollToIndex(idx)}
             className={`h-2 rounded-full transition-all border-0 cursor-pointer ${
               idx === activeIndex

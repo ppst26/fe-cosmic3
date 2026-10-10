@@ -1,10 +1,20 @@
 "use client";
 
+import { useState } from "react";
 import Link from "@/lib/i18n/navigation";
-import { useAuth } from "@/context/AuthContext";
+import { useLocale } from "@/lib/i18n/navigation";
+import { useAuth } from "@/app/components/auth/AuthProvider";
+import { useWallet } from "@/app/hooks/api/account";
+import { LocaleFlag } from "@/app/components/i18n/LocaleFlag";
+import { useLanguagePicker } from "@/app/components/i18n/LanguagePickerProvider";
+import { useNotifications } from "@/app/components/notifications/NotificationProvider";
+import { NotificationBellButton } from "@/app/components/notifications/NotificationBellButton";
+import { NotificationDesktopPopover } from "@/app/components/notifications/NotificationDesktopPopover";
 import { useAuthUI } from "@/context/AuthUIContext";
 import { useDeposit } from "@/context/DepositContext";
 import { useMenuUI } from "@/context/MenuUIContext";
+import { formatHeaderWalletBalance, formatMoney } from "@/lib/format";
+import { useT } from "@/lib/i18n/I18nProvider";
 
 type HeaderBarProps = {
   onOpenLogin?: () => void;
@@ -13,66 +23,65 @@ type HeaderBarProps = {
   onOpenMenu?: () => void;
 };
 
-function formatHeaderBalanceCompact(amount: number): string {
-  if (amount >= 1_000_000) {
-    return `${(amount / 1_000_000).toFixed(1)}M`;
-  }
-  if (amount >= 10_000) {
-    return `${Math.round(amount / 1000)}k`;
-  }
-  return amount.toLocaleString("th-TH", { maximumFractionDigits: 0 });
-}
-
-function formatHeaderMoney(amount: number): string {
-  return `฿${amount.toLocaleString("th-TH", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  })}`;
-}
+const HIDDEN_BALANCE = "••••";
 
 function DesktopBalancePills({
-  balance,
-  credit,
+  amount,
+  hidden,
+  refreshing,
+  onToggleHidden,
   onOpenDeposit,
   onRefreshBalance,
 }: {
-  balance: number;
-  credit: number;
+  amount: number;
+  hidden: boolean;
+  refreshing: boolean;
+  onToggleHidden: () => void;
   onOpenDeposit: () => void;
   onRefreshBalance: () => void;
 }) {
+  const t = useT("nav");
+  const tCommon = useT("common");
   return (
     <div className="flex items-center gap-3">
-      <button
-        type="button"
-        onClick={onRefreshBalance}
-        className="flex h-11 min-w-[168px] items-center justify-between gap-2 rounded-lg bg-[#2b2b2b] px-4 border-0 cursor-pointer text-left"
-      >
-        <div className="min-w-0">
-          <p className="text-[11px] leading-none text-white/65">เงิน</p>
+      <div className="flex h-11 min-w-[190px] items-center justify-between gap-2 rounded-lg bg-[#2b2b2b] px-4">
+        <div className="min-w-0" aria-live="polite">
+          <p className="text-[11px] leading-none text-white/65">{t("header.walletBalance")}</p>
           <p className="mt-1 text-sm font-bold tabular-nums text-[var(--brand)]">
-            {formatHeaderMoney(balance)}
+            {hidden ? HIDDEN_BALANCE : `฿${formatMoney(amount)}`}
           </p>
         </div>
-        <span
-          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-white/15 text-white/80"
-          aria-hidden
-        >
-          <RefreshIcon />
-        </span>
-      </button>
+        <div className="flex shrink-0 items-center gap-1.5">
+          <button
+            type="button"
+            onClick={onToggleHidden}
+            aria-pressed={hidden}
+            aria-label={t("header.walletBalance")}
+            className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border border-white/15 bg-transparent text-white/80"
+          >
+            <EyeIcon off={hidden} />
+          </button>
+          <button
+            type="button"
+            onClick={onRefreshBalance}
+            disabled={refreshing}
+            aria-label={tCommon("retry")}
+            className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border border-white/15 bg-transparent text-white/80 disabled:opacity-60"
+          >
+            <span className={refreshing ? "animate-spin" : undefined}>
+              <RefreshIcon />
+            </span>
+          </button>
+        </div>
+      </div>
 
       <button
         type="button"
         onClick={onOpenDeposit}
-        className="flex h-11 min-w-[168px] items-center justify-between gap-2 rounded-lg bg-[#2b2b2b] px-4 border-0 cursor-pointer text-left"
+        aria-label={t("header.depositAria")}
+        className="flex h-11 min-w-[132px] cursor-pointer items-center justify-between gap-2 rounded-lg border-0 bg-[#2b2b2b] px-4 text-left"
       >
-        <div className="min-w-0">
-          <p className="text-[11px] leading-none text-white/65">เครดิต</p>
-          <p className="mt-1 text-sm font-bold tabular-nums text-white">
-            {formatHeaderMoney(credit)}
-          </p>
-        </div>
+        <span className="text-sm font-bold text-white">{t("header.deposit")}</span>
         <span
           className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--brand)] text-white"
           aria-hidden
@@ -90,12 +99,18 @@ export function HeaderBar({
   onOpenSearch,
   onOpenMenu,
 }: HeaderBarProps) {
-  const { state, user, refreshBalance } = useAuth();
+  const t = useT("nav");
+  const tAuth = useT("auth");
+  const { isAuthenticated: isLoggedIn } = useAuth();
+  const wallet = useWallet();
+  const locale = useLocale();
+  const { openLanguagePicker } = useLanguagePicker();
+  const { openNotifications } = useNotifications();
   const { openLogin } = useAuthUI();
   const { openDeposit } = useDeposit();
   const { openMobileMenu } = useMenuUI();
-  const isLoggedIn = state.isAuthenticated;
-  const creditBalance = user?.balance ?? state.balance;
+  const [balanceHidden, setBalanceHidden] = useState(false);
+  const balance = wallet.data?.amount ?? 0;
 
   function handleOpenDeposit() {
     if (!isLoggedIn) {
@@ -110,7 +125,7 @@ export function HeaderBar({
       openLogin();
       return;
     }
-    void refreshBalance();
+    wallet.refresh();
   }
 
   function handleMenuClick() {
@@ -118,86 +133,115 @@ export function HeaderBar({
       onOpenMenu();
       return;
     }
-    if (isLoggedIn) {
-      openMobileMenu();
-      return;
-    }
-    onOpenLogin?.();
+    openMobileMenu();
   }
 
-  const menuControl =
-    isLoggedIn && !onOpenMenu ? (
-      <button
-        type="button"
-        aria-label="เมนู"
-        onClick={handleMenuClick}
-        className="flex h-10 w-10 items-center justify-center text-white/90 md:h-11 md:w-11 border-0 bg-transparent cursor-pointer"
-      >
-        <MenuIcon />
-      </button>
-    ) : (
-      <button
-        type="button"
-        aria-label="เมนู"
-        onClick={handleMenuClick}
-        className="flex h-10 w-10 items-center justify-center rounded-lg bg-black/20 text-white/90 md:h-11 md:w-11 md:bg-transparent"
-      >
-        <MenuIcon />
-      </button>
-    );
+  const menuControl = isLoggedIn ? (
+    <button
+      type="button"
+      aria-label={t("header.openMenu")}
+      onClick={handleMenuClick}
+      className="flex h-10 w-10 cursor-pointer items-center justify-center border-0 bg-transparent text-white/90 md:h-11 md:w-11"
+    >
+      <MenuIcon />
+    </button>
+  ) : (
+    <button
+      type="button"
+      aria-label={t("header.openMenu")}
+      onClick={handleMenuClick}
+      className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-lg border-0 bg-black/20 text-white/90 md:h-11 md:w-11 md:bg-transparent"
+    >
+      <MenuIcon />
+    </button>
+  );
+
+  const languageControl = (
+    <button
+      type="button"
+      aria-label={t("menu.language")}
+      onClick={openLanguagePicker}
+      className="flex h-10 w-10 cursor-pointer items-center justify-center border-0 bg-transparent md:h-11 md:w-11"
+    >
+      <LocaleFlag locale={locale} className="h-6 w-6" />
+    </button>
+  );
 
   return (
     <header className="w-full bg-[#050608] text-[var(--text-on-dark)]">
       {/* Mobile */}
       <div className="mx-auto flex h-14 w-full max-w-[1440px] items-center gap-1.5 px-3 md:hidden">
-        <Link
-          href="/"
-          className="flex shrink-0 items-center"
-          aria-label="XGAMBET หน้าแรก"
-        >
-          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[var(--brand)] text-sm font-bold text-white">
-            XG
+        <Link href="/" className="flex shrink-0 items-center" aria-label={t("header.home")}>
+          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[var(--brand)] text-[11px] font-bold text-white">
+            CMB
           </span>
         </Link>
 
         {isLoggedIn ? (
-          <button
-            type="button"
-            onClick={handleOpenDeposit}
-            className="flex h-9 items-center gap-1 rounded-lg bg-[var(--brand)] px-2.5 text-xs font-semibold text-white border-0 cursor-pointer"
-          >
-            <span aria-hidden>👛</span>
-            <span className="tabular-nums">
-              {formatHeaderBalanceCompact(state.balance)}
-            </span>
-          </button>
+          <div className="flex h-9 items-center overflow-hidden rounded-lg bg-[var(--brand)] text-xs font-semibold text-white">
+            <button
+              type="button"
+              onClick={handleOpenDeposit}
+              aria-label={t("header.walletDeposit")}
+              className="flex h-9 cursor-pointer items-center gap-1 border-0 bg-transparent pl-2.5 pr-1.5 text-xs font-semibold text-white"
+            >
+              <span aria-hidden>👛</span>
+              <span className="tabular-nums">
+                {balanceHidden ? HIDDEN_BALANCE : formatHeaderWalletBalance(balance)}
+              </span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setBalanceHidden((v) => !v)}
+              aria-pressed={balanceHidden}
+              aria-label={t("header.walletBalance")}
+              className="flex h-9 w-7 cursor-pointer items-center justify-center border-0 bg-transparent text-white/90"
+            >
+              <EyeIcon off={balanceHidden} size={14} />
+            </button>
+            <button
+              type="button"
+              onClick={handleRefreshBalance}
+              disabled={wallet.isRefreshing}
+              aria-label={t("header.walletBalance")}
+              className="flex h-9 w-7 cursor-pointer items-center justify-center border-0 bg-transparent pr-1 text-white/90 disabled:opacity-60"
+            >
+              <span className={wallet.isRefreshing ? "animate-spin" : undefined}>
+                <RefreshIcon size={14} />
+              </span>
+            </button>
+          </div>
         ) : (
           <>
             <button
               type="button"
               onClick={onOpenRegister}
-              className="h-9 shrink-0 rounded-lg border-2 border-[var(--brand)] bg-white px-2 text-[11px] font-semibold text-[var(--brand)]"
+              className="h-9 shrink-0 cursor-pointer rounded-lg border-2 border-solid border-[var(--brand)] bg-white px-2 text-[11px] font-semibold text-[var(--brand)]"
             >
-              สมัครสมาชิก
+              {tAuth("signUp")}
             </button>
             <button
               type="button"
               onClick={onOpenLogin}
-              className="h-9 shrink-0 rounded-lg bg-[var(--brand)] px-3 text-[11px] font-semibold text-white"
+              className="h-9 shrink-0 cursor-pointer rounded-lg border-0 bg-[var(--brand)] px-3 text-[11px] font-semibold text-white"
             >
-              เข้าสู่ระบบ
+              {tAuth("login")}
             </button>
           </>
         )}
 
         <div className="flex-1" />
 
-        <div className="flex shrink-0 items-center gap-1">
+        <div className="flex shrink-0 items-center">
+          {languageControl}
+          {isLoggedIn ? (
+            <NotificationBellButton onClick={openNotifications} />
+          ) : null}
           <button
             type="button"
-            aria-label="ค้นหา"
+            aria-label={t("header.searchLabel")}
             onClick={onOpenSearch}
-            className="flex h-10 w-10 items-center justify-center rounded-lg bg-black/20 text-white/90"
+            className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-lg border-0 bg-black/20 text-white/90"
           >
             <SearchIcon />
           </button>
@@ -210,21 +254,23 @@ export function HeaderBar({
         <Link
           href="/"
           className="flex flex-col items-start justify-center leading-none"
-          aria-label="XGAMBET หน้าแรก"
+          aria-label={t("header.home")}
         >
           <span className="flex h-9 w-11 items-center justify-center rounded-md bg-gradient-to-b from-[#ff9a3c] to-[#f5871e] text-sm font-extrabold text-white">
-            XG
+            CMB
           </span>
           <span className="mt-1 text-[11px] font-bold tracking-[0.12em] text-white">
-            XGAMBET
+            JUPITER
           </span>
         </Link>
 
         <div className="flex justify-center">
           {isLoggedIn ? (
             <DesktopBalancePills
-              balance={state.balance}
-              credit={creditBalance}
+              amount={balance}
+              hidden={balanceHidden}
+              refreshing={wallet.isRefreshing}
+              onToggleHidden={() => setBalanceHidden((v) => !v)}
               onOpenDeposit={handleOpenDeposit}
               onRefreshBalance={handleRefreshBalance}
             />
@@ -233,27 +279,29 @@ export function HeaderBar({
               <button
                 type="button"
                 onClick={onOpenRegister}
-                className="h-11 rounded-lg bg-white px-5 text-sm font-semibold text-[var(--brand)]"
+                className="h-11 cursor-pointer rounded-lg border-0 bg-white px-5 text-sm font-semibold text-[var(--brand)]"
               >
-                สมัครสมาชิก
+                {tAuth("signUp")}
               </button>
               <button
                 type="button"
                 onClick={onOpenLogin}
-                className="h-11 rounded-lg bg-[var(--brand)] px-6 text-sm font-semibold text-white"
+                className="h-11 cursor-pointer rounded-lg border-0 bg-[var(--brand)] px-6 text-sm font-semibold text-white"
               >
-                เข้าสู่ระบบ
+                {tAuth("login")}
               </button>
             </div>
           )}
         </div>
 
-        <div className="flex items-center justify-end gap-3">
+        <div className="flex items-center justify-end gap-1">
+          {languageControl}
+          {isLoggedIn ? <NotificationDesktopPopover /> : null}
           <button
             type="button"
-            aria-label="ค้นหา"
+            aria-label={t("header.searchLabel")}
             onClick={onOpenSearch}
-            className="flex h-11 w-11 items-center justify-center text-white/90"
+            className="flex h-11 w-11 cursor-pointer items-center justify-center border-0 bg-transparent text-white/90"
           >
             <SearchIcon />
           </button>
@@ -273,13 +321,33 @@ function SearchIcon() {
   );
 }
 
-function RefreshIcon() {
+function RefreshIcon({ size = 16 }: { size?: number }) {
   return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden>
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden>
       <path
         d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46A7.939 7.939 0 0 0 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 9.74A7.939 7.939 0 0 0 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"
         fill="currentColor"
       />
+    </svg>
+  );
+}
+
+function EyeIcon({ off, size = 16 }: { off: boolean; size?: number }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+    >
+      <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z" />
+      <circle cx="12" cy="12" r="3" />
+      {off ? <path d="M4 4l16 16" /> : null}
     </svg>
   );
 }

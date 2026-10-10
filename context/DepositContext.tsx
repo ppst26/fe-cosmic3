@@ -1,109 +1,91 @@
 "use client";
 
-import React, {
-  createContext,
-  useCallback,
-  useContext,
-  useMemo,
-  useState,
-} from "react";
-import { WalletModal } from "@/components/WalletModal";
-import { useAuth } from "@/context/AuthContext";
-
-type WalletMainTab = "deposit-withdraw" | "promo" | "history";
-type WalletActionSubTab = "deposit" | "withdraw";
-type WalletHistorySubTab = "deposit-history" | "withdraw-history";
+import React, { createContext, useCallback, useContext, useEffect, useMemo } from "react";
+import { WalletModal, type WalletActionTab } from "@/components/WalletModal";
+import { useAuth } from "@/app/components/auth/AuthProvider";
+import { useOverlayLayer } from "@/app/hooks/useOverlayLayer";
+import { useAuthUI } from "@/context/AuthUIContext";
+import { usePendingTransaction } from "@/context/PendingTransactionContext";
 
 interface DepositContextValue {
   openDeposit: () => void;
   closeDeposit: () => void;
   openWithdraw: () => void;
-  openWalletPromo: () => void;
-  openWalletHistory: (subTab?: WalletHistorySubTab) => void;
+  closeWithdraw: () => void;
   isOpen: boolean;
 }
 
 const DepositContext = createContext<DepositContextValue | null>(null);
 
-function localToday(): string {
-  const d = new Date();
-  const y = d.getFullYear();
-  const m = String(d.getMonth() + 1).padStart(2, "0");
-  const day = String(d.getDate()).padStart(2, "0");
-  return `${y}-${m}-${day}`;
-}
-
+/**
+ * กระเป๋าเงิน (ฝาก / ถอน) — sync ?layer=deposit|withdraw กับ URL (เหมือน glass)
+ * ยังไม่ล็อกอิน → ปิด layer แล้วเปิด login
+ */
 export function DepositProvider({ children }: { children: React.ReactNode }) {
-  const { dispatch } = useAuth();
-  const [isOpen, setIsOpen] = useState(false);
-  const [mainTab, setMainTab] = useState<WalletMainTab>("deposit-withdraw");
-  const [actionSubTab, setActionSubTab] = useState<WalletActionSubTab>("deposit");
-  const [historySubTab, setHistorySubTab] = useState<WalletHistorySubTab>("deposit-history");
+  const { isAuthenticated, isLoading } = useAuth();
+  const { openLogin } = useAuthUI();
+  const { showPendingDeposit, showPendingWithdraw } = usePendingTransaction();
+  const deposit = useOverlayLayer("deposit");
+  const withdraw = useOverlayLayer("withdraw");
+
+  const { close: closeDepositLayer, open: openDepositLayer } = deposit;
+  const { close: closeWithdrawLayer, open: openWithdrawLayer } = withdraw;
+  const requested = deposit.isOpen || withdraw.isOpen;
+
+  /** ?layer=deposit|withdraw โดยไม่ล็อกอิน → ปิดแล้วเปิด login */
+  useEffect(() => {
+    if (!requested || isLoading || isAuthenticated) return;
+    if (deposit.isOpen) closeDepositLayer();
+    else closeWithdrawLayer();
+    openLogin();
+  }, [requested, isLoading, isAuthenticated, deposit.isOpen, closeDepositLayer, closeWithdrawLayer, openLogin]);
+
+  const guard = useCallback(() => {
+    if (isLoading) return false;
+    if (!isAuthenticated) {
+      openLogin();
+      return false;
+    }
+    return true;
+  }, [isAuthenticated, isLoading, openLogin]);
 
   const openDeposit = useCallback(() => {
-    setMainTab("deposit-withdraw");
-    setActionSubTab("deposit");
-    setIsOpen(true);
-  }, []);
+    if (guard()) openDepositLayer();
+  }, [guard, openDepositLayer]);
 
   const openWithdraw = useCallback(() => {
-    setMainTab("deposit-withdraw");
-    setActionSubTab("withdraw");
-    setIsOpen(true);
-  }, []);
-
-  const openWalletPromo = useCallback(() => {
-    setMainTab("promo");
-    setIsOpen(true);
-  }, []);
-
-  const openWalletHistory = useCallback((subTab: WalletHistorySubTab = "deposit-history") => {
-    setMainTab("history");
-    setHistorySubTab(subTab);
-    setIsOpen(true);
-  }, []);
+    if (guard()) openWithdrawLayer();
+  }, [guard, openWithdrawLayer]);
 
   const closeDeposit = useCallback(() => {
-    setIsOpen(false);
-  }, []);
+    if (deposit.isOpen) closeDepositLayer();
+    else if (withdraw.isOpen) closeWithdrawLayer();
+  }, [deposit.isOpen, withdraw.isOpen, closeDepositLayer, closeWithdrawLayer]);
 
-  const onDepositCompleted = useCallback(
-    (amount: number) => {
-      dispatch({ type: "deposit", amount, at: localToday() });
-    },
-    [dispatch],
-  );
-
-  const onWithdrawCompleted = useCallback(
-    (amount: number) => {
-      dispatch({ type: "withdraw", amount, at: localToday() });
-    },
-    [dispatch],
-  );
+  const modalOpen = requested && isAuthenticated;
+  const tab: WalletActionTab = withdraw.isOpen ? "withdraw" : "deposit";
 
   const value = useMemo(
     () => ({
       openDeposit,
       closeDeposit,
       openWithdraw,
-      openWalletPromo,
-      openWalletHistory,
-      isOpen,
+      closeWithdraw: closeDeposit,
+      isOpen: modalOpen,
     }),
-    [isOpen, openDeposit, closeDeposit, openWithdraw, openWalletPromo, openWalletHistory],
+    [modalOpen, openDeposit, closeDeposit, openWithdraw],
   );
 
   return (
     <DepositContext.Provider value={value}>
       {children}
       <WalletModal
-        isOpen={isOpen}
+        isOpen={modalOpen}
         onClose={closeDeposit}
-        initialTab={mainTab}
-        initialSubTab={actionSubTab}
-        initialHistorySubTab={historySubTab}
-        onDepositCompleted={onDepositCompleted}
-        onWithdrawCompleted={onWithdrawCompleted}
+        tab={tab}
+        onTabChange={(next) => (next === "withdraw" ? openWithdraw() : openDeposit())}
+        onDepositCompleted={showPendingDeposit}
+        onWithdrawCompleted={showPendingWithdraw}
       />
     </DepositContext.Provider>
   );

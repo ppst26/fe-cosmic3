@@ -17,7 +17,7 @@ export function HomeCatalogRailSection({
   title: string;
   icon?: string;
   leading?: ReactNode;
-  viewAllHref: string;
+  viewAllHref?: string;
   items: MockSportCategory[];
 }) {
   const router = useRouter();

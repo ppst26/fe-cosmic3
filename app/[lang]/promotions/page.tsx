@@ -1,12 +1,14 @@
 "use client";
 
+import { PromotionsHubPageContent } from "@/app/components/promotions/PromotionsHubPageContent";
 import { SubPageShell } from "@/components/layout/SubPageShell";
-import { PromotionsScreen } from "@/components/promotions/PromotionsScreen";
+import { useT } from "@/lib/i18n/I18nProvider";
 
 export default function PromotionsPage() {
+  const t = useT("promotions");
   return (
-    <SubPageShell title="โปรโมชั่น" nav="promo" sessionMode="default">
-      <PromotionsScreen />
+    <SubPageShell title={t("title")} nav="promo">
+      <PromotionsHubPageContent />
     </SubPageShell>
   );
 }

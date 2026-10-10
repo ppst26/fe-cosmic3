@@ -1,25 +1,21 @@
 "use client";
 
 import { SubPageShell } from "@/components/layout/SubPageShell";
-import { getLotteryCatalogEntry } from "@/data/lotteryCatalog";
-import { getMarket } from "@/data/lottery";
+import { getLotteryCatalogEntry } from "@/app/data/lotteryCatalogMockData";
+import { useT } from "@/lib/i18n/I18nProvider";
 import { LotteryMarketRoundsView } from "./LotteryMarketRoundsView";
 
 type LotteryMarketRoundsPageProps = {
   marketSlug: string;
-  titleFallback?: string;
 };
 
-export function LotteryMarketRoundsPage({
-  marketSlug,
-  titleFallback = "หวย",
-}: LotteryMarketRoundsPageProps) {
-  const catalog = getLotteryCatalogEntry(marketSlug);
-  const legacy = getMarket(marketSlug);
-  const title = catalog?.title ?? legacy?.name ?? titleFallback;
+export function LotteryMarketRoundsPage({ marketSlug }: LotteryMarketRoundsPageProps) {
+  const t = useT("lottery");
+  const entry = getLotteryCatalogEntry(marketSlug);
+  const title = entry ? t(entry.titleKey) : t("markets.generic");
 
   return (
-    <SubPageShell title={title} sessionMode="default">
+    <SubPageShell title={title} backHref="/lottery">
       <LotteryMarketRoundsView marketSlug={marketSlug} />
     </SubPageShell>
   );

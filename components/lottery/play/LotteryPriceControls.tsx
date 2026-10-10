@@ -1,6 +1,7 @@
 "use client";
 
-import { formatBaht } from "@/lib/lottery/format";
+import { formatBaht } from "@/app/components/lottery/lotteryUtils";
+import { useLotteryI18n } from "@/app/components/lottery/useLotteryI18n";
 
 const QUICK_AMOUNTS = [5, 10, 20, 50, 100];
 
@@ -27,8 +28,9 @@ export function LotteryPriceControls({
   total,
   selectedAmount = null,
 }: LotteryPriceControlsProps) {
+  const { t } = useLotteryI18n();
   return (
-    <div className="flex flex-col gap-3" aria-label="ใส่ราคาและส่งโพย">
+    <div className="flex flex-col gap-3" aria-label={t("price.aria")}>
       <div className="flex flex-wrap items-center gap-2">
         <label className="inline-flex items-center gap-2 text-xs text-[var(--text-muted)]">
           <input
@@ -37,21 +39,21 @@ export function LotteryPriceControls({
             checked={sameForAll}
             onChange={(event) => onToggleSameForAll(event.target.checked)}
           />
-          ราคาเท่ากันทั้งหมด
+          {t("price.sameForAll")}
         </label>
         <button
           type="button"
           className="text-xs font-semibold text-[var(--brand)]"
           onClick={onBack}
         >
-          แก้ไขเลข
+          {t("price.edit")}
         </button>
         <span className="ml-auto rounded-full bg-[var(--brand-soft)] px-3 py-1 text-xs font-bold text-[var(--brand)]">
-          รวม {formatBaht(total)}
+          {t("price.total")} {formatBaht(total)}
         </span>
       </div>
 
-      <div className="grid grid-cols-5 gap-2" role="group" aria-label="เลือกราคา">
+      <div className="grid grid-cols-5 gap-2" role="group" aria-label={t("price.chipsAria")}>
         {QUICK_AMOUNTS.map((amount) => (
           <button
             key={amount}
@@ -67,7 +69,7 @@ export function LotteryPriceControls({
 
       <div className="grid grid-cols-2 gap-2">
         <button type="button" className="soft-btn-outline min-h-11 text-sm font-semibold" onClick={onBack}>
-          กลับแก้ไขเลข
+          {t("price.backToNumbers")}
         </button>
         <button
           type="button"
@@ -76,7 +78,7 @@ export function LotteryPriceControls({
           disabled={submitDisabled || isSubmitting}
           aria-busy={isSubmitting}
         >
-          {isSubmitting ? "กำลังส่ง…" : "ยืนยันโพย"}
+          {isSubmitting ? t("price.submitting") : t("price.submit")}
         </button>
       </div>
     </div>

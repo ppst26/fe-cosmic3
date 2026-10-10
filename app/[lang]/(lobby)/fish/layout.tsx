@@ -1,5 +1,11 @@
 import { GamingCategoryLayout } from "@/components/gaming/GamingCategoryLayout";
+import { loadLobbyContent } from "@/lib/api/lobby";
 
-export default function FishLayout({ children }: { children: React.ReactNode }) {
-  return <GamingCategoryLayout categoryId="fish">{children}</GamingCategoryLayout>;
+export default async function FishLayout({ children }: { children: React.ReactNode }) {
+  const content = await loadLobbyContent();
+  return (
+    <GamingCategoryLayout categoryId="fish" content={content}>
+      {children}
+    </GamingCategoryLayout>
+  );
 }

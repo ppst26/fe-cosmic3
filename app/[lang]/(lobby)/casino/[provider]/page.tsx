@@ -1,13 +1,23 @@
-"use client";
+import { localizedRedirect } from "@/lib/i18n/server";
+import { CASINO_ITEMS } from "@/app/data/casinoProvidersData";
+import { buildCasinoProviderPlayHref } from "@/lib/gamePlayPaths";
 
-import { use } from "react";
-import { GamingGamesView } from "@/components/gaming/GamingGamesView";
-
-type PageProps = {
+/**
+ * คาสิโนไม่มีหน้ารายการเกม — redirect ไป /play (ลิงก์เก่า /casino/[slug]) เหมือน glass
+ */
+export default async function CasinoProviderLegacyRedirect({
+  params,
+}: {
   params: Promise<{ provider: string }>;
-};
+}) {
+  const { provider: rawSlug } = await params;
+  const slug = decodeURIComponent(rawSlug).toLowerCase();
 
-export default function CasinoProviderPage({ params }: PageProps) {
-  const { provider } = use(params);
-  return <GamingGamesView categoryId="casino" providerKey={provider} />;
+  const fromCatalog = CASINO_ITEMS.find((item) => item.href.includes(`/play/casino-${slug}-live`));
+  if (fromCatalog) {
+    await localizedRedirect(fromCatalog.href);
+  }
+
+  const title = slug.replace(/-/g, " ");
+  await localizedRedirect(buildCasinoProviderPlayHref({ slug, title, provider: title }));
 }

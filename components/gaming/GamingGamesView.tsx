@@ -3,14 +3,14 @@
 import React, { useMemo, useState } from "react";
 import { notFound } from "next/navigation";
 import { Breadcrumb } from "@/components/Breadcrumb";
+import { GameSearchBar } from "@/components/GameSearchBar";
 import { GamingProviderSidebar } from "@/components/gaming/GamingProviderSidebar";
 import { GamingGameCard } from "@/components/gaming/GamingGameCard";
-import { getGamesForProvider } from "@/data/providerGames";
+import { getGamesByProvider } from "@/app/data/providerGamesData";
+import { resolveCategoryProviderId } from "@/lib/categoryProviderPaths";
+import { useT } from "@/lib/i18n/I18nProvider";
 import { getGamingCategory, type GamingCategoryId } from "@/lib/gamingCategories";
-import {
-  listProvidersForCategory,
-  resolveProviderForCategory,
-} from "@/lib/gamingProviders";
+import { listProvidersForCategory, resolveProviderForCategory } from "@/lib/gamingProviders";
 
 type GameTab = "all" | "favorite";
 
@@ -19,7 +19,17 @@ interface GamingGamesViewProps {
   providerKey: string;
 }
 
+/** สล็อตใช้ slug ตรง · ยิงปลา/เกมไพ่ แปลงผ่าน resolveCategoryProviderId (เหมือน LobbyProviderGamesView ของ glass) */
+function resolveProviderId(categoryId: GamingCategoryId, slug: string): string {
+  if (categoryId === "fish") return resolveCategoryProviderId("fishing", slug);
+  if (categoryId === "card") return resolveCategoryProviderId("cards", slug);
+  if (categoryId === "casino") return resolveCategoryProviderId("casino", slug);
+  return slug;
+}
+
 export function GamingGamesView({ categoryId, providerKey }: GamingGamesViewProps) {
+  const t = useT("home");
+  const gt = useT("games");
   const meta = getGamingCategory(categoryId);
   if (!meta) notFound();
 
@@ -28,16 +38,20 @@ export function GamingGamesView({ categoryId, providerKey }: GamingGamesViewProp
   if (!provider) notFound();
 
   const [tab, setTab] = useState<GameTab>("all");
+  const [searchQuery, setSearchQuery] = useState("");
+  /** เกมโปรดเก็บใน state ของหน้านี้เท่านั้น (เหมือน ProviderGameGrid ของ glass) */
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
 
-  const games = useMemo(
-    () => getGamesForProvider(provider.title, meta.lobbyCategory),
-    [provider.title, meta.lobbyCategory],
-  );
+  const games = useMemo(() => {
+    const all = getGamesByProvider(resolveProviderId(meta.id, providerKey));
+    const q = searchQuery.toLowerCase().trim();
+    if (!q) return all;
+    return all.filter((g) => g.title.toLowerCase().includes(q));
+  }, [meta.id, providerKey, searchQuery]);
 
   const visibleGames = useMemo(() => {
     if (tab === "favorite") {
-      return games.filter((g) => favorites.has(g.id) || g.favorite);
+      return games.filter((g) => favorites.has(g.id) || g.isFavorite);
     }
     return games;
   }, [games, tab, favorites]);
@@ -58,11 +72,17 @@ export function GamingGamesView({ categoryId, providerKey }: GamingGamesViewProp
       <section className="gaming-lobby-panel min-w-0 flex-1 p-3 sm:p-4">
         <Breadcrumb
           items={[
-            { label: "หน้าแรก", href: "/" },
-            { label: meta.breadcrumb, href: meta.basePath },
+            { label: t("categories.home"), href: "/" },
+            { label: t(meta.labelKey), href: meta.basePath },
             { label: provider.title },
           ]}
           shareTitle={provider.title}
+        />
+
+        <GameSearchBar
+          className="mt-3"
+          placeholder={gt("providerGames.searchPlaceholder")}
+          onSearch={setSearchQuery}
         />
 
         <header className="mt-3 flex flex-col gap-3 border-b border-black/[0.06] pb-3 sm:flex-row sm:items-center sm:justify-between">
@@ -86,18 +106,24 @@ export function GamingGamesView({ categoryId, providerKey }: GamingGamesViewProp
         </header>
 
         <p className="mt-2 text-xs text-[var(--text-muted)]">
-          {visibleGames.length} เกม
-          {tab === "favorite" && visibleGames.length === 0
-            ? " — กดหัวใจที่การ์ดเกมเพื่อบันทึกโปรด"
-            : ""}
+          {gt("providerGames.gameCount", { count: visibleGames.length })}
+          {tab === "favorite" && visibleGames.length === 0 ? ` — ${gt("providerGames.favoriteAdd")}` : ""}
         </p>
+
+        {visibleGames.length === 0 && tab === "all" ? (
+          <div className="my-10 text-center">
+            <h3 className="text-base font-medium text-[var(--text-on-light)]">{gt("providerGames.notFoundTitle")}</h3>
+            <p className="mt-1 text-xs text-[var(--text-muted)]">{gt("providerGames.notFoundHint")}</p>
+          </div>
+        ) : null}
 
         <div className="mt-4 grid grid-cols-2 gap-2.5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7">
           {visibleGames.map((game) => (
             <GamingGameCard
               key={game.id}
               game={game}
-              favorite={favorites.has(game.id) || Boolean(game.favorite)}
+              providerLabel={provider.title}
+              favorite={favorites.has(game.id) || Boolean(game.isFavorite)}
               onToggleFavorite={() => toggleFav(game.id)}
             />
           ))}

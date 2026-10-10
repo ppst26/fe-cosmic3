@@ -1,15 +1,17 @@
 "use client";
 
 import Link from "@/lib/i18n/navigation";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { uniquePermutations } from "@/lib/lottery/permutations";
+import { useCallback, useEffect, useEffectEvent, useRef, useState } from "react";
+import { uniquePermutations } from "@/app/components/lottery/lotteryUtils";
+import { useLotteryI18n } from "@/app/components/lottery/useLotteryI18n";
 import type {
+  LotteryMessageKey,
   ThaiLottoBetEntry,
   ThaiLottoBetType,
   ThaiLottoBetTypeId,
   ThaiLottoDigitGroup,
   ThaiLottoDraw,
-} from "@/types/thaiLotto";
+} from "@/app/types/lottery";
 import { ThaiLottoDrawCard } from "./ThaiLottoDrawCard";
 import { ThaiLottoBetTypePicker } from "./ThaiLottoBetTypePicker";
 import { ThaiLottoBetSlip } from "./ThaiLottoBetSlip";
@@ -19,11 +21,10 @@ import { LotteryNumberGrid } from "@/components/lottery/play/LotteryNumberGrid";
 import { LotteryInputModeTabs, type LotteryInputMode } from "@/components/lottery/play/LotteryInputModeTabs";
 import { LotteryPriceControls } from "@/components/lottery/play/LotteryPriceControls";
 import { LotteryPriceStepCard } from "@/components/lottery/play/LotteryPriceStepCard";
+import type { LotteryPriceSlipHandle } from "@/components/lottery/play/LotteryPriceSlipPanel";
 
-const THAI_INPUT_MODES: { id: LotteryInputMode; label: string }[] = [
-  { id: "manual", label: "กรอกเลขเอง" },
-  { id: "grid", label: "เลือกจากแผงเลข" },
-];
+/** แท็บวิธีใส่เลข — ป้ายแปลตอน render (lottery.inputMode.*) */
+const INPUT_MODE_IDS: LotteryInputMode[] = ["manual", "grid"];
 
 function isTypingTarget(target: EventTarget | null): boolean {
   return (
@@ -34,7 +35,7 @@ function isTypingTarget(target: EventTarget | null): boolean {
 
 type ThaiLottoBetBoardProps = {
   draw: ThaiLottoDraw;
-  groups: { id: ThaiLottoDigitGroup; label: string }[];
+  groups: { id: ThaiLottoDigitGroup; labelKey: LotteryMessageKey }[];
   betTypes: ThaiLottoBetType[];
   backHref: string;
   onSubmit?: (entries: ThaiLottoBetEntry[]) => void | Promise<boolean>;
@@ -51,6 +52,8 @@ export function ThaiLottoBetBoard({
   onStepChange,
   isSubmitting = false,
 }: ThaiLottoBetBoardProps) {
+  const { t } = useLotteryI18n();
+  const inputModes = INPUT_MODE_IDS.map((id) => ({ id, label: t(`inputMode.${id}`) }));
   const firstTypeOf = useCallback(
     (group: ThaiLottoDigitGroup) => betTypes.find((type) => type.group === group)?.id,
     [betTypes],
@@ -71,6 +74,7 @@ export function ThaiLottoBetBoard({
   const [step, setStep] = useState<"pick" | "price">("pick");
   const [selectedEntryId, setSelectedEntryId] = useState<string | null>(null);
   const [sameForAll, setSameForAll] = useState(false);
+  const priceSlipRef = useRef<LotteryPriceSlipHandle>(null);
   const entryCounter = useRef(0);
 
   useEffect(() => {
@@ -100,7 +104,7 @@ export function ThaiLottoBetBoard({
     );
 
     if (fresh.length === 0) {
-      setFeedback(`${number} มีในโพยแล้ว`);
+      setFeedback(t("feedback.duplicate", { number }));
       return;
     }
 
@@ -110,14 +114,14 @@ export function ThaiLottoBetBoard({
     });
     setEntries((prev) => [...added, ...prev]);
     setLastAddedIds(added.map((entry) => entry.id));
-    setFeedback(`เพิ่ม ${number} ลงโพย ${fresh.length} รายการ`);
+    setFeedback(t("feedback.added", { number, count: fresh.length }));
   };
 
   const handleUndoLastAdd = () => {
     if (lastAddedIds.length === 0) return;
     setEntries((prev) => prev.filter((entry) => !lastAddedIds.includes(entry.id)));
     setLastAddedIds([]);
-    setFeedback("ย้อนรายการล่าสุดแล้ว");
+    setFeedback(t("feedback.undone"));
   };
 
   const handleDigit = (digit: string) => {
@@ -131,7 +135,7 @@ export function ThaiLottoBetBoard({
     if (next.length < digits) return;
 
     if (isClosed) {
-      setFeedback("ปิดรับแทงแล้ว");
+      setFeedback(t("feedback.closed"));
       return;
     }
 
@@ -164,7 +168,7 @@ export function ThaiLottoBetBoard({
     setEntries((prev) =>
       prev.filter((entry) => !(entry.number === number && selectedTypeIds.includes(entry.typeId))),
     );
-    setFeedback(`เอา ${number} ออกจากโพย`);
+    setFeedback(t("feedback.removed", { number }));
   };
 
   const handleInputModeChange = (mode: LotteryInputMode) => {
@@ -173,31 +177,19 @@ export function ThaiLottoBetBoard({
     setFeedback("");
   };
 
-  const keyboardRef = useRef({
-    inputMode: "manual" as LotteryInputMode,
-    handleDigit: (digit: string) => {
-      void digit;
-    },
-    handleBackspace: () => {},
+  // รองรับแป้นพิมพ์จริงบนจอใหญ่ (เฉพาะแท็บกรอกเลขเอง) — useEffectEvent อ่าน state ล่าสุดโดยไม่ต้องผูก listener ใหม่
+  const onKeyDown = useEffectEvent((event: KeyboardEvent) => {
+    if (inputMode !== "manual") return;
+    if (isTypingTarget(event.target) || event.metaKey || event.ctrlKey || event.altKey) return;
+    if (/^[0-9]$/.test(event.key)) {
+      event.preventDefault();
+      handleDigit(event.key);
+    } else if (event.key === "Backspace") {
+      event.preventDefault();
+      handleBackspace();
+    }
   });
-
   useEffect(() => {
-    keyboardRef.current = { inputMode, handleDigit, handleBackspace };
-  });
-
-  useEffect(() => {
-    const onKeyDown = (event: KeyboardEvent) => {
-      const { inputMode: mode, handleDigit: onDigit, handleBackspace: onBackspace } = keyboardRef.current;
-      if (mode !== "manual") return;
-      if (isTypingTarget(event.target) || event.metaKey || event.ctrlKey || event.altKey) return;
-      if (/^[0-9]$/.test(event.key)) {
-        event.preventDefault();
-        onDigit(event.key);
-      } else if (event.key === "Backspace") {
-        event.preventDefault();
-        onBackspace();
-      }
-    };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
   }, []);
@@ -232,6 +224,7 @@ export function ThaiLottoBetBoard({
         sameForAll || entry.id === selectedEntryId ? { ...entry, amount: clamped } : entry,
       ),
     );
+    if (!sameForAll && selectedEntryId) priceSlipRef.current?.focusNextAfter(selectedEntryId);
   };
 
   const isAmountValid = (amount: number) => amount >= draw.minBet && amount <= draw.maxBet;
@@ -299,6 +292,7 @@ export function ThaiLottoBetBoard({
             }
           >
             <ThaiLottoPricePanel
+              handleRef={priceSlipRef}
               entries={entries}
               betTypes={betTypes}
               selectedEntryId={selectedEntryId}
@@ -317,7 +311,7 @@ export function ThaiLottoBetBoard({
       {step === "pick" ? (
         <section
           className="thai-lotto-panel thai-lotto-layout__input flex h-full min-h-0 flex-col gap-0 overflow-hidden px-1.5 py-2 sm:gap-4 sm:p-4 md:p-5"
-          aria-label="เลือกเลข"
+          aria-label={t("board.pickAria")}
         >
           <div className="thai-lotto-layout__input-body flex min-h-0 flex-1 flex-col gap-2">
             <ThaiLottoBetTypePicker
@@ -339,12 +333,12 @@ export function ThaiLottoBetBoard({
                 <span className="thai-lotto-toggle__track relative h-5 w-9" aria-hidden="true">
                   <span className="thai-lotto-toggle__thumb absolute top-0.5 left-0.5 h-4 w-4 rounded-full" />
                 </span>
-                กลับเลข
+                {t("board.reverse")}
               </button>
             ) : null}
 
             <LotteryInputModeTabs
-              modes={THAI_INPUT_MODES}
+              modes={inputModes}
               activeMode={inputMode}
               onChange={handleInputModeChange}
               panelId="thai-lotto-input-panel"
@@ -376,9 +370,9 @@ export function ThaiLottoBetBoard({
             ) : null}
           </div>
 
-          <div className="thai-lotto-pick-actions grid shrink-0 gap-2 pt-1.5" aria-label="ดำเนินการต่อ">
+          <div className="thai-lotto-pick-actions grid shrink-0 gap-2 pt-1.5" aria-label={t("board.actionsAria")}>
             <Link href={backHref} className="thai-lotto-pick-actions__back soft-btn-outline min-h-11 text-center text-sm font-semibold">
-              กลับหน้าก่อนหน้า
+              {t("board.back")}
             </Link>
             <button
               type="button"
@@ -386,7 +380,7 @@ export function ThaiLottoBetBoard({
               disabled={entries.length === 0 || isClosed}
               onClick={handleGoToPrice}
             >
-              ใส่ราคา
+              {t("board.enterPrice")}
             </button>
           </div>
         </section>

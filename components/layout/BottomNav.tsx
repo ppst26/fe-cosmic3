@@ -2,7 +2,8 @@
 
 import React, { type ReactNode } from "react";
 import { usePathname, useRouter } from "@/lib/i18n/navigation";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/app/components/auth/AuthProvider";
+import { useT } from "@/lib/i18n/I18nProvider";
 import { useAuthUI } from "@/context/AuthUIContext";
 import { useDeposit } from "@/context/DepositContext";
 import { cn } from "@/lib/utils";
@@ -18,13 +19,7 @@ export interface BottomNavProps {
   showSpacer?: boolean;
 }
 
-const NAV_ITEMS: { id: NavId; label: string }[] = [
-  { id: "deposit", label: "ฝาก" },
-  { id: "withdraw", label: "ถอน" },
-  { id: "menu", label: "เมนู" },
-  { id: "cashback", label: "คืนยอด" },
-  { id: "contact", label: "ติดต่อ" },
-];
+const NAV_IDS: NavId[] = ["deposit", "withdraw", "menu", "cashback", "contact"];
 
 function NavIcon({ id }: { id: NavId }) {
   const shapes: Record<NavId, ReactNode> = {
@@ -166,10 +161,10 @@ export function BottomNav({
 }: BottomNavProps) {
   const pathname = usePathname();
   const router = useRouter();
-  const { state } = useAuth();
+  const t = useT("nav");
+  const { isAuthenticated: isLoggedIn } = useAuth();
   const { openLogin } = useAuthUI();
   const { openDeposit, openWithdraw } = useDeposit();
-  const isLoggedIn = state.isAuthenticated;
 
   const resolvedActive =
     active !== undefined
@@ -205,8 +200,8 @@ export function BottomNav({
       case "contact":
         if (onContactClick) {
           onContactClick();
-        } else {
-          alert("เชื่อมต่อฝ่ายบริการลูกค้า 24 ชั่วโมง");
+        } else if (pathname !== "/support") {
+          router.push("/support");
         }
         break;
     }
@@ -222,7 +217,7 @@ export function BottomNav({
       <nav
         className="fixed bottom-0 left-0 right-0 z-[80] lg:hidden pointer-events-none"
         style={{ height: barHeight }}
-        aria-label="เมนูหลัก"
+        aria-label={t("bottomNav.label")}
       >
         <div className="pointer-events-auto absolute inset-x-0 bottom-0 top-0">
           <svg
@@ -249,7 +244,8 @@ export function BottomNav({
                 "max(4px, env(safe-area-inset-left, 0px)) max(4px, env(safe-area-inset-right, 0px))",
             }}
           >
-            {NAV_ITEMS.map(({ id, label }) => {
+            {NAV_IDS.map((id) => {
+              const label = t(`bottomNav.${id}`);
               if (id === "menu") {
                 return (
                   <CenterMenuButton
