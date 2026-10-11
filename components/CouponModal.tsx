@@ -50,13 +50,13 @@ function CouponModalBody({ onClose }: { onClose: () => void }) {
       <div className="fixed inset-0 bg-black/60 transition-opacity" onClick={onClose} aria-hidden="true" />
 
       <div
-        className="relative z-10 w-full max-w-[380px] rounded-[var(--radius-soft-lg)] border border-black/10 bg-[var(--soft-card-elevated)] p-5 text-[var(--text-on-light)] shadow-[0_12px_40px_rgba(45,55,72,0.25)] sm:p-6"
+        className="relative z-10 w-full max-w-[380px] rounded-[var(--radius-soft-lg)] border border-white/10 soft-card-bg p-5 text-[var(--text-on-light)] shadow-[0_12px_40px_rgba(45,55,72,0.25)] sm:p-6"
         role="dialog"
         aria-modal="true"
         aria-labelledby="coupon-modal-title"
         aria-describedby="coupon-modal-desc"
       >
-        <div className="mb-4 flex items-center justify-between border-b border-black/10 pb-3">
+        <div className="mb-4 flex items-center justify-between border-b border-white/10 pb-3">
           <div className="flex items-center gap-2.5">
             <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-[var(--brand-soft)] text-[var(--brand)]">
               <Ticket className="h-4 w-4" />
@@ -75,7 +75,7 @@ function CouponModalBody({ onClose }: { onClose: () => void }) {
             type="button"
             onClick={onClose}
             aria-label={t("coupon.close")}
-            className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border-0 bg-[var(--soft-card)] text-[var(--text-muted)] transition-colors hover:text-[var(--text-on-light)] active:scale-95"
+            className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border-0 soft-panel-bg text-[var(--text-muted)] transition-colors hover:text-[var(--text-on-light)] active:scale-95"
           >
             <X className="h-4 w-4" />
           </button>
@@ -96,7 +96,7 @@ function CouponModalBody({ onClose }: { onClose: () => void }) {
                 placeholder={t("coupon.codePlaceholder")}
                 autoFocus
                 maxLength={COUPON_CODE_MAX_LENGTH}
-                className="h-12 w-full rounded-xl border border-black/10 bg-[var(--soft-card)] px-4 font-mono text-[15px] font-bold uppercase tracking-wider text-[var(--text-on-light)] placeholder:normal-case placeholder:text-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--brand)]/40"
+                className="h-12 w-full rounded-xl border border-white/10 soft-panel-bg px-4 font-mono text-[15px] font-bold uppercase tracking-wider text-[var(--text-on-light)] placeholder:normal-case placeholder:text-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--brand)]/40"
               />
             </div>
           </div>

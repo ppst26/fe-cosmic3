@@ -89,7 +89,7 @@ function ReferralEarningContent({
             }}
             aria-pressed={period === option.id}
             className={`h-10 shrink-0 rounded-lg px-3 text-xs font-semibold ${
-              period === option.id ? "bg-[var(--brand)] text-white" : "bg-[var(--soft-card-elevated)]"
+              period === option.id ? "bg-[var(--brand)] text-white" : "soft-card-bg"
             }`}
           >
             {t(option.labelKey)}

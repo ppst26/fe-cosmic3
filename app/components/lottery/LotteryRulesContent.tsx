@@ -44,7 +44,7 @@ export function LotteryRulesContent({ marketSlug }: { marketSlug: string }) {
           {rules.rows.map((row) => (
             <li
               key={row.id}
-              className="flex items-center justify-between gap-3 border-b border-black/[0.06] py-2.5 last:border-b-0"
+              className="flex items-center justify-between gap-3 border-b border-white/[0.06] py-2.5 last:border-b-0"
             >
               <span className="min-w-0 text-sm text-[var(--text-on-light)]">{t(row.labelKey)}</span>
               <span className="shrink-0 text-sm font-semibold tabular-nums text-[var(--brand-strong)]">
@@ -61,7 +61,7 @@ export function LotteryRulesContent({ marketSlug }: { marketSlug: string }) {
             {t("rules.limitsHeading")}
           </h2>
           <dl className="m-0">
-            <div className="flex items-center justify-between gap-3 border-b border-black/[0.06] py-2.5">
+            <div className="flex items-center justify-between gap-3 border-b border-white/[0.06] py-2.5">
               <dt className="text-sm text-[var(--text-muted)]">{t("rules.minBet")}</dt>
               <dd className="m-0 text-sm tabular-nums text-[var(--text-on-light)]">{formatBaht(rules.minBet)}</dd>
             </div>

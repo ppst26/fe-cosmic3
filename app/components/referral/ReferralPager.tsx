@@ -11,7 +11,7 @@ type ReferralPagerProps = {
 export function ReferralPager({ page, totalPages, onPageChange, "aria-label": ariaLabel }: ReferralPagerProps) {
   if (totalPages <= 1) return null;
   const btn =
-    "h-9 min-w-9 rounded-[var(--radius-soft-sm)] bg-[var(--soft-card-elevated)] px-3 text-sm font-semibold text-[var(--text-on-light)] disabled:opacity-40";
+    "h-9 min-w-9 rounded-[var(--radius-soft-sm)] soft-card-bg px-3 text-sm font-semibold text-[var(--text-on-light)] disabled:opacity-40";
   return (
     <nav aria-label={ariaLabel} className="flex items-center gap-2">
       <button type="button" className={btn} disabled={page <= 1} onClick={() => onPageChange(page - 1)} aria-label="‹">

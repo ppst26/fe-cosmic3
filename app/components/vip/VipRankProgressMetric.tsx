@@ -53,7 +53,7 @@ export function VipRankProgressMetric({
       </div>
       <div
         className={cn(
-          "mt-1.5 h-2.5 overflow-hidden rounded-full bg-[var(--soft-card-elevated)]",
+          "mt-1.5 h-2.5 overflow-hidden rounded-full soft-card-bg",
           locked && "opacity-60",
         )}
       >

@@ -6,7 +6,7 @@ type StatusAction = { label: string; href?: string; onClick?: () => void };
 /** หน้าสถานะเต็มจอ (404 / error / loading) — พื้นและการ์ดใช้ token ของ sport (Orange Light Solid) */
 export function StatusPageShell({ children }: { children: ReactNode }) {
   return (
-    <main className="flex min-h-[70dvh] w-full items-center justify-center bg-[var(--body)] px-4 py-10">
+    <main className="flex min-h-[70dvh] w-full items-center justify-center app-bg px-4 py-10">
       {children}
     </main>
   );

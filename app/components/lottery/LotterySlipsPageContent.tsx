@@ -39,7 +39,7 @@ const PAGE_SIZE = 20;
 const ALL = "all";
 
 const SELECT_CLASS =
-  "h-10 w-full rounded-[var(--radius-soft-sm)] border border-black/[0.08] bg-[var(--soft-card-elevated)] px-3 text-sm text-[var(--text-on-light)] outline-none focus:border-[var(--brand)]";
+  "h-10 w-full rounded-[var(--radius-soft-sm)] border border-white/[0.08] soft-card-bg px-3 text-sm text-[var(--text-on-light)] outline-none focus:border-[var(--brand)]";
 
 /** ค่าจาก URL ที่ไม่รู้จัก → default (กัน ?market=… ที่แต่งมา) */
 function sanitize(key: ParamKey, raw: string): string {
@@ -345,7 +345,7 @@ export function LotterySlipsPageContent() {
             {cursor ? (
               <div className="flex flex-col items-center gap-2">
                 {moreError ? (
-                  <p className="m-0 text-sm text-red-600" role="alert">
+                  <p className="m-0 text-sm text-red-400" role="alert">
                     {t("slips.loadMoreError")}
                   </p>
                 ) : null}

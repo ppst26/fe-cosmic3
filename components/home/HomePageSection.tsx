@@ -24,7 +24,7 @@ export function HomePageSection({
   contentClassName = "px-3 pb-4 pt-3 md:px-6 md:pb-5 md:pt-4",
 }: HomePageSectionProps) {
   return (
-    <section className={`mt-3 bg-gray-100 md:mt-0 ${className}`.trim()}>
+    <section className={`mt-3 bg-[var(--soft-canvas)] md:mt-0 ${className}`.trim()}>
       <SectionHeader
         title={title}
         icon={icon}

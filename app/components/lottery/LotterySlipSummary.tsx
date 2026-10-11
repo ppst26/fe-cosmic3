@@ -33,7 +33,7 @@ function groupSlipLines(lines: LotterySlipLine[]) {
 }
 
 const PILL =
-  "rounded-[var(--radius-soft-sm)] bg-[var(--soft-card)] px-2 py-1 text-center text-xs font-semibold tabular-nums";
+  "rounded-[var(--radius-soft-sm)] soft-panel-bg px-2 py-1 text-center text-xs font-semibold tabular-nums";
 
 /**
  * สรุปโพยหลังส่งแทง (หัวงวด · รายการแยกประเภท · ยอดรวม · แทงต่อ)
@@ -108,7 +108,7 @@ export function LotterySlipSummary({ slip, continuePlayHref }: LotterySlipSummar
       <div className="flex flex-col gap-2.5">
         {groups.map((group) => (
           <section key={group.typeLabelKey} className="lottery-soft-card overflow-hidden">
-            <div className="flex items-center justify-between gap-3 bg-[var(--soft-card)] px-3.5 py-2.5 sm:px-4">
+            <div className="flex items-center justify-between gap-3 soft-panel-bg px-3.5 py-2.5 sm:px-4">
               <span className="text-sm font-bold text-[var(--text-on-light)]">{t(group.typeLabelKey)}</span>
               <span className="shrink-0 text-xs text-[var(--text-muted)]">
                 {t("slip.itemCount", { count: group.items.length })}

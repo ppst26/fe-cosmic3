@@ -75,7 +75,7 @@ export function LotterySlipCard({ slip, now }: { slip: LotterySubmittedSlip; now
           : t("slips.card.drawAt", { date: dateTime(slip.drawAt) })}
       </p>
 
-      <div className="flex items-end justify-between gap-3 border-t border-black/[0.06] pt-2">
+      <div className="flex items-end justify-between gap-3 border-t border-white/[0.06] pt-2">
         <div className="min-w-0">
           <p className="m-0 text-xs text-[var(--text-muted)]">
             {t("slip.itemCount", { count: slip.lines.length })}

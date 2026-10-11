@@ -82,7 +82,7 @@ export function HallOfFame({ datasets }: HallOfFameProps) {
                 className={`min-h-8 cursor-pointer whitespace-nowrap rounded-full border-0 px-4 py-1.5 text-xs font-semibold transition-colors sm:text-sm ${
                   selected
                     ? "bg-[var(--brand)] text-white"
-                    : "bg-[var(--soft-card-elevated)] text-[var(--tab-inactive)] hover:bg-[var(--brand-soft)]"
+                    : "soft-card-bg text-[var(--tab-inactive)] hover:bg-[var(--brand-soft)]"
                 }`}
               >
                 {tab.label}
@@ -147,7 +147,7 @@ export function HallOfFame({ datasets }: HallOfFameProps) {
                       <span
                         className={`inline-block rounded-full px-2.5 py-1 text-[11px] font-black sm:px-3 sm:text-xs ${
                           row.winMultiple >= 100
-                            ? "bg-amber-100 text-amber-700"
+                            ? "bg-amber-100 text-amber-400"
                             : "bg-[var(--brand-soft)] text-[var(--brand-strong)]"
                         }`}
                       >

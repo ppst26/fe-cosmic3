@@ -35,7 +35,7 @@ export function NotificationDesktopPopover() {
       {open ? (
         <div
           role="dialog"
-          className="soft-card absolute right-0 top-full z-50 mt-2 w-[340px] animate-scale-up bg-[var(--soft-card-elevated)] p-3 text-[var(--text-on-light)]"
+          className="soft-card absolute right-0 top-full z-50 mt-2 w-[340px] animate-scale-up soft-card-bg p-3 text-[var(--text-on-light)]"
         >
           <NotificationCenterPanel variant="popover" />
         </div>

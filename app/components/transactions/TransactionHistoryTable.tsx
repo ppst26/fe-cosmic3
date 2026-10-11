@@ -306,7 +306,7 @@ export function TransactionHistoryTable({
       <div ref={scrollRef} onScroll={updateEdges} className="overflow-x-auto">
         <table className={`w-full border-collapse text-left text-xs sm:text-sm ${minWidthForKind(kind)}`}>
           <thead>
-            <tr className="border-b border-black/[0.08] bg-[var(--soft-card)]">
+            <tr className="border-b border-white/[0.08] soft-panel-bg">
               {columns.map((col) => (
                 <th key={col.key} className="whitespace-nowrap px-3 py-2.5 text-xs font-semibold text-[var(--text-muted)]">
                   {t(col.labelKey)}
@@ -323,7 +323,7 @@ export function TransactionHistoryTable({
               </tr>
             ) : (
               items.map((item) => (
-                <tr key={item.id} className="border-b border-black/[0.05] last:border-0">
+                <tr key={item.id} className="border-b border-white/[0.05] last:border-0">
                   {columns.map((col) => (
                     <td key={col.key} className="px-3 py-2.5 text-[var(--text-on-light)]">
                       {col.render(item)}

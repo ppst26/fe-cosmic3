@@ -66,7 +66,7 @@ function ReferralTabs({ refCode, overview }: { refCode: string; overview: Referr
             aria-selected={tab === id}
             onClick={() => setTab(id)}
             className={`h-10 rounded-[var(--radius-soft-sm)] text-xs font-semibold sm:text-sm ${
-              tab === id ? "soft-btn-primary" : "bg-[var(--soft-card)] text-[var(--text-on-light)]"
+              tab === id ? "soft-btn-primary" : "soft-panel-bg text-[var(--text-on-light)]"
             }`}
           >
             {t(labelKey)}

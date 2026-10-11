@@ -99,7 +99,7 @@ function ProfileAccountView({
             aria-selected={activeTab === id}
             onClick={() => selectTab(id)}
             className={`h-10 rounded-[var(--radius-soft-sm)] text-xs font-semibold sm:text-sm ${
-              activeTab === id ? "soft-btn-primary" : "bg-[var(--soft-card)] text-[var(--text-on-light)]"
+              activeTab === id ? "soft-btn-primary" : "soft-panel-bg text-[var(--text-on-light)]"
             }`}
           >
             {t(labelKey)}
@@ -280,7 +280,7 @@ function LogoutButton() {
             type="button"
             disabled={loading}
             onClick={() => setOpen(false)}
-            className="h-11 flex-1 cursor-pointer rounded-lg border-0 bg-[var(--soft-card)] text-sm font-extrabold text-[var(--text-on-light)] disabled:opacity-50"
+            className="h-11 flex-1 cursor-pointer rounded-lg border-0 soft-panel-bg text-sm font-extrabold text-[var(--text-on-light)] disabled:opacity-50"
           >
             {tAuth("logoutConfirm.stay")}
           </button>

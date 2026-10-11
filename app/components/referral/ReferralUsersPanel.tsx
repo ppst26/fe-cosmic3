@@ -42,7 +42,7 @@ function ReferralUsersList({ users }: { users: ReferralUserRow[] }) {
     <div className="space-y-2">
       <div className="flex items-center justify-between gap-2">
         <h2 className="text-sm font-semibold text-[var(--text-on-light)]">{t("tabs.users")}</h2>
-        <span className="rounded-full bg-[var(--soft-card)] px-2.5 py-0.5 text-xs font-semibold text-[var(--text-muted)]">
+        <span className="rounded-full soft-panel-bg px-2.5 py-0.5 text-xs font-semibold text-[var(--text-muted)]">
           {fmt.people(total)}
         </span>
       </div>

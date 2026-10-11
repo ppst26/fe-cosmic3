@@ -34,7 +34,7 @@ export function HeroCarousel({ items, className = "" }: HeroCarouselProps) {
 
   return (
     <section
-      className={`relative w-full overflow-hidden bg-[#ebebeb] ${className}`.trim()}
+      className={`relative w-full overflow-hidden bg-[var(--soft-canvas)] ${className}`.trim()}
       aria-label={t("peekCarousel.ariaLabel")}
     >
       <div className="relative mx-auto aspect-[3/1] max-h-[160px] w-full max-w-[1200px] md:aspect-auto md:h-[clamp(240px,24vw,320px)] md:max-h-none">
@@ -70,7 +70,7 @@ export function HeroCarousel({ items, className = "" }: HeroCarouselProps) {
               aria-current={index === active}
               onClick={() => setActive(index)}
               className={`h-1 w-5 cursor-pointer rounded-sm border-0 p-0 ${
-                index === active ? "bg-[#515151]" : "bg-[#c4c4c4]"
+                index === active ? "bg-[var(--lavender-300)]" : "bg-white/25"
               }`}
             />
           ))}

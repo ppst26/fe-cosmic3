@@ -53,7 +53,7 @@ export function JackpotSidebar({ tournaments, promotions }: JackpotSidebarProps)
                 </>
               );
               const tileClass =
-                "group flex flex-col items-center justify-center rounded-[var(--radius-soft-md)] bg-[var(--soft-card)] p-1.5 transition hover:bg-[var(--brand-soft)]";
+                "group flex flex-col items-center justify-center rounded-[var(--radius-soft-md)] soft-panel-bg p-1.5 transition hover:bg-[var(--brand-soft)]";
               return act.href ? (
                 <Link key={act.id} href={toSportHref(act.href)} className={tileClass}>
                   {tile}
@@ -87,10 +87,10 @@ export function JackpotSidebar({ tournaments, promotions }: JackpotSidebarProps)
               <Link
                 key={promo.id}
                 href={toSportHref(promo.href)}
-                className="group flex items-center gap-3 rounded-[var(--radius-soft-lg)] bg-[var(--soft-card)] p-3 transition hover:bg-[var(--brand-soft)]"
+                className="group flex items-center gap-3 rounded-[var(--radius-soft-lg)] soft-panel-bg p-3 transition hover:bg-[var(--brand-soft)]"
               >
                 {promo.bannerSrc ? (
-                  <div className="relative h-10 w-16 shrink-0 overflow-hidden rounded-lg bg-[var(--soft-card-elevated)]">
+                  <div className="relative h-10 w-16 shrink-0 overflow-hidden rounded-lg soft-card-bg">
                     <Image src={promo.bannerSrc} alt="" fill sizes="64px" className="object-cover" />
                   </div>
                 ) : null}

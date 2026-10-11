@@ -81,7 +81,7 @@ export function CategoryNav() {
       </nav>
 
       <nav
-        className="category-nav-mobile block border-b border-[#e8e8e8] bg-white md:hidden"
+        className="category-nav-mobile block border-b border-[var(--border-soft)] soft-card-bg md:hidden"
         aria-label={t("categoryNav.ariaLabel")}
       >
         <div className="mx-auto max-w-[1440px] px-2">

@@ -115,7 +115,7 @@ export function LotteryPriceSlipPanel({
                       onFocus={() => onSelectEntry(entry.id)}
                       onClick={(event) => event.stopPropagation()}
                       onChange={(event) => onAmountChange(entry.id, parseAmount(event.target.value))}
-                      className="thai-lotto-amount__input h-9 w-14 rounded-[var(--radius-soft-sm)] bg-[var(--soft-card-elevated)] text-center text-sm outline-none"
+                      className="thai-lotto-amount__input h-9 w-14 rounded-[var(--radius-soft-sm)] soft-card-bg text-center text-sm outline-none"
                     />
                     <button
                       type="button"

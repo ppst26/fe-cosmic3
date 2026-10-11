@@ -47,7 +47,7 @@ export function GamingProvidersView({ categoryId }: GamingProvidersViewProps) {
         onSearch={setSearchQuery}
       />
 
-      <header className="mt-3 mb-4 flex flex-wrap items-end justify-between gap-2 border-b border-black/[0.06] pb-3">
+      <header className="mt-3 mb-4 flex flex-wrap items-end justify-between gap-2 border-b border-white/[0.06] pb-3">
         <h1 className="text-xl font-black text-[var(--text-on-light)] sm:text-2xl">{title}</h1>
         <p className="text-sm font-bold text-[var(--brand)]">
           {t("categoryProviders.providerCount", { count: providers.length })}

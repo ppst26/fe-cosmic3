@@ -46,7 +46,7 @@ export function PendingTransactionDialog({ payload, onClose }: PendingTransactio
         <button
           type="button"
           onClick={onClose}
-          className="absolute right-3 top-3 flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg border-0 bg-[var(--soft-card)] text-[var(--text-muted)] transition-colors hover:text-[var(--text-on-light)]"
+          className="absolute right-3 top-3 flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg border-0 soft-panel-bg text-[var(--text-muted)] transition-colors hover:text-[var(--text-on-light)]"
           aria-label={t("pending.close")}
         >
           <X className="w-4 h-4" />
@@ -72,7 +72,7 @@ export function PendingTransactionDialog({ payload, onClose }: PendingTransactio
           <span className="text-[var(--brand)]">฿</span> {payload.amountDisplay}
         </p>
 
-        <hr className="my-5 border-black/[0.06]" />
+        <hr className="my-5 border-white/[0.06]" />
 
         <dl className="space-y-3 text-sm">
           {payload.rows.map((row) => {
@@ -91,7 +91,7 @@ export function PendingTransactionDialog({ payload, onClose }: PendingTransactio
                     <button
                       type="button"
                       onClick={handleCopyRef}
-                      className="flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center rounded-md border-0 bg-[var(--soft-card)] text-[var(--brand)] hover:bg-[var(--brand-soft)]"
+                      className="flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center rounded-md border-0 soft-panel-bg text-[var(--brand)] hover:bg-[var(--brand-soft)]"
                       aria-label={t("pending.copyReference")}
                     >
                       <Copy className="h-3.5 w-3.5" />

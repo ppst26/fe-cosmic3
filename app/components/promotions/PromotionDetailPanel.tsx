@@ -44,7 +44,7 @@ function PromotionDetailBanner({
   return (
     <section aria-label={content.bannerTitle}>
       {hasBannerImage ? (
-        <div className="relative aspect-[2.35/1] w-full overflow-hidden bg-[var(--soft-card-elevated)]">
+        <div className="relative aspect-[2.35/1] w-full overflow-hidden soft-card-bg">
           <Image
             src={content.bannerSrc!}
             alt=""
@@ -77,7 +77,7 @@ function PromotionDetailBody({
   const t = useT("promotions");
   return (
     <section
-      className="space-y-4 border-t border-black/[0.06] px-4 py-4"
+      className="space-y-4 border-t border-white/[0.06] px-4 py-4"
       aria-label={t("detail.title")}
     >
       <h3 className="text-base font-semibold">{t("detail.heading")}</h3>
@@ -107,7 +107,7 @@ function PromotionDetailBlockRow({
 
   return (
     <>
-      {block.showDividerBefore ? <hr className="border-black/[0.06]" /> : null}
+      {block.showDividerBefore ? <hr className="border-white/[0.06]" /> : null}
       <div className="min-w-0">
         <h4 className="text-sm font-semibold">{title}</h4>
         {description ? (

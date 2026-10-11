@@ -24,7 +24,7 @@ export function NotificationCenterPanel({ variant = "popover" }: NotificationCen
   return (
     <div className="flex min-h-0 flex-col gap-3">
       <div
-        className="grid grid-cols-3 gap-1 rounded-[var(--radius-soft-md)] bg-[var(--soft-card)] p-1"
+        className="grid grid-cols-3 gap-1 rounded-[var(--radius-soft-md)] soft-panel-bg p-1"
         role="tablist"
         aria-label={t("notifications.tabsLabel")}
       >

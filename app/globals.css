@@ -3,37 +3,91 @@
 @import "./styles/lottery-thai-sport.css";
 
 :root,
-[data-theme="orange"] {
-  /* Soft UI — canvas ลึกสุด → card อ่อนขึ้นเรื่อยๆ (solid ไม่ใช้ gradient พื้นผิว) */
-  --soft-canvas: #d4dae5;
-  --soft-surface: #dfe4ed;
-  --soft-card: #e9edf4;
-  --soft-card-elevated: #f3f6fa;
-  --soft-chrome: #323c4d;
+[data-theme="lavender"] {
+  /* Dark Lavender / Plum — ดูรายละเอียดเต็มใน design.md */
+  --bg-canvas: #0d0b12;
+  --bg-deep: #09080e;
+  --bg-plum: #1c1726;
+  --bg-plum-soft: #2e243a;
 
-  --body: var(--soft-canvas);
-  --header: var(--soft-chrome);
-  --footer: var(--soft-chrome);
+  --surface-1: rgba(37, 29, 48, 0.84);
+  --surface-2: rgba(47, 37, 60, 0.88);
+  --surface-3: rgba(65, 49, 79, 0.80);
+  --surface-input: rgba(46, 36, 58, 0.76);
+  --surface-hover: rgba(57, 45, 70, 0.92);
 
-  --notice-bg: #4a5568;
-  --brand: #f5871e;
-  --brand-strong: #fe8401;
-  --brand-soft: #fff0e3;
-  --text-on-light: #4a5568;
-  --text-on-dark: #f8fafc;
-  --text-muted: #7b8798;
+  --lavender-200: #e1ccff;
+  --lavender-300: #d4b9ff;
+  --lavender-400: #c9aafb;
+  --lavender-500: #b88bfa;
+  --violet-500: #9361e8;
+  --violet-600: #7b4fc3;
+  --violet-700: #624099;
 
-  --input: var(--soft-card-elevated);
-  --tab-inactive: #8b95a5;
-  --icon-muted: #6b7280;
+  --glow-lavender: rgba(183, 137, 242, 0.16);
+  --glow-violet: rgba(123, 79, 195, 0.15);
+  --glow-plum: rgba(122, 59, 143, 0.16);
+  --glow-peach: rgba(246, 169, 139, 0.18);
+  --glow-rose: rgba(200, 122, 174, 0.13);
+
+  --text-primary: #f7f4fa;
+  --text-secondary: #c0b6c8;
+  --text-accent: #d3b3ff;
+
+  --border-soft: rgba(255, 255, 255, 0.075);
+  --border-medium: rgba(226, 210, 255, 0.14);
+  --border-strong: rgba(226, 210, 255, 0.22);
+  --border-focus: rgba(207, 171, 255, 0.50);
+
+  --focus-ring: 0 0 0 3px rgba(190, 147, 246, 0.10);
+  --shadow-primary: 0 7px 18px rgba(128, 76, 182, 0.18);
+
+  /* Soft UI — semantic alias ที่ component เดิมอ้างอิง (soft-panel/soft-card/...) */
+  --soft-canvas: var(--bg-canvas);
+  --soft-surface: var(--bg-plum);
+  --soft-card: var(--surface-1);
+  --soft-card-elevated: var(--surface-2);
+  --soft-chrome: var(--bg-deep);
+
+  --body: var(--bg-canvas);
+  --header: var(--bg-deep);
+  --footer: var(--bg-deep);
+
+  --notice-bg: var(--surface-2);
+  --brand: var(--violet-500);
+  --brand-strong: var(--violet-600);
+  --brand-soft: rgba(201, 170, 251, 0.14);
+  /* หมายเหตุ: ชื่อตัวแปรนี้คงไว้ตามการใช้งานเดิมทั่วโค้ด (ข้อความหลักบน soft-card/soft-panel)
+     แต่พื้นผิวการ์ดเป็นสีเข้มในธีมนี้ จึงต้องชี้ไปที่สีข้อความสว่างเพื่อให้อ่านออก */
+  --text-on-light: var(--text-primary);
+  --text-on-dark: var(--text-primary);
+  --text-on-brand: #19131f;
+  --text-muted: var(--text-secondary);
+
+  --input: var(--surface-input);
+  --tab-inactive: var(--text-muted);
+  --icon-muted: var(--text-muted);
+
+  /* Surface card variants (surface-card / surface-card-glow / surface-card-active) */
+  --surface-text: var(--text-primary);
+  --surface-text-muted: var(--text-secondary);
+  --surface-border-active: rgba(164, 60, 255, 0.45);
 
   --radius-soft-sm: 14px;
   --radius-soft-md: 18px;
   --radius-soft-lg: 22px;
   --radius-soft-xl: 28px;
 
-  --shadow-soft: 0 6px 18px rgba(45, 55, 72, 0.08);
-  --shadow-soft-sm: 0 2px 10px rgba(45, 55, 72, 0.06);
+  --shadow-soft: 0 12px 30px rgba(0, 0, 0, 0.30);
+  --shadow-soft-sm: 0 7px 18px rgba(0, 0, 0, 0.24);
+
+  /* บรรยากาศพื้นหลังหลัก — ดู design.md หัวข้อ 3 "Background recipe" */
+  --gradient-page:
+    radial-gradient(55rem 36rem at 14% 10%, rgba(141, 96, 190, 0.16), transparent 62%),
+    radial-gradient(46rem 34rem at 92% 16%, rgba(104, 55, 157, 0.13), transparent 60%),
+    radial-gradient(44rem 42rem at 16% 86%, rgba(104, 55, 135, 0.16), transparent 66%),
+    radial-gradient(34rem 28rem at 78% 75%, rgba(81, 47, 113, 0.10), transparent 70%),
+    linear-gradient(180deg, #15101d 0%, var(--bg-canvas) 46%, var(--bg-deep) 100%);
 }
 
 @theme inline {
@@ -46,9 +100,14 @@ html {
 }
 
 body {
-  background: var(--body);
+  background: var(--gradient-page);
   color: var(--text-on-light);
   font-family: var(--font-kanit), Kanit, sans-serif;
+}
+
+/* ใช้กับ wrapper เต็มหน้าจอที่เป็น opaque layer แรกเหนือ body (บัง gradient ของ body) */
+@utility app-bg {
+  background: var(--gradient-page);
 }
 
 @media (max-width: 1023px) {
@@ -57,17 +116,43 @@ body {
   }
 }
 
+/* การ์ด/panel ทั่วไป — ใช้ surface gradient แทนสีทึบ (ดู design.md 4.1 surface card variants) */
 @utility soft-panel {
-  background-color: var(--soft-card);
+  background:
+    radial-gradient(circle at 70% 8%, rgba(177, 97, 255, 0.10), transparent 45%),
+    linear-gradient(145deg, #241a30 0%, #1a1322 55%, #15101c 100%);
+  border: 1px solid var(--border-soft);
   border-radius: var(--radius-soft-lg);
-  box-shadow: var(--shadow-soft-sm);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.03),
+    var(--shadow-soft-sm);
   color: var(--text-on-light);
 }
 
+/* การ์ดเด่น/elevated — ใช้ base surface เดียวกับ soft-panel (ไม่ใช้ purple glow สองจุดเป็นค่าเริ่มต้น เพราะดูจัดเกินไปเมื่อวางซ้อนกันหลายใบ) */
 @utility soft-card {
-  background-color: var(--soft-card-elevated);
+  background:
+    radial-gradient(circle at 70% 8%, rgba(177, 97, 255, 0.10), transparent 45%),
+    linear-gradient(145deg, #241a30 0%, #1a1322 55%, #15101c 100%);
+  border: 1px solid var(--border-soft);
   border-radius: var(--radius-soft-md);
-  box-shadow: var(--shadow-soft-sm);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.03),
+    var(--shadow-soft-sm);
+  color: var(--text-on-light);
+}
+
+/* Glow เด่น — ใช้เฉพาะจุดที่ต้องการดึงดูดสายตาเป็นพิเศษ (promo เด่น, selected state) ไม่ใช่ค่าเริ่มต้นของการ์ดทั่วไป */
+@utility soft-card-glow {
+  background:
+    radial-gradient(circle at 65% 10%, rgba(213, 120, 255, 0.16) 0%, rgba(141, 61, 194, 0.10) 26%, transparent 52%),
+    radial-gradient(circle at 15% 85%, rgba(115, 48, 255, 0.09), transparent 48%),
+    linear-gradient(145deg, #2b1839 0%, #1b1327 55%, #17111f 100%);
+  border: 1px solid rgba(189, 111, 255, 0.16);
+  border-radius: var(--radius-soft-md);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.035),
+    var(--shadow-soft-sm);
   color: var(--text-on-light);
 }
 
@@ -75,26 +160,216 @@ body {
   color: var(--text-on-light);
 }
 
+/* เวอร์ชัน background-only ของ soft-panel/soft-card — ใช้แทน bg-[var(--soft-card)] / bg-[var(--soft-card-elevated)]
+   (Tailwind arbitrary bg-[var(...)] คอมไพล์เป็น background-color ซึ่งรับ gradient ไม่ได้ ต้องใช้ class นี้แทน) */
+@utility soft-panel-bg {
+  background:
+    radial-gradient(circle at 70% 8%, rgba(177, 97, 255, 0.10), transparent 45%),
+    linear-gradient(145deg, #241a30 0%, #1a1322 55%, #15101c 100%);
+}
+
+@utility soft-card-bg {
+  background:
+    radial-gradient(circle at 70% 8%, rgba(177, 97, 255, 0.10), transparent 45%),
+    linear-gradient(145deg, #241a30 0%, #1a1322 55%, #15101c 100%);
+}
+
+@utility soft-card-glow-bg {
+  background:
+    radial-gradient(circle at 65% 10%, rgba(213, 120, 255, 0.16) 0%, rgba(141, 61, 194, 0.10) 26%, transparent 52%),
+    radial-gradient(circle at 15% 85%, rgba(115, 48, 255, 0.09), transparent 48%),
+    linear-gradient(145deg, #2b1839 0%, #1b1327 55%, #17111f 100%);
+}
+
 @utility soft-btn-primary {
-  background-color: var(--brand);
-  color: #fff;
+  background: linear-gradient(180deg, var(--lavender-300) 0%, var(--lavender-400) 100%);
+  color: var(--text-on-brand);
+  border: 1px solid rgba(255, 255, 255, 0.34);
   border-radius: var(--radius-soft-sm);
-  box-shadow: 0 4px 12px rgba(245, 135, 30, 0.35);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.48),
+    var(--shadow-primary);
+  cursor: pointer;
+  transition:
+    filter 0.16s ease,
+    box-shadow 0.16s ease,
+    transform 0.16s ease;
+}
+.soft-btn-primary:hover:not(:disabled):not(.is-disabled) {
+  filter: brightness(1.04);
+}
+.soft-btn-primary:active:not(:disabled):not(.is-disabled) {
+  transform: scale(0.985);
 }
 
 @utility soft-btn-outline {
   background-color: var(--soft-card-elevated);
-  color: var(--brand-strong);
-  border: 2px solid rgba(245, 135, 30, 0.45);
+  color: var(--lavender-300);
+  border: 2px solid rgba(201, 170, 251, 0.40);
   border-radius: var(--radius-soft-sm);
+  cursor: pointer;
+  transition:
+    background-color 0.16s ease,
+    border-color 0.16s ease,
+    transform 0.16s ease;
+}
+.soft-btn-outline:hover:not(:disabled):not(.is-disabled) {
+  background-color: var(--surface-hover);
+  border-color: rgba(201, 170, 251, 0.6);
+}
+.soft-btn-outline:active:not(:disabled):not(.is-disabled) {
+  transform: scale(0.985);
 }
 
-/* ปุ่มหลัก (แทน class legacy จากธีม BP) */
+/* ปุ่มหลัก (แทน class legacy จากธีม BP) — เหมือน soft-btn-primary ทุกประการ */
 @utility button-dark-purple {
-  background-color: var(--brand);
-  color: #fff;
+  background: linear-gradient(180deg, var(--lavender-300) 0%, var(--lavender-400) 100%);
+  color: var(--text-on-brand);
+  border: 1px solid rgba(255, 255, 255, 0.34);
   border-radius: var(--radius-soft-sm);
-  box-shadow: 0 4px 12px rgba(245, 135, 30, 0.35);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.48),
+    var(--shadow-primary);
+  cursor: pointer;
+  transition:
+    filter 0.16s ease,
+    box-shadow 0.16s ease,
+    transform 0.16s ease;
+}
+.button-dark-purple:hover:not(:disabled):not(.is-disabled) {
+  filter: brightness(1.04);
+}
+.button-dark-purple:active:not(:disabled):not(.is-disabled) {
+  transform: scale(0.985);
+}
+
+/* Focus ring และ disabled แบบเดียวกันทั้งแอป — ครอบคลุมทุกปุ่ม ไม่ใช่แค่ .btn
+   :where() ไม่มีน้ำหนัก specificity จึง override ได้ง่ายถ้า component กำหนดเองเพิ่ม */
+:where(button, input, a, [tabindex]):focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+:where(button, input).is-disabled,
+:where(button, input):disabled {
+  opacity: 0.48;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+  filter: none;
+}
+
+/* =========================================
+   SURFACE CARD — 1) BASE
+========================================= */
+.surface-card {
+  background:
+    radial-gradient(circle at 70% 8%, rgba(177, 97, 255, 0.10), transparent 45%),
+    linear-gradient(145deg, #241a30 0%, #1a1322 55%, #15101c 100%);
+
+  border: 1px solid var(--border-soft);
+  border-radius: 16px;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.03),
+    0 10px 24px rgba(0, 0, 0, 0.22);
+
+  color: var(--surface-text);
+}
+
+/* =========================================
+   SURFACE CARD — 2) PURPLE GLOW
+========================================= */
+.surface-card-glow {
+  background:
+    radial-gradient(
+      circle at 65% 10%,
+      rgba(213, 120, 255, 0.18) 0%,
+      rgba(141, 61, 194, 0.12) 26%,
+      transparent 52%
+    ),
+    radial-gradient(
+      circle at 15% 85%,
+      rgba(115, 48, 255, 0.10),
+      transparent 48%
+    ),
+    linear-gradient(
+      145deg,
+      #2b1839 0%,
+      #1b1327 55%,
+      #17111f 100%
+    );
+
+  border: 1px solid rgba(189, 111, 255, 0.16);
+  border-radius: 16px;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.035),
+    0 12px 28px rgba(0, 0, 0, 0.24);
+
+  color: var(--surface-text);
+}
+
+/* =========================================
+   SURFACE CARD — 3) ACTIVE / SELECTED
+========================================= */
+.surface-card-active {
+  background:
+    radial-gradient(
+      circle at 75% 12%,
+      rgba(159, 52, 255, 0.18),
+      transparent 42%
+    ),
+    radial-gradient(
+      circle at 20% 80%,
+      rgba(69, 60, 255, 0.10),
+      transparent 50%
+    ),
+    linear-gradient(
+      145deg,
+      #20162d 0%,
+      #17111f 100%
+    );
+
+  border: 1px solid var(--surface-border-active);
+  border-radius: 16px;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 0 0 1px rgba(164, 60, 255, 0.15),
+    0 0 14px rgba(164, 60, 255, 0.34),
+    0 0 28px rgba(114, 48, 255, 0.18),
+    0 12px 28px rgba(0, 0, 0, 0.26);
+
+  color: var(--surface-text);
+}
+
+.surface-card h3,
+.surface-card-glow h3,
+.surface-card-active h3 {
+  margin: 0 0 8px;
+  color: var(--surface-text);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.surface-card p,
+.surface-card-glow p,
+.surface-card-active p {
+  margin: 0;
+  color: var(--surface-text-muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.surface-card,
+.surface-card-glow,
+.surface-card-active {
+  position: relative;
+  overflow: hidden;
+  padding: 18px;
+  min-height: 160px;
 }
 
 @utility scrollbar-none {
@@ -143,4 +418,198 @@ body {
 
 .animate-scale-up {
   animation: scale-up 0.22s ease-out;
+}
+
+/* ==========================================================
+   BUTTON SYSTEM — Dark Plum / Lavender UI
+   class="btn btn-primary" ฯลฯ — ใช้คู่กับ .btn เสมอ
+   ========================================================== */
+:root {
+  --btn-text: #ffffff;
+  --btn-text-dark: #1b1425;
+
+  --btn-plum-900: #120d1a;
+  --btn-plum-800: #1a1325;
+  --btn-plum-700: #251a33;
+
+  --btn-lavender-300: #d5b7ff;
+  --btn-lavender-400: #c79cff;
+  --btn-lavender-500: #b979ff;
+
+  --btn-purple-500: #9a45ff;
+  --btn-purple-600: #7d32ff;
+  --btn-blue-500: #4f8dff;
+
+  --btn-danger-500: #ef4a52;
+  --btn-danger-600: #d93642;
+
+  --btn-border: rgba(219, 198, 255, 0.28);
+  --btn-border-soft: rgba(255, 255, 255, 0.10);
+
+  --btn-radius: 14px;
+  --btn-radius-pill: 999px;
+  --btn-height: 48px;
+
+  --btn-shadow: 0 8px 20px rgba(0, 0, 0, 0.22);
+  --btn-glow-purple: 0 0 18px rgba(157, 69, 255, 0.18);
+  --btn-glow-gradient:
+    0 0 18px rgba(126, 63, 255, 0.22),
+    0 0 24px rgba(79, 141, 255, 0.14);
+}
+
+.btn {
+  appearance: none;
+  border: 1px solid transparent;
+  outline: 0;
+
+  min-height: var(--btn-height);
+  padding: 0 20px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+
+  border-radius: var(--btn-radius);
+
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
+
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+
+  transition:
+    transform 0.16s ease,
+    border-color 0.16s ease,
+    background 0.16s ease,
+    box-shadow 0.16s ease,
+    filter 0.16s ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+.btn:active {
+  transform: translateY(0) scale(0.985);
+}
+
+.btn:focus-visible {
+  box-shadow:
+    0 0 0 2px rgba(15, 10, 22, 1),
+    0 0 0 4px rgba(199, 156, 255, 0.45);
+}
+
+.btn:disabled,
+.btn.is-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  filter: none;
+  box-shadow: none;
+}
+
+/* Primary — CTA หลักของหน้า (ฝากเงิน / สมัคร / ยืนยัน) — เท่ากับ soft-btn-primary เดิม */
+.btn-primary {
+  color: var(--btn-text-dark);
+  background: linear-gradient(180deg, var(--btn-lavender-300) 0%, var(--btn-lavender-400) 100%);
+  border-color: var(--btn-border);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    var(--btn-shadow);
+}
+.btn-primary:hover {
+  filter: brightness(1.04);
+}
+
+/* Accent — การกระทำสำคัญที่สุดในบริบท เช่น แทงเดิมพัน/เล่นเลย glow ม่วงเด่นกว่า primary */
+.btn-accent {
+  color: var(--btn-text);
+  background: linear-gradient(135deg, var(--btn-purple-500) 0%, var(--btn-purple-600) 100%);
+  border-color: rgba(255, 255, 255, 0.14);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    var(--btn-shadow),
+    var(--btn-glow-purple);
+}
+.btn-accent:hover {
+  filter: brightness(1.08);
+}
+
+/* Secondary — รองจาก primary เช่น ยกเลิก/กลับ พื้น plum ทึบ ไม่มี gradient */
+.btn-secondary {
+  color: var(--btn-text);
+  background: var(--btn-plum-700);
+  border-color: var(--btn-border-soft);
+}
+.btn-secondary:hover {
+  background: var(--btn-plum-800);
+  border-color: var(--btn-border);
+}
+
+/* Outline — ขอบลาเวนเดอร์ พื้นโปร่ง ใช้คู่กับ primary/accent (เช่น ถอนเงิน คู่กับ ฝากเงิน) */
+.btn-outline {
+  color: var(--btn-lavender-300);
+  background: transparent;
+  border-color: var(--btn-border);
+}
+.btn-outline:hover {
+  background: rgba(213, 183, 255, 0.08);
+}
+
+/* Ghost — ไม่มีขอบ/พื้น ใช้ในแถบเครื่องมือหรือบนการ์ดที่มืดอยู่แล้ว */
+.btn-ghost {
+  color: var(--btn-text);
+  background: transparent;
+  border-color: transparent;
+}
+.btn-ghost:hover {
+  background: var(--btn-border-soft);
+}
+
+/* Info — ลิงก์/การกระทำที่เป็นข้อมูล เช่น ดูรายละเอียด/ดูกติกา */
+.btn-info {
+  color: var(--btn-text);
+  background: var(--btn-blue-500);
+  border-color: rgba(255, 255, 255, 0.14);
+  box-shadow: var(--btn-shadow);
+}
+.btn-info:hover {
+  filter: brightness(1.06);
+}
+
+/* Danger — ล้างค่า/ยกเลิกเดิมพัน/ลบ action ที่ย้อนกลับไม่ได้ */
+.btn-danger {
+  color: var(--btn-text);
+  background: linear-gradient(180deg, var(--btn-danger-500) 0%, var(--btn-danger-600) 100%);
+  border-color: rgba(255, 255, 255, 0.14);
+  box-shadow: var(--btn-shadow);
+}
+.btn-danger:hover {
+  filter: brightness(1.05);
+}
+
+/* Danger soft — เวอร์ชันพื้นจาง ใช้กับปุ่มเล็ก/inline เช่น ออกจากระบบในเมนู */
+.btn-danger-soft {
+  color: var(--btn-danger-500);
+  background: rgba(239, 74, 82, 0.12);
+  border-color: rgba(239, 74, 82, 0.22);
+}
+.btn-danger-soft:hover {
+  background: rgba(239, 74, 82, 0.18);
+}
+
+.btn-pill {
+  border-radius: var(--btn-radius-pill);
+}
+
+.btn-sm {
+  min-height: 36px;
+  padding: 0 14px;
+  font-size: 13px;
 }

@@ -30,7 +30,7 @@ export function CategoryIconNav({
   return (
     <nav
       aria-label={ariaLabel}
-      className={`w-full border-b border-[#e8e8e8] bg-white ${className}`.trim()}
+      className={`w-full border-b border-[var(--border-soft)] soft-card-bg ${className}`.trim()}
     >
       <ul className="mx-auto flex min-w-full max-w-[1200px] snap-x snap-mandatory justify-start gap-0 overflow-x-auto px-1 py-2.5 scrollbar-none sm:px-2 md:justify-center md:gap-1 md:px-6 md:py-3">
         {items.map((cat) => {
@@ -41,12 +41,12 @@ export function CategoryIconNav({
                 href={cat.href}
                 aria-current={isActive ? "page" : undefined}
                 className={`flex min-w-[62px] flex-col items-center gap-1 px-2.5 py-1 transition-colors sm:min-w-[68px] ${
-                  isActive ? "text-[var(--brand)]" : "text-[#5f5f5f]"
+                  isActive ? "text-[var(--brand)]" : "text-[var(--text-muted)]"
                 }`}
               >
                 <CategoryNavIcon
                   id={cat.icon}
-                  className={isActive ? "text-[var(--brand)]" : "text-[#5f5f5f]"}
+                  className={isActive ? "text-[var(--brand)]" : "text-[var(--text-muted)]"}
                   aria-hidden
                 />
                 <span

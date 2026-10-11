@@ -73,7 +73,7 @@ export function HomeActivityCarousel({
       >
         {items.map((item) => {
           const cardClass =
-            "relative block aspect-[16/9] w-[88%] max-w-none shrink-0 snap-start overflow-hidden rounded-xl bg-[var(--soft-card)] sm:w-[78%] md:w-[48%] lg:w-[32%]";
+            "relative block aspect-[16/9] w-[88%] max-w-none shrink-0 snap-start overflow-hidden rounded-xl soft-panel-bg sm:w-[78%] md:w-[48%] lg:w-[32%]";
           const image = (
             <Image
               src={item.imageSrc}

@@ -87,7 +87,7 @@ function LuckyWheelPlay({ wheel, embedded }: { wheel: WheelData; embedded: boole
   }, [t, spinDurationMs, canAfford, currentGemsCost, currentTicketCost, rotation, segmentDeg, spinMethod, spinning, wheel.segments]);
 
   const badgeClass =
-    "inline-flex h-9 items-center gap-1.5 rounded-full bg-[var(--soft-card-elevated)] px-3 text-[var(--text-on-light)] shadow-[var(--shadow-soft-sm)]";
+    "inline-flex h-9 items-center gap-1.5 rounded-full soft-card-bg px-3 text-[var(--text-on-light)] shadow-[var(--shadow-soft-sm)]";
   const helperLinkClass =
     "mt-2.5 cursor-pointer border-0 bg-transparent text-xs font-semibold text-[var(--brand-strong)] underline underline-offset-4";
 
@@ -134,7 +134,7 @@ function LuckyWheelPlay({ wheel, embedded }: { wheel: WheelData; embedded: boole
           <div
             role="tablist"
             aria-label={t("wheel.methodTabsAria")}
-            className="my-3.5 grid w-full max-w-[380px] grid-cols-2 gap-1.5 rounded-[var(--radius-soft-sm)] bg-[var(--soft-card-elevated)] p-1.5 sm:max-w-[420px]"
+            className="my-3.5 grid w-full max-w-[380px] grid-cols-2 gap-1.5 rounded-[var(--radius-soft-sm)] soft-card-bg p-1.5 sm:max-w-[420px]"
           >
             {(
               [

@@ -1,451 +1,442 @@
-# เอกสารวิเคราะห์และถอดแบบ UI Design System: Solidx Solid Platform (XGAMBET)
+# Design System: Dark Lavender / Plum UI (LaunchKit-inspired)
 
-> **แหล่งอ้างอิงหลัก:** [https://demo-solid.solidx.cc/](https://demo-solid.solidx.cc/)  
-> **แพลตฟอร์ม:** Solidx Platform — หน้าหลัก (SPA, Dynamic Theme)  
-> **ธีมที่สังเกตบนหน้าตัวอย่าง:** `html.light` + `data-theme="orange"`  
-> **เป้าหมายโปรเจกต์ sport:** พัฒนาธีม **Orange Light Solid** (พื้นอ่อน + แถบดำ + ส้ม Primary) บน Next.js + Tailwind CSS  
-> **วันที่บันทึก:** 30 กันยายน 2026
+> **สถานะ:** เอกสารนี้แทนที่ดีไซน์เดิมทั้งหมด (Orange Light Solid / Solidx และ Legend Pro Black-Purple ก่อนหน้า) — นี่คือ design system หลักของโปรเจกต์ `sport` ตั้งแต่วันที่บันทึกนี้เป็นต้นไป
+> **วันที่บันทึก:** 11 ตุลาคม 2026
+> **แหล่งอ้างอิง:** Reverse-engineered จากภาพอ้างอิง LaunchKit-style dark lavender UI — ค่าเป็นค่าประมาณสำหรับ production ไม่ใช่ตัวเลขที่วัดจากไฟล์ต้นฉบับ
 
 ---
 
-## 1. ภาพรวมสถาปัตยกรรม UI
+## 1. ทิศทางภาพรวม (Visual direction)
 
-ระบบ UI เป็น **Single Page Application** (Nuxt/Vue + Tailwind) เน้น **Mobile-First / App Shell** ผสมคาสิโนและกีฬาในหน้าเดียว สไตล์ **Light Content + Dark Chrome** (หัว–ท้ายดำ เนื้อหากลางสว่าง) ไม่ใช่ Dark Gaming แบบ Legend Pro
+อินเทอร์เฟซนี้เป็น **dark cinematic lavender / plum UI** สร้างจาก 3 ชั้น:
 
-### 1.1 โครงสร้าง Layout หลัก (Core Layout Shell)
+1. **Near-black plum base** — ไม่ใช่ดำสนิท
+2. **Soft translucent surfaces** — การ์ดและคอนโทรลสว่างกว่าพื้นหลังหนึ่งระดับ
+3. **Lavender + warm peach ambient light** — ใช้เป็น internal glow, edge light, selected state, และ focal accent
 
-| ชั้น | องค์ประกอบ | รายละเอียด |
-|------|-------------|------------|
-| **1** | **Top Header** | **เต็มความกว้าง** พื้น `#050608` — **Mobile:** โลโก้ XG + ปุ่มสมัคร/เข้าสู่ระบบกลาง · **Desktop (`md+`):** โลโก้ XG/XGAMBET ซ้าย · กลาง capsule **เงิน** (ตัวเลขส้ม + refresh) + **เครดิต** (ตัวขาว + ปุ่มฝาก) · ขวา ค้นหา + เมนู |
-| **2** | **Notice / Marquee** | **เต็มความกว้าง** ชิดใต้ header (sticky ร่วมกัน) — พื้นเดียวกับ header ข้อความขาวเลื่อน |
-| **3–5** | **Hero + ค้นหา + หมวด** | **Mobile:** หมวด → Hero → ค้นหา · **Desktop:** Hero → แถบค้นหา (ทับขอบล่าง hero) → หมวด — พื้นขาวชุดเดียวใต้ hero, หมวด `overflow-x` 14 รายการ |
-| **3** | **Hero Carousel** | เต็มความกว้าง — `#ebebeb`, หัว **SOLID SPORTS PLATFORM**, รองส้ม (desktop), **JOIN NOW** |
-| **4** | **Game Search Row** | แถบขาว — input + ปุ่ม **ค้นหาเกม** ส้มติดขวา + **ปรับแต่ง** (desktop) |
-| **5** | **Category Nav** | ใต้ช่องค้นหา (desktop) หรือเหนือ hero (mobile) |
-| **6** | **Main content (Desktop)** | **ไม่ full-width** — `max-width: 1200px`, `margin: 0 auto`, พื้น `#fff` บน canvas เทา; ภายใน: บอลโลก → กีฬา → มาแรง → กริดเกม ฯลฯ |
-| **6b** | **Section Blocks** | หัว section แถบขาว + **ดูทั้งหมด** ส้ม — อยู่ภายใน container กลาง ไม่กว้างเต็มจอ |
-| **7** | **Floating Controls** | ปุ่ม **ปรับแต่ง** แนวตั้งขวา ปุ่ม **ติดต่อ** (ไอคอนหูฟัง) มุมล่างขวา |
-| **8** | **Bottom Navigation (Fixed)** | พื้นดำ 5 แท็บ: โปรโมชั่น, กิจกรรม, **หน้าหลัก** (active ส้ม), ฝาก/ถอน, บอลสด — สูง ~56–64px + safe-area |
-
-> **การจัดโค้ดที่แนะนำ (`components/layout/`):**  
-> `HeaderBar.tsx`, `NoticeMarquee.tsx`, `HeroCarousel.tsx`, `GameSearchBar.tsx`, `CategoryIconNav.tsx`, `BottomNav.tsx`, `FloatingControls.tsx`, `SectionHeader.tsx`, `Footer.tsx`
+เอฟเฟกต์ควรให้ความรู้สึกคล้าย polished glass / anodized-metal UI มากกว่า neon cyberpunk — glow นุ่มและกว้าง ไม่ใช่ halo คมชัด
 
 ---
 
-## 1.2 Mobile-First (บังคับใช้)
+## 2. Core palette
 
-- **Base viewport:** 360–430px — คลาส Tailwind ไม่มี prefix ก่อน
-- **Breakpoint:** `sm:` 640, `md:` 768, `lg:` 1024, `xl:` 1280
-- **Touch target:** สูงอย่างน้อย `40–44px` (`h-10` / `h-11`)
-- **Category nav:** `overflow-x-auto scrollbar-none snap-x` + padding ข้าง
-- **Game grid:** Mobile `grid-cols-3`, Tablet `md:grid-cols-4`, Desktop `lg:grid-cols-5`–`6`
-- **Provider / Sport chips:** แถบเลื่อนแนวนอน การ์ดสี่เหลี่ยมโลโก้บนพื้นขาว/เทาอ่อน
-- **ห้าม overflow แนวนอนบนมือถือ**
+### Background
+- `bg-canvas`: `#0D0B12`
+- `bg-deep`: `#09080E`
+- `bg-plum`: `#1C1726`
+- `bg-plum-soft`: `#2E243A`
+
+### Surfaces
+- `surface-1`: `rgba(37, 29, 48, .84)`
+- `surface-2`: `rgba(47, 37, 60, .88)`
+- `surface-3`: `rgba(65, 49, 79, .80)`
+- `surface-input`: `rgba(46, 36, 58, .76)`
+- `surface-hover`: `rgba(57, 45, 70, .92)`
+
+### Accent
+- `lavender-200`: `#E1CCFF`
+- `lavender-300`: `#D4B9FF`
+- `lavender-400`: `#C9AAFB`
+- `lavender-500`: `#B88BFA`
+- `violet-500`: `#9361E8`
+- `violet-600`: `#7B4FC3`
+- `violet-700`: `#624099`
+
+### Warm glow
+- `peach-glow`: `#F6A98B`
+- `rose-glow`: `#C87AAE`
+- `plum-glow`: `#7A3B8F`
+
+### Text
+- `text-primary`: `#F7F4FA`
+- `text-secondary`: `#C0B6C8`
+- `text-muted`: `#8E8497`
+- `text-accent`: `#D3B3FF`
+- `text-on-light` (บนพื้นสว่าง เช่น CTA lavender): `#19131F`
+
+### Borders
+- `border-soft`: `rgba(255,255,255,.075)`
+- `border-medium`: `rgba(226,210,255,.14)`
+- `border-strong`: `rgba(226,210,255,.22)`
+- `border-focus`: `rgba(207,171,255,.50)`
 
 ---
 
-## 2. ระบบสีและ Theme Tokens (ถอดจาก CSS Variables จริง)
+## 3. Background recipe
 
-ธีม **Orange / Light** ใช้ตัวแปร `--*` มากกว่า 260 รายการ ด้านล่างคือชุดหลักสำหรับ implement
+พื้นหลังไม่ใช่สีม่วงทึบแบนๆ แต่เป็น dark plum-black base + radial light field ขนาดใหญ่หลายจุด:
 
-### 2.1 สีแบรนด์และปุ่ม
+- upper-left: muted lavender glow
+- mid-left / lower-left: plum glow
+- upper-right: violet glow
+- warm peach/pink rim รอบ hero artwork (ใช้เฉพาะจุดโฟกัส)
+- black falloff ไปทางมุมจอและระหว่าง section
+
+ให้ light field ทั้งหมด low-opacity และเบลอมาก ผู้ใช้ควรรู้สึกถึง "บรรยากาศ" ไม่ใช่เห็นวงกลมชัดๆ
+
+```css
+.app-shell {
+  background:
+    radial-gradient(55rem 36rem at 14% 10%, rgba(141, 96, 190, .16), transparent 62%),
+    radial-gradient(46rem 34rem at 92% 16%, rgba(104, 55, 157, .13), transparent 60%),
+    radial-gradient(44rem 42rem at 16% 86%, rgba(104, 55, 135, .16), transparent 66%),
+    radial-gradient(34rem 28rem at 78% 75%, rgba(81, 47, 113, .10), transparent 70%),
+    linear-gradient(180deg, #15101D 0%, #0D0B12 46%, #09080E 100%);
+}
+```
+
+---
+
+## 4. Surface system
+
+### Base surface
+ใช้กับการ์ด, nav container, input field, feature block เล็กๆ — dark translucent plum, top-left highlight บางๆ, border เส้นบางคอนทราสต์ต่ำ, shadow ดำน้อยที่สุด
+
+```css
+.surface {
+  background:
+    linear-gradient(145deg, rgba(255,255,255,.035), transparent 42%),
+    rgba(34, 27, 44, .88);
+  border: 1px solid rgba(255,255,255,.075);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.025),
+    0 10px 26px rgba(0,0,0,.28);
+  backdrop-filter: blur(18px) saturate(112%);
+}
+```
+
+### Elevated surface
+ใช้กับการ์ดเนื้อหาหลักและคอนโทรลลอย
+
+```css
+.surface-elevated {
+  background:
+    radial-gradient(120% 120% at 0% 0%, rgba(183,137,242,.08), transparent 52%),
+    rgba(41, 32, 52, .92);
+  border: 1px solid rgba(225,207,255,.11);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.035),
+    0 16px 36px rgba(0,0,0,.34);
+}
+```
+
+### Selected / active surface
+Element ที่ถูกเลือกต้อง "สว่างขึ้นเป็น lavender อ่อน" ไม่ใช่ม่วงนีออนจ้า
+
+```css
+.surface-selected {
+  background: linear-gradient(180deg, #D4BAFF 0%, #C39AF8 100%);
+  color: #17121D;
+  border-color: rgba(255,255,255,.42);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.52),
+    0 8px 20px rgba(148,92,210,.20);
+}
+```
+
+---
+
+## 4.1 Surface card variants (`.surface-card` / `.surface-card-glow` / `.surface-card-active`)
+
+ชุดคลาสสำเร็จสำหรับการ์ดโฟกัส (feature card, promo card, selectable item) — ใช้แทน `.surface` / `.surface-elevated` เมื่อต้องการ glow ม่วงที่ชัดขึ้น implement แล้วใน `app/globals.css`:
+
+- **`.surface-card`** — การ์ดพื้นฐาน พื้นหลัง plum gradient เข้ม + glow จางมากมุมขวาบน ใช้เป็นค่าเริ่มต้นของ feature card
+- **`.surface-card-glow`** — เพิ่ม purple glow สองจุด (ขวาบน + ซ้ายล่าง) ชัดกว่า `.surface-card` ใช้กับการ์ดที่ต้องการดึงดูดสายตา (โปรโมชัน, แบนเนอร์เด่น)
+- **`.surface-card-active`** — สถานะ active/selected มี outer glow ring สีม่วงรอบการ์ด (`--surface-border-active`) ใช้กับตัวเลือกที่ถูกเลือกในกลุ่ม (เช่น เลือกแพ็กเกจ/แผนผัง)
+
+ทั้งสามคลาสแชร์ typography ร่วม (`h3` = `--surface-text`, `p` = `--surface-text-muted`) และ layout พื้นฐาน (`padding: 18px`, `min-height: 160px`, `position: relative; overflow: hidden`) — เหมาะกับการวาง background glow ไว้ใต้เนื้อหา
+
+```css
+--surface-text: var(--text-primary);
+--surface-text-muted: var(--text-secondary);
+--surface-border-active: rgba(164, 60, 255, 0.45);
+```
+
+---
+
+## 5. Card style
+
+- radius: `16–18px`
+- padding ภายใน: `16–18px`
+- gap ระหว่างการ์ด: `10–12px`
+- border: 1px ขาว/ลาเวนเดอร์จางมาก
+- ไม่ใช้ drop shadow หนัก
+
+ใช้ภาพ/illustration เป็นองค์ประกอบที่สว่างที่สุดในการ์ด ตัวการ์ดเองยังคงมืด
+
+---
+
+## 6. Buttons
+
+### Primary button
+CTA หลักเป็น **soft lavender** โทนนุ่มคล้าย Apple มากกว่านีออน
+
+```css
+.btn-primary {
+  background: linear-gradient(180deg, #D4BAFF 0%, #C7A2F8 100%);
+  color: #19131F;
+  border: 1px solid rgba(255,255,255,.34);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.48),
+    0 7px 18px rgba(128,76,182,.18);
+}
+```
+
+### Secondary button
+```css
+.btn-secondary {
+  background: rgba(47, 37, 60, .80);
+  color: #F5F1F7;
+  border: 1px solid rgba(255,255,255,.08);
+}
+```
+
+### Icon button
+พื้นผิว plum โปร่งแสง สี่เหลี่ยมหรือวงกลม
+
+```css
+.icon-button {
+  background: rgba(49, 39, 62, .78);
+  border: 1px solid rgba(255,255,255,.07);
+  color: #F7F4FA;
+  backdrop-filter: blur(14px);
+}
+```
+
+---
+
+## 7. Inputs
+
+Input ไม่ใช่สีดำสนิท — เป็นเทา-พลัมโทนนุ่ม ขอบจาง
+
+```css
+.input {
+  background: rgba(48, 38, 60, .78);
+  border: 1px solid rgba(255,255,255,.07);
+  color: #F5F2F7;
+}
+
+.input::placeholder {
+  color: rgba(214, 203, 221, .50);
+}
+
+.input:focus {
+  border-color: rgba(207,171,255,.44);
+  box-shadow: 0 0 0 3px rgba(183,137,242,.09);
+}
+```
+
+---
+
+## 8. Tabs / segmented controls
+
+Tab ที่ไม่ active เป็น pill plum เข้มขนาดกระชับ; tab active กลายเป็นลาเวนเดอร์อ่อน
+
+- height: `34–38px`
+- radius: `10–12px`
+- gap: `8px`
+- ข้อความ active กลายเป็นเกือบดำ (`text-on-light`)
+
+ห้ามใช้ active state สีน้ำเงิน — คงอยู่ในกลุ่มลาเวนเดอร์/พลัมเท่านั้น
+
+---
+
+## 9. Typography
+
+```css
+font-family: Inter, "SF Pro Display", "SF Pro Text", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+```
+
+> โปรเจกต์ `sport` ยังคงใช้ **Kanit** เป็นฟอนต์หลัก (รองรับไทย) ตาม `next/font` ที่ตั้งไว้ใน `app/[lang]/layout.tsx` — สแต็กด้านบนใช้เป็น fallback/อ้างอิง sizing เท่านั้น ไม่บังคับเปลี่ยนฟอนต์
+
+Hierarchy:
+- Display: 32–40px / 700
+- H1: 28–32px / 700
+- H2: 22–26px / 650–700
+- Body: 14–16px / 400–500
+- Label: 11–13px / 600
+- Overline: 10–11px / 600 / letter-spacing `.18em`
+
+---
+
+## 10. Radius system
+
+```text
+xs   8px
+sm  10px
+md  14px
+lg  18px
+xl  24px
+2xl 32px
+pill 999px
+```
+
+การ์ดและคอนโทรลบนมือถือมักใช้ 14–18px
+
+---
+
+## 11. Shadow & glow language
+
+ห้ามใช้ shadow นีออนจ้า
+
+- **Surface shadow:** `0 12px 30px rgba(0,0,0,.30)`
+- **Lavender focus glow:** `0 0 0 3px rgba(190,147,246,.10)`
+- **Ambient purple glow:** ใช้ radial gradient ด้านใน/หลัง section เท่านั้น ไม่ใช่ box-shadow รอบทุก component
+- **Warm artwork glow** (peach/pink สำรองไว้สำหรับ focal visual เท่านั้น):
+
+```css
+radial-gradient(circle, rgba(246,169,139,.20), transparent 62%)
+```
+
+---
+
+## 12. UI state rules
+
+| State | กฎ |
+|---|---|
+| Hover | เพิ่มความสว่าง 4–7%, border ชัดขึ้นเล็กน้อย, `translateY` สูงสุด `-1px` |
+| Active | scale `0.985–0.99`, ลด shadow |
+| Focus | lavender focus ring นุ่ม 2–3px |
+| Disabled | opacity `.44–.55`, ไม่มี glow |
+
+---
+
+## 13. Component recipes
+
+### Dark feature card
+```text
+Surface: rgba(34,27,44,.88)
+Border: white 7%
+Radius: 18px
+Padding: 18px
+Title: white
+Body: muted lavender-gray
+Accent: artwork + label ลาเวนเดอร์เล็กๆ
+```
+
+### Compact navigation pill
+```text
+Surface: rgba(47,37,60,.80)
+Radius: 11px
+Text: white 80%
+Active: #D0AEFC
+```
+
+### CTA
+```text
+Fill: #D4BAFF → #C7A2F8
+Text: #19131F
+Border: white 34%
+Shadow: violet เข้ม opacity ต่ำ
+```
+
+---
+
+## 14. กฎโดยรวม
+
+กฎที่สำคัญที่สุดคือ **contrast ผ่าน luminance ไม่ใช่ saturation**
+
+สัดส่วนโดยประมาณ:
+- 70% near-black / plum-black
+- 20% muted plum surfaces
+- 7% lavender
+- 3% peach / pink / violet ambient light
+
+สมดุลนี้คือสิ่งที่ทำให้ UI ดูพรีเมียมแบบ Apple-like แทนที่จะดูเหมือน generic purple gaming UI
+
+---
+
+## 15. CSS Variables (token implementation)
+
+Token จริงที่ implement อยู่ใน `app/globals.css` (ตัวแปร `--*` ทั้งหมดถูกแทนที่จากธีม Orange Light Solid เดิมเป็นชุดนี้):
 
 ```css
 :root,
-[data-theme="orange"] {
-  /* Primary Orange */
-  --primary: #f5871e;
-  --primary2: #f5871e;
-  --secondary: #f7931e;
-  --accent: #ffd23f;
+[data-theme="lavender"] {
+  /* Background */
+  --bg-canvas: #0d0b12;
+  --bg-deep: #09080e;
+  --bg-plum: #1c1726;
+  --bg-plum-soft: #2e243a;
 
-  /* Buttons */
-  --btn-primary: #fe8401;
-  --btn-primary-border: #fe8401;
-  --btn-border: #f5871e;
-  --btn-gradient1: #ff763c;
-  --btn-gradient2: #ff4d00;
-  --btn-hover-primary: #ffd15c;
-  --btn-text: #fff;
-  --btn-secondary: #d6d7d7;
-  --btn-secondary-border: #f4f4f4;
+  /* Surface */
+  --surface-1: rgba(37, 29, 48, 0.84);
+  --surface-2: rgba(47, 37, 60, 0.88);
+  --surface-3: rgba(65, 49, 79, 0.80);
+  --surface-input: rgba(46, 36, 58, 0.76);
+  --surface-hover: rgba(57, 45, 70, 0.92);
 
-  /* Balance / Wallet highlight */
-  --balance-text1: #fe8401;
-  --main-icon-1: #fe8401;
-  --icon-active: #f5871e;
+  /* Lavender / violet */
+  --lavender-200: #e1ccff;
+  --lavender-300: #d4b9ff;
+  --lavender-400: #c9aafb;
+  --lavender-500: #b88bfa;
+  --violet-500: #9361e8;
+  --violet-600: #7b4fc3;
+  --violet-700: #624099;
+
+  /* Ambient glow */
+  --glow-lavender: rgba(183, 137, 242, 0.16);
+  --glow-violet: rgba(123, 79, 195, 0.15);
+  --glow-plum: rgba(122, 59, 143, 0.16);
+  --glow-peach: rgba(246, 169, 139, 0.18);
+  --glow-rose: rgba(200, 122, 174, 0.13);
+
+  /* Text */
+  --text-primary: #f7f4fa;
+  --text-secondary: #c0b6c8;
+  --text-muted: #8e8497;
+  --text-accent: #d3b3ff;
+  --text-on-light: #19131f;
+  --text-on-dark: #f7f4fa;
+
+  /* Border */
+  --border-soft: rgba(255, 255, 255, 0.075);
+  --border-medium: rgba(226, 210, 255, 0.14);
+  --border-strong: rgba(226, 210, 255, 0.22);
+  --border-focus: rgba(207, 171, 255, 0.50);
+
+  /* Radius */
+  --radius-soft-sm: 14px;
+  --radius-soft-md: 18px;
+  --radius-soft-lg: 22px;
+  --radius-soft-xl: 28px;
+
+  /* Shadow */
+  --shadow-soft: 0 12px 30px rgba(0, 0, 0, 0.30);
+  --shadow-soft-sm: 0 7px 18px rgba(0, 0, 0, 0.24);
+  --shadow-primary: 0 7px 18px rgba(128, 76, 182, 0.18);
+  --focus-ring: 0 0 0 3px rgba(190, 147, 246, 0.10);
+
+  /* Semantic aliases ที่ยังใช้ใน codebase เดิม (soft-* utilities) */
+  --soft-canvas: var(--bg-canvas);
+  --soft-surface: var(--bg-plum);
+  --soft-card: var(--surface-1);
+  --soft-card-elevated: var(--surface-2);
+  --soft-chrome: var(--bg-deep);
+  --body: var(--bg-canvas);
+  --header: var(--bg-deep);
+  --footer: var(--bg-deep);
+  --notice-bg: var(--surface-2);
+  --brand: var(--lavender-400);
+  --brand-strong: var(--lavender-300);
+  --brand-soft: rgba(201, 170, 251, 0.14);
+  --input: var(--surface-input);
+  --tab-inactive: var(--text-muted);
+  --icon-muted: var(--text-muted);
 }
 ```
 
-### 2.2 พื้นผิว Light + Chrome ดำ
-
-```css
-[data-theme="orange"] {
-  --body: #ebebeb;              /* พื้นหลังหน้าหลัก */
-  --background: #000;
-  --header: #050608;
-  --footer: #050608;
-  --notice-bg: #302e2c;
-  --notice-text: #fff;
-
-  --card-primary: #fff;
-  --card-secondary: #f4f4f4;
-  --card-tertiary: #d6d7d7;
-  --categoryBG: #f4f4f4;
-  --gameCategories: #f4f4f4;
-  --darkCard: #dfdfdf;
-
-  --surface: #1a1a1a;           /* ใช้กับ chrome / overlay */
-  --surface-darker: #323232;
-  --surface-lighter: #494949;
-
-  --modal-bg: #fff;
-  --input-bg: #f7f7f7;
-  --input-border: #f7f7f7;
-  --input-placeholder: #8e8e8e;
-}
-```
-
-### 2.3 ข้อความและแท็บ
-
-```css
-[data-theme="orange"] {
-  --text-primary: #515151;
-  --text-secondary: #515151;
-  --text-black: #5f5f5f;
-  --text: #fff;                  /* บนพื้นดำ */
-  --text-link: #f5871e;
-  --text-hightlight: #f5871e;
-  --text-placeholder: #bdbdbd;
-
-  --tab-active-text: #f5871e;
-  --tab-active-slide: #f5871e;
-  --tab-unactive-text: #8e8e8e;
-  --tab-bg: #8e8e8e;
-
-  --icon-primary: #5f5f5f;
-  --icon-secondary: #ececec;
-}
-```
-
-### 2.4 สถานะ
-
-```css
---success: #4ac300;
---warning: #ff7a00;
---error: #f44;
---danger: #d72f3c;
---input-correct: #4ac300;
---input-incorrect: #d72f3c;
-```
-
-### 2.5 Typography
-
-- **Font:** `Kanit, sans-serif`
-- **Base size:** `--font-size-base: 14px`
-- **Line height:** `--line-height-base: 1.625rem`
-- ปุ่ม Header: `16px`, `font-weight: 600`, ความสูง ~`42px`
-
-### 2.6 หลักการเล่นสี (Color Role)
-
-| บทบาท | สี | ใช้กับ |
-|--------|-----|--------|
-| **Canvas อ่อน** | `#ebebeb` | พื้นหลังเนื้อหา การ์ดเกมล้อมรอบ |
-| **Chrome ดำ** | `#050608` | Header, Bottom Nav, FAB บางตัว |
-| **Primary ส้ม** | `#f5871e` / `#fe8401` | CTA, Active tab, ลิงก์, ไอคอน active |
-| **Gradient CTA** | `#ff763c` → `#ff4d00` | ปุ่มค้นหา / ปุ่มหลักแบบเต็ม |
-| **การ์ดขาว** | `#fff` / `#f4f4f4` | Chip ผู้ให้บริการ, พื้น section อ่อน |
-| **ข้อความเนื้อหา** | `#515151` | บนพื้นอ่อน |
-| **ข้อความบนดำ** | `#fff` | Header, Notice, Bottom Nav |
+> **หมายเหตุ:** `--soft-*`, `--brand*`, `--body`, `--header`, `--footer` ฯลฯ เป็น semantic alias ที่ component เดิมอ้างอิงอยู่ (`soft-panel`, `soft-card`, `soft-btn-primary`, `button-dark-purple` และอื่นๆ) — คง naming เดิมไว้เพื่อไม่ต้องแก้ทุก component แต่ค่าถูก map เข้ากับ dark lavender token ชุดใหม่ทั้งหมดแล้ว
 
 ---
 
-## 3. องค์ประกอบและสไตล์รายตัว
-
-### 3.1 Header Auth Buttons
-
-| ปุ่ม | พื้น | ขอบ | ตัวอักษร | Radius |
-|------|------|-----|----------|--------|
-| สมัครสมาชิก | โปร่ง | `2px solid #f5871e` | `#f5871e` | `4px` |
-| เข้าสู่ระบบ | Gradient ส้ม (จาก `--btn-gradient*`) | ไม่มี | `#fff` | `4px` |
-
-### 3.2 Search Bar
-
-- ความสูงรวมแถบ ~`48–52px`
-- Input: `background: #f7f7f7`, ขอบมนเล็ก (`4px` ถึง `8px`)
-- ปุ่มค้นหา: สีส้มทึบ/gradient ติดขวาสุดของแถบ
-
-### 3.3 Category Icon Navigation
-
-- **Full width** — ไม่มี `mx-3` / ไม่ห่อ `soft-panel`
-- พื้นแถบ: `#fff` + เส้นล่าง `#e8e8e8`
-- ไอคอน SVG + label ไทย เรียงแนวตั้งกลาง
-- ไม่ active: ไอคอน+ข้อความ `#5f5f5f` (`font-medium`)
-- Active: `#f5871e` ทั้งไอคอนและข้อความ (`font-bold`)
-- `overflow-x-auto scrollbar-none` — รายการ mock 14 หมวดให้เลื่อนได้
-
-### 3.3.1 Hero Welcome Banner
-
-- **Full width** — ชิดขอบ viewport ไม่มี radius กล่องใหญ่
-- พื้น `#ebebeb` + ลาย diagonal grid จาง
-- ด้านขวา: gradient ส้ม/เหลือง + ภาพโปรโมชันกีฬา (ถ้วย/นักเตะ/ลูกบอล)
-- ด้านซ้าย: หัวข้อใหญ่ `#515151`, บรรทัดรอง `#8e8e8e`, CTA ขาวขอบส้ม
-- จุดสไลด์ล่าง: แท่งสี่เหลี่ยม `rounded-sm` (ไม่ใช้ dot กลม pill)
-
-### 3.4 Game Card (มาแรง / สล็อต)
-
-```css
-.game-card-solid {
-  border-radius: 8px;           /* มนเล็ก–กลาง ไม่ ultra-round แบบ Thrill */
-  background: #fff;
-  overflow: hidden;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
-}
-
-.game-card-solid .poster {
-  aspect-ratio: 3 / 4;
-  object-fit: cover;
-}
-
-/* Badge มุมซ้ายบน */
-.tag-hot { background: #e10000; color: #fff; font-size: 10px; border-radius: 4px; }
-.tag-new { background: #2f6cac; color: #fff; }  /* --gameCatAddColor */
-
-/* Favorite มุมขวาบน */
-.favorite-btn {
-  background: rgba(0, 0, 0, 0.35);
-  border-radius: 50%;
-}
-
-/* ตัวเลขผู้เล่นล่าง */
-.player-count {
-  font-size: 11px;
-  color: #515151;
-}
-```
-
-### 3.5 Provider / Sport Provider Chip
-
-- การ์ดสี่เหลี่ยมบนพื้นขาวหรือ `#f4f4f4`
-- โลโก้กลางการ์ด แถบเลื่อนแนวนอน
-- ตัวเลขใต้โลโก้ (จำนวนเกม/ห้อง) สีเทาเข้ม
-
-### 3.6 Section Header
-
-- พื้น **ขาวเต็มแถบ** (`#fff`) บน canvas เทา `#ebebeb` / `--body` — **ไม่** อยู่ในกล่อง card มนใหญ่
-- ไอคอนธีม (ไฟ = มาแรง, ลูกบasketball = กีฬา, ถ้วย = บอลโลก) + ชื่อหมวด
-- ลิงก์ **ดูทั้งหมด >** สีส้ม มุมขวา — **ข้อความล plain** ไม่ใช้ `rounded-full` / แคปซูล
-
-### 3.7 การใช้ Card (Card Layering — สำคัญ)
-
-อย่าห่อ **ทั้ง section** ด้วย `soft-panel` / การ์ดใหญ่เหมือนกันทุกบล็อก — ให้ตรง Solidx ต้นฉบับ:
-
-| ชั้น | ใช้ card / elevation? | ตัวอย่าง |
-|------|------------------------|----------|
-| **Section shell** | ไม่ใช้ | แถบหัวข้อขาว + พื้น body โปร่ง |
-| **แถบเลื่อนแนวนอน** | ไม่ใช้ wrapper card | `overflow-x-auto` + รายการข้างใน |
-| **รายการในแถบ** | ใช้ **ทีละชิ้น** | การ์ดคู่บอล, thumbnail กีฬา/มาแรง |
-| **กริดเกม** | ใช้ **ทีละ Game card** | ไม่ต้องมีกล่องครอบ grid ทั้งก้อน |
-| **รายการข้อความ (Hall of Fame, ออนไลน์)** | card **ต่อแถว** | แต่ละ `<li>` พื้นขาว + shadow เบา |
-
-**Implement ในโปรเจกต์:** `HomePageSection` + `HomeHorizontalScroll` (หน้าหลัก) — หลีกเลี่ยง `SoftSection` สำหรับ feed หลัก Solidx
-
-#### Sport bet card (บอลโลก)
-
-- การ์ดขาว `rounded-lg` (~8px), shadow `0 1px 4px rgba(0,0,0,0.08)`
-- หัวลีกพื้น `#2c4563`, แถบราคา `#f4f4f4`
-- ปุ่ม **แทงคู่นี้** ส้มทึบ `rounded-lg` (ไม่ pill)
-
-#### Thumbnail strip (กีฬา / มาแรง)
-
-- ภาพแนวตั้ง 3:4, `rounded-lg`, ชื่อใต้ thumbnail
-- เลื่อนแนวนอน + mock หลายรายการให้ overflow ชัดเจน
-
-### 3.8 Bottom Navigation
-
-```css
-.bottom-nav {
-  position: fixed;
-  bottom: 0;
-  inset-inline: 0;
-  background: #050608;
-  padding-bottom: env(safe-area-inset-bottom);
-  z-index: 50;
-}
-
-.bottom-nav-item.active {
-  color: #f5871e;
-}
-
-.bottom-nav-item {
-  color: #ececec;
-  font-size: 11px;
-}
-```
-
-### 3.9 Floating: ปรับแต่ง + ติดต่อ
-
-- **ปรับแต่ง:** แคปซูลดำ ไอคอนเฟือง + ข้อความแนวตั้ง
-- **ติดต่อ:** กล่องขาว ไอคอนหูฟัง
-
----
-
-## 4. Border Radius & Elevation
-
-| ระดับ | px | Tailwind | ใช้กับ |
-|-------|-----|----------|--------|
-| Tight | 4px | `rounded` | Badge ฮิต/ใหม่, tag เล็ก |
-| Small | 6–8px | `rounded-md` / `rounded-lg` | **Game card, sport card, ปุ่ม CTA หน้าหลัก, tab ย่อย** |
-| Medium | 10px | `rounded-[10px]` | `--border-radius` ระบบ (modal / input บางจุด) |
-| Large soft | 14–22px | `--radius-soft-*` | Hero carousel, modal — **ไม่** ใช้กับ card รายการ feed หลัก |
-
-### 4.1 นโยบาย `rounded-full` (บังคับ — อัปเดต ต.ค. 2026)
-
-**ห้ามใช้ `rounded-full` กับการ์ดและองค์ประกอบภายในการ์ด** — ใช้มุมมนแบบ Solidx (`rounded-lg` ≈ 8px, `--radius-soft-sm` 14px, `--radius-soft-md` 18px)
-
-| ห้าม (`rounded-full`) | ใช้แทน |
-|------------------------|--------|
-| กล่องการ์ด (`soft-card`, รายการเมนู, grid เมนู) | `rounded-lg` หรือ `rounded-[var(--radius-soft-md)]` |
-| แถวรายการในการ์ด (list row, hover) | `rounded-lg` |
-| ปุ่ม CTA ในการ์ด / drawer (ฝาก, ถอน, ยืนยัน) | `soft-btn-primary` / `soft-btn-outline` |
-| แท็กสถานะในการ์ด (VIP, HOT, %) | `rounded-md` |
-| avatar / chevron ในการ์ด | `rounded-lg` |
-
-| ยังใช้ `rounded-full` ได้ (ข้อยกเว้นเท่านั้น) | เหตุผล |
-|-----------------------------------------------|--------|
-| วงกลมกลาง Bottom Nav (ปุ่มเมนู) | สเปก Solidx FAB |
-| Spinner / progress วงกลม (wheel, VIP bar) | รูปทรงวงกลมจริง |
-| Toggle thumb (สวิตช์) | control ระบบ |
-| จุด carousel แบบ dot (ถ้ามี) | องค์ประกอบเล็กมาก |
-
-**Elevation:** เน้น **เงาบางบนการ์ดขาว** (`0 1px 4px rgba(0,0,0,0.08)`) บน **item** เท่านั้น — ไม่ซ้อน shadow ทั้ง section
-
-### 4.2 ความคมชัดข้อความ (Contrast)
-
-| พื้นหลัง | ข้อความหลัก | ข้อความรอง |
-|----------|-------------|------------|
-| `--soft-card`, `--soft-card-elevated`, `#fff` | `text-[var(--text-on-light)]` | `text-[var(--text-muted)]` |
-| `--soft-chrome`, `--header`, `#050608` | `text-white` / `text-[var(--text-on-dark)]` | `text-white/70` |
-
-**ห้าม** ใช้ `text-white`, `text-zinc-300`, `text-[var(--text-on-dark)]` บนการ์ดอ่อน — จะอ่านไม่ออก  
-`soft-card`, `soft-panel`, `.gaming-lobby-panel` ตั้ง `color: var(--text-on-light)` ใน `globals.css`
-
----
-
-## 5. Carousel & Hero
-
-- ใช้ Vue Carousel (`--vc-pgn-height: 4px`, active `#000`)
-- Hero: ภาพเต็มความกว้าง ข้อความใหญ่สีขาว CTA ปุ่มขาวขอบส้ม
-- พื้นหลังลาย X / geometric โทนอ่อน
-
----
-
-## 6. เปรียบเทียบกับเอกสารเดิม (Legend Pro / Black-Purple)
-
-| มิติ | Legend Pro (เดิม) | Solidx Solid (ใหม่) |
-|------|-------------------|---------------------|
-| โทนรวม | Dark ดำ–ม่วง | Light body + Dark chrome |
-| Primary | `#a855f7` | `#f5871e` / `#fe8401` |
-| การ์ด | Borderless matte dark | การ์ดขาว + shadow เบา |
-| Header | Search กลาง + หมวด 13 แท็บข้อความ | Auth กลาง + Icon category |
-| Navigation ล่าง | FAB ลอย | **Bottom Nav 5 แท็บ fixed** |
-| Font | (ตามธีมเดิม) | **Kanit** |
-
----
-
-## 7. คู่มือ Tailwind / Next.js (Orange Light Solid)
-
-### 7.1 `app/globals.css` (ย่อ)
-
-```css
-@import "tailwindcss";
-
-@layer base {
-  :root,
-  [data-theme="orange"] {
-    --body: #ebebeb;
-    --header: #050608;
-    --footer: #050608;
-    --brand: #f5871e;
-    --brand-strong: #fe8401;
-    --brand-gradient-from: #ff763c;
-    --brand-gradient-to: #ff4d00;
-    --text-on-light: #515151;
-    --text-on-dark: #ffffff;
-    --card: #ffffff;
-    --card-muted: #f4f4f4;
-    --input: #f7f7f7;
-  }
-
-  body {
-    font-family: Kanit, sans-serif;
-    background: var(--body);
-    color: var(--text-on-light);
-  }
-}
-
-@utility btn-primary-gradient {
-  background: linear-gradient(180deg, var(--brand-gradient-from), var(--brand-gradient-to));
-  color: #fff;
-}
-
-@utility btn-outline-brand {
-  border: 2px solid var(--brand);
-  color: var(--brand);
-  background: transparent;
-}
-```
-
-### 7.2 ตัวอย่าง Bottom Nav (สั้น)
-
-```tsx
-const items = [
-  { key: "promo", label: "โปรโมชั่น" },
-  { key: "events", label: "กิจกรรม" },
-  { key: "home", label: "หน้าหลัก" },
-  { key: "wallet", label: "ฝาก/ถอน" },
-  { key: "live", label: "บอลสด" },
-];
-
-export function BottomNav({ active = "home" }) {
-  return (
-    <nav className="fixed bottom-0 inset-x-0 z-50 bg-[#050608] pb-[env(safe-area-inset-bottom)]">
-      <ul className="grid grid-cols-5 h-14">
-        {items.map((item) => (
-          <li key={item.key}>
-            <button
-              type="button"
-              className={
-                active === item.key
-                  ? "text-[#f5871e] text-[11px] w-full h-full"
-                  : "text-[#ececec] text-[11px] w-full h-full"
-              }
-            >
-              {item.label}
-            </button>
-          </li>
-        ))}
-      </ul>
-    </nav>
-  );
-}
-```
-
----
-
-## 8. เช็คลิสต์นำไปพัฒนา (sport)
-
-- [ ] ตั้ง `data-theme="orange"` และโทน Light body `#ebebeb`
-- [ ] Header/Footer/Bottom Nav ใช้ `#050608`
-- [ ] CTA และ active state ใช้ส้ม `#f5871e` / gradient `#ff763c`–`#ff4d00`
-- [ ] Category nav แบบไอคอน + scroll แนวนอน พื้น `#f4f4f4`
-- [ ] Game grid 3 คอลัมน์มือถือ การ์ดขาว `rounded-lg` + badge ฮิต/ใหม่
-- [ ] โหลดฟอนต์ **Kanit**
-- [ ] Safe area สำหรับ Bottom Nav
-- [ ] ปุ่มลอย ปรับแต่ง + ติดต่อ ตามต้นฉบับ
-
----
-
-## ภาคผนวก A — เอกสารอ้างอิงเดิม (CTMX Legend Pro)
-
-เอกสารฉบับก่อนหน้านี้อ้างอิง `https://demo-legend-pro.ctmx.pro/` ธีม **Black-Purple** + สไตล์ Thrill.com (borderless, dark surfaces) ยังมีค่าสำหรับโปรเจกต์อื่นใน repo แต่ **ไม่ตรงกับ demo-solid.solidx.cc** — หากต้องการ token ม่วงเดิม ให้ดู git history ของไฟล์นี้หรือแยกเป็น `design-legend-pro.md`
+## 16. ประวัติเอกสารดีไซน์ก่อนหน้า
+
+| เวอร์ชัน | ธีม | สถานะ |
+|---|---|---|
+| CTMX Legend Pro | Black-Purple (dark, borderless) | แทนที่แล้ว (ก่อน 30 ก.ย. 2026) |
+| Solidx Solid (Orange Light) | Light body + dark chrome, primary ส้ม | แทนที่แล้ว (11 ต.ค. 2026) |
+| **Dark Lavender / Plum (เอกสารนี้)** | Dark cinematic lavender/plum | **ใช้งานปัจจุบัน** |
+
+ดู git history ของไฟล์นี้หากต้องการย้อนดู token ของธีมก่อนหน้า

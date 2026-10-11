@@ -21,8 +21,8 @@ export default function GlobalError({
   }, [error]);
 
   return (
-    <html lang="th" className="light h-full antialiased" data-theme="orange">
-      <body className="flex min-h-dvh items-center justify-center bg-[var(--body)] px-4">
+    <html lang="th" className="dark h-full antialiased" data-theme="lavender">
+      <body className="flex min-h-dvh items-center justify-center app-bg px-4">
         <title>เกิดข้อผิดพลาด — CMB-Jupiter</title>
         <StatusState
           title="ระบบขัดข้องชั่วคราว"

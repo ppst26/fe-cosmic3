@@ -39,7 +39,7 @@ export function HubTabs<T extends string>({
             className={`h-10 shrink-0 whitespace-nowrap rounded-[var(--radius-soft-sm)] px-4 text-sm font-semibold ${
               selected
                 ? "soft-btn-primary"
-                : "bg-[var(--soft-card)] text-[var(--text-on-light)]"
+                : "soft-panel-bg text-[var(--text-on-light)]"
             }`}
           >
             {tab.label}

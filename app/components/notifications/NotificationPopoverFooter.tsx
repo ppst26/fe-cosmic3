@@ -9,14 +9,14 @@ export function NotificationPopoverFooter() {
   const t = useT("common");
   return (
     <footer
-      className="flex items-center justify-center gap-3 border-t border-black/[0.06] pt-3"
+      className="flex items-center justify-center gap-3 border-t border-white/[0.06] pt-3"
       aria-label={t("notifications.contactChannels")}
     >
       {NOTIFICATION_POPOVER_SOCIAL.map((item) => (
         <Link
           key={item.icon}
           href={item.href}
-          className="flex h-9 w-9 items-center justify-center rounded-full bg-[var(--soft-card)] text-[var(--text-muted)] no-underline hover:text-[var(--brand)]"
+          className="flex h-9 w-9 items-center justify-center rounded-full soft-panel-bg text-[var(--text-muted)] no-underline hover:text-[var(--brand)]"
           aria-label={item.label}
         >
           <NotificationSocialIcon icon={item.icon} />

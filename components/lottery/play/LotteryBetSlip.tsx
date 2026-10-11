@@ -82,7 +82,7 @@ export function LotteryBetSlip({
                     {groupEntries.map((entry) => (
                       <li
                         key={entry.id}
-                        className="lottery-bet-slip__row flex items-center gap-1 rounded-[var(--radius-soft-sm)] bg-[var(--soft-card)] py-1 pr-1 pl-2"
+                        className="lottery-bet-slip__row flex items-center gap-1 rounded-[var(--radius-soft-sm)] soft-panel-bg py-1 pr-1 pl-2"
                       >
                         <span className="min-w-0 flex-1 font-semibold tabular-nums text-[var(--text-on-light)]">
                           {formatLotteryDigitsDisplay(entry.number)}

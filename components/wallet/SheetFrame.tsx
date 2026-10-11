@@ -15,11 +15,11 @@ export function SheetFrame({ title, onClose, children }: SheetFrameProps) {
         role="dialog"
         aria-modal="true"
         aria-label={title}
-        className="w-full max-w-md rounded-[var(--radius-soft-xl)] bg-[var(--soft-card-elevated)] p-4 shadow-[var(--shadow-soft)]"
+        className="w-full max-w-md rounded-[var(--radius-soft-xl)] soft-card-bg p-4 shadow-[var(--shadow-soft)]"
       >
         <div className="mb-3 flex items-center justify-between">
           <h2 className="text-base font-bold text-[var(--text-on-light)]">{title}</h2>
-          <button type="button" onClick={onClose} className="h-9 w-9 rounded-full bg-[var(--soft-card)] text-lg">
+          <button type="button" onClick={onClose} className="h-9 w-9 rounded-full soft-panel-bg text-lg">
             ×
           </button>
         </div>

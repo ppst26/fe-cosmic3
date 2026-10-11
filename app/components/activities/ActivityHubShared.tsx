@@ -98,7 +98,7 @@ export function ActivityTurnProgressCard({
         </div>
       </div>
       <div>
-        <div className="h-2 overflow-hidden rounded-full bg-[var(--soft-card-elevated)]">
+        <div className="h-2 overflow-hidden rounded-full soft-card-bg">
           <div className="h-full rounded-full bg-[var(--brand)]" style={{ width: `${pct}%` }} />
         </div>
         <p className="mt-1 text-center text-xs text-[var(--text-muted)]">
@@ -147,7 +147,7 @@ export function ActivityTierTable({ rows }: { rows: ActivityTierRow[] }) {
         </thead>
         <tbody>
           {rows.map((row) => (
-            <tr key={row.rank} className="border-t border-black/[0.06]">
+            <tr key={row.rank} className="border-t border-white/[0.06]">
               <td className="px-2 py-2 font-semibold tabular-nums">{row.rank}</td>
               <td className="px-2 py-2 tabular-nums">{formatActivityNumber(row.turnRequired)}</td>
               <td className="px-2 py-2 text-center font-semibold tabular-nums text-[var(--brand-strong)]">
@@ -192,7 +192,7 @@ export function ActivityRulesSection({ rules, period }: { rules?: string[]; peri
 
   return (
     <section className="soft-panel p-3" aria-label={t("activities.rulesTitle")}>
-      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-black/[0.06] pb-2">
+      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/[0.06] pb-2">
         <h3 className="text-sm font-semibold">{t("activities.rulesTitle")}</h3>
         {period ? (
           <span className="rounded-full bg-[var(--brand-soft)] px-2.5 py-1 text-xs font-semibold text-[var(--brand-strong)]">

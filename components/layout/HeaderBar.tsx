@@ -216,7 +216,7 @@ export function HeaderBar({
             <button
               type="button"
               onClick={onOpenRegister}
-              className="h-9 shrink-0 cursor-pointer rounded-lg border-2 border-solid border-[var(--brand)] bg-white px-2 text-[11px] font-semibold text-[var(--brand)]"
+              className="h-9 shrink-0 cursor-pointer rounded-lg border-2 border-solid border-[var(--brand)] soft-card-bg px-2 text-[11px] font-semibold text-[var(--brand)]"
             >
               {tAuth("signUp")}
             </button>
@@ -279,7 +279,7 @@ export function HeaderBar({
               <button
                 type="button"
                 onClick={onOpenRegister}
-                className="h-11 cursor-pointer rounded-lg border-0 bg-white px-5 text-sm font-semibold text-[var(--brand)]"
+                className="h-11 cursor-pointer rounded-lg border-0 soft-card-bg px-5 text-sm font-semibold text-[var(--brand)]"
               >
                 {tAuth("signUp")}
               </button>

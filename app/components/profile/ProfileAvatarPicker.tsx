@@ -61,7 +61,7 @@ export function ProfileAvatarPicker({ open, onOpenChange, currentPresetId, onSav
                 disabled={Boolean(savingId)}
                 onClick={() => void handleSelect(preset.id)}
                 className={`flex w-full min-w-0 flex-col items-center gap-1 rounded-[var(--radius-soft-sm)] p-1.5 transition-colors ${
-                  selected ? "bg-[var(--brand-soft)] ring-2 ring-[var(--brand)]" : "bg-[var(--soft-card)]"
+                  selected ? "bg-[var(--brand-soft)] ring-2 ring-[var(--brand)]" : "soft-panel-bg"
                 } ${savingId && !isSaving ? "opacity-60" : ""}`}
                 aria-pressed={selected}
                 aria-busy={isSaving}

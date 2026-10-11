@@ -189,7 +189,7 @@ export function MobileMenuDialog({
   ];
 
   const rowClass =
-    "w-full flex items-center justify-between px-3 py-2.5 rounded-lg hover:bg-[var(--soft-card)] transition-colors cursor-pointer group text-left border-0";
+    "w-full flex items-center justify-between px-3 py-2.5 rounded-lg hover:soft-panel-bg transition-colors cursor-pointer group text-left border-0";
 
   return (
     <div className="fixed inset-0 z-[100] flex justify-end select-none animate-fade-in">
@@ -199,7 +199,7 @@ export function MobileMenuDialog({
         aria-hidden="true"
       />
 
-      <div className="relative z-[101] flex h-full w-full max-w-[340px] flex-col overflow-y-auto border-l border-black/10 bg-[var(--soft-chrome)] p-4 text-[var(--text-on-dark)] shadow-[-12px_0_35px_rgba(0,0,0,0.45)] sm:max-w-[380px] sm:p-5">
+      <div className="relative z-[101] flex h-full w-full max-w-[340px] flex-col overflow-y-auto border-l border-white/10 app-bg p-4 text-[var(--text-on-dark)] shadow-[-12px_0_35px_rgba(0,0,0,0.45)] sm:max-w-[380px] sm:p-5">
         <div className="mb-2 flex items-center justify-between border-b border-white/10 pb-3.5">
           <div className="flex items-center gap-2">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--brand)] text-[10px] font-black text-white">
@@ -221,7 +221,7 @@ export function MobileMenuDialog({
         </div>
 
         {isLoggedIn ? (
-          <div className="mb-3 flex items-center justify-between rounded-lg bg-[var(--soft-card-elevated)] p-3 text-[var(--text-on-light)] shadow-[var(--shadow-soft-sm)]">
+          <div className="mb-3 flex items-center justify-between rounded-lg soft-card-bg p-3 text-[var(--text-on-light)] shadow-[var(--shadow-soft-sm)]">
             <div
               onClick={() => {
                 onClose();
@@ -243,7 +243,7 @@ export function MobileMenuDialog({
             <button
               type="button"
               onClick={openLogoutConfirm}
-              className="shrink-0 cursor-pointer rounded-lg border-0 bg-rose-50 px-3 py-1.5 text-[11px] font-bold text-rose-600 hover:bg-rose-100"
+              className="shrink-0 cursor-pointer rounded-lg border-0 btn-danger-soft px-3 py-1.5 text-[11px] font-bold"
             >
               {tAuth("logout")}
             </button>
@@ -268,7 +268,7 @@ export function MobileMenuDialog({
                     </span>
                   ) : null}
                   <span
-                    className="flex h-6 w-6 items-center justify-center rounded-md bg-[var(--soft-card)] text-sm font-bold text-[var(--brand)] transition-transform group-hover:translate-x-0.5"
+                    className="flex h-6 w-6 items-center justify-center rounded-md soft-panel-bg text-sm font-bold text-[var(--brand)] transition-transform group-hover:translate-x-0.5"
                     aria-hidden
                   >
                     ›
@@ -311,7 +311,7 @@ export function MobileMenuDialog({
                     key={item.id}
                     href={item.href}
                     onClick={onClose}
-                    className="group flex flex-col items-center justify-center gap-1.5 rounded-lg border-0 p-2 text-center no-underline transition-all hover:bg-[var(--soft-card)]"
+                    className="group flex flex-col items-center justify-center gap-1.5 rounded-lg border-0 p-2 text-center no-underline transition-all hover:soft-panel-bg"
                   >
                     {gridInner}
                   </SportHubLink>
@@ -323,7 +323,7 @@ export function MobileMenuDialog({
                   key={item.id}
                   type="button"
                   onClick={item.action}
-                  className="group flex flex-col items-center justify-center gap-1.5 rounded-lg border-0 bg-transparent p-2 text-center transition-all hover:bg-[var(--soft-card)]"
+                  className="group flex flex-col items-center justify-center gap-1.5 rounded-lg border-0 bg-transparent p-2 text-center transition-all hover:soft-panel-bg"
                 >
                   {gridInner}
                 </button>

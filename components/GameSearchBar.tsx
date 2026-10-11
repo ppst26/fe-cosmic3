@@ -41,7 +41,7 @@ export function GameSearchBar({ placeholder, onSearch, className = "", id = "gam
       role="search"
       aria-label={t("search.formAriaLabel")}
     >
-      <div className="relative flex h-11 w-full items-center rounded-[var(--radius-soft-md)] border border-[#e3e3e3] bg-white px-3.5 shadow-sm transition-colors focus-within:border-[var(--brand)] md:h-12">
+      <div className="relative flex h-11 w-full items-center rounded-[var(--radius-soft-md)] border border-[var(--border-soft)] soft-card-bg px-3.5 shadow-sm transition-colors focus-within:border-[var(--brand)] md:h-12">
         <label htmlFor={id} className="sr-only">
           {t("search.label")}
         </label>

@@ -30,7 +30,7 @@ export function GamingCategoryLayout({
   const isProviderGamesPage = isGamingProviderDetailPath(pathname, meta.basePath);
 
   return (
-    <div className="flex min-h-screen flex-col bg-[var(--body)] text-[var(--text-on-light)]">
+    <div className="flex min-h-screen flex-col app-bg text-[var(--text-on-light)]">
       <HeaderBar onOpenLogin={openLogin} onOpenRegister={openRegister} />
 
       <CategoryNav />

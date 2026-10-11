@@ -59,7 +59,7 @@ export function GemsRedeemConfirmDialog({
         <p className="text-xs text-[var(--text-muted)]">{t("gemsStore.confirm.creditsLabel")}</p>
       </div>
 
-      <dl className="my-3 space-y-2.5 rounded-lg bg-[var(--soft-card)] p-3.5 text-xs sm:text-[13px]">
+      <dl className="my-3 space-y-2.5 rounded-lg soft-panel-bg p-3.5 text-xs sm:text-[13px]">
         <div className="flex items-center justify-between text-[var(--text-muted)]">
           <dt className="flex items-center gap-1.5">
             <span className="relative h-4 w-4" aria-hidden="true">
@@ -86,7 +86,7 @@ export function GemsRedeemConfirmDialog({
           type="button"
           disabled={loading}
           onClick={() => onOpenChange(false)}
-          className="h-11 flex-1 cursor-pointer rounded-lg border-0 bg-[var(--soft-card)] text-sm font-extrabold text-[var(--text-on-light)] transition-colors hover:bg-[var(--soft-card-elevated)] disabled:opacity-50"
+          className="h-11 flex-1 cursor-pointer rounded-lg border-0 soft-panel-bg text-sm font-extrabold text-[var(--text-on-light)] transition-colors hover:soft-card-bg disabled:opacity-50"
         >
           {t("gemsStore.confirm.cancel")}
         </button>

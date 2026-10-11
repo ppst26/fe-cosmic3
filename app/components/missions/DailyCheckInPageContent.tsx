@@ -82,7 +82,7 @@ function DailyCheckInView({ checkIn }: { checkIn: CheckInData }) {
           <span className="font-bold text-[var(--brand-strong)]">{t("checkIn.bonusGems", { amount: 20 })}</span>
         </p>
         <div className="flex items-center gap-3">
-          <div className="h-2.5 flex-1 overflow-hidden rounded-full bg-[var(--soft-card-elevated)]">
+          <div className="h-2.5 flex-1 overflow-hidden rounded-full soft-card-bg">
             <div
               className="h-full rounded-full bg-[var(--brand)] transition-all duration-500 ease-out"
               style={{ width: `${progressPercent}%` }}
@@ -110,8 +110,8 @@ function DailyCheckInView({ checkIn }: { checkIn: CheckInData }) {
                 isToday
                   ? "cursor-pointer bg-[var(--brand-soft)] ring-2 ring-[var(--brand)]"
                   : isClaimed
-                    ? "bg-[var(--soft-card)]"
-                    : "bg-[var(--soft-card-elevated)]"
+                    ? "soft-panel-bg"
+                    : "soft-card-bg"
               }`}
             >
               <p className="text-[var(--text-muted)]">{t(item.labelKey)}</p>
@@ -148,7 +148,7 @@ function DailyCheckInView({ checkIn }: { checkIn: CheckInData }) {
                 onClick={() => setMilestoneDialogDay(m.milestoneDay)}
                 aria-label={t("checkIn.milestoneDialog.title", { days: m.milestoneDay })}
                 className={`flex min-h-10 cursor-pointer flex-col items-center gap-1 rounded-[var(--radius-soft-sm)] p-2 text-center ${
-                  isReached ? "bg-[var(--brand-soft)]" : "bg-[var(--soft-card-elevated)]"
+                  isReached ? "bg-[var(--brand-soft)]" : "soft-card-bg"
                 }`}
               >
                 <span className="text-xs font-bold tabular-nums">

@@ -18,7 +18,7 @@ export function SportCategoryCard({
   return (
     <article className="w-[108px] shrink-0 sm:w-[120px]">
       <button type="button" onClick={onPress} className="group w-full border-0 bg-transparent p-0 text-left cursor-pointer">
-        <div className="relative aspect-[3/4] overflow-hidden rounded-lg bg-white shadow-[0_1px_4px_rgba(0,0,0,0.08)]">
+        <div className="relative aspect-[3/4] overflow-hidden rounded-lg soft-panel-bg shadow-[0_1px_4px_rgba(0,0,0,0.35)]">
           {sport.imageUrl ? (
             <Image
               src={sport.imageUrl}
@@ -42,7 +42,7 @@ export function SportCategoryCard({
           </p>
 
           {hasStats && sport.playersTone && sport.activityTone ? (
-            <div className="absolute inset-x-1 bottom-1 flex items-center justify-between rounded bg-white/90 px-2 py-1 text-[10px] font-semibold backdrop-blur-[2px]">
+            <div className="absolute inset-x-1 bottom-1 flex items-center justify-between rounded bg-[var(--soft-chrome)]/90 px-2 py-1 text-[10px] font-semibold backdrop-blur-[2px]">
               <span className={`flex items-center gap-0.5 ${toneClass[sport.playersTone]}`}>
                 <UsersIcon />
                 {sport.players}

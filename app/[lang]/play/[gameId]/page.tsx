@@ -22,7 +22,7 @@ function GamePlayMock() {
   const provider = searchParams.get("provider")?.trim() || undefined;
 
   return (
-    <div className="flex h-dvh max-h-dvh flex-col overflow-hidden bg-[var(--body)]">
+    <div className="flex h-dvh max-h-dvh flex-col overflow-hidden app-bg">
       <HeaderBar onOpenLogin={openLogin} onOpenRegister={openRegister} />
       <main className="min-h-0 flex-1">
         <MockGameViewport gameId={gameId} title={title} provider={provider} />

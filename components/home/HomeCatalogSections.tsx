@@ -75,7 +75,7 @@ export function HomeCatalogSections({ content }: { content: LobbyContent }) {
       <AuthGate
         fallback={
           <section className="px-3 pt-3 md:px-6">
-            <p className="rounded-[var(--radius-soft-md)] bg-[var(--soft-card-elevated)] px-4 py-6 text-center text-sm text-[var(--text-muted)]">
+            <p className="rounded-[var(--radius-soft-md)] soft-card-bg px-4 py-6 text-center text-sm text-[var(--text-muted)]">
               {t("auth.loginToSeeEvents")}
             </p>
           </section>

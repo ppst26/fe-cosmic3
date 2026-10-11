@@ -41,7 +41,7 @@ export function useLogoutConfirm(onSuccess?: () => void) {
         maxWidthClassName="md:max-w-[360px]"
         className="p-5 text-center"
       >
-        <div className="mx-auto mb-2 flex h-14 w-14 items-center justify-center rounded-lg bg-rose-100 text-rose-600">
+        <div className="mx-auto mb-2 flex h-14 w-14 items-center justify-center rounded-lg bg-[var(--btn-danger-500)]/15 text-[var(--btn-danger-500)]">
           <LogOut className="h-6 w-6" aria-hidden />
         </div>
         <h3 className="text-lg font-black text-[var(--text-on-light)]">{t("logoutConfirm.title")}</h3>
@@ -59,7 +59,7 @@ export function useLogoutConfirm(onSuccess?: () => void) {
             type="button"
             disabled={loading}
             onClick={() => void handleConfirm()}
-            className="h-11 cursor-pointer rounded-[var(--radius-soft-md)] border-0 bg-rose-600 text-sm font-bold text-white hover:bg-rose-700 disabled:opacity-60"
+            className="h-11 cursor-pointer rounded-[var(--radius-soft-md)] btn-danger border-0 text-sm font-bold disabled:opacity-60"
           >
             {loading ? tCommon("processing") : t("logout")}
           </button>

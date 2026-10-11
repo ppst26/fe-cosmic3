@@ -13,12 +13,12 @@ export function GameSearchBar({
 
   return (
     <div className={`mx-auto flex w-full max-w-[1200px] items-center gap-2 ${pad}`}>
-      <div className="flex min-w-0 flex-1 overflow-hidden rounded-lg border border-[#e3e3e3] bg-white shadow-sm">
+      <div className="flex min-w-0 flex-1 overflow-hidden rounded-lg border border-[var(--border-soft)] soft-card-bg shadow-sm">
         <input
           id={id}
           type="search"
           placeholder={placeholder}
-          className="h-11 min-w-0 flex-1 bg-white px-4 text-sm text-[var(--text-on-light)] outline-none placeholder:text-[var(--text-muted)] md:h-12"
+          className="h-11 min-w-0 flex-1 soft-card-bg px-4 text-sm text-[var(--text-on-light)] outline-none placeholder:text-[var(--text-muted)] md:h-12"
         />
         <button
           type="button"

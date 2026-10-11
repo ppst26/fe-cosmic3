@@ -21,8 +21,8 @@ export function SectionHeader({
 
   return (
     <div className="px-3 pt-3 md:px-6 md:pt-4">
-      <div className="flex items-center justify-between rounded-lg bg-gradient-to-r from-[#eceff3] via-[#f5f6f8] to-gray-100 px-4 py-2.5">
-        <h2 className="flex items-center gap-1.5 text-sm font-bold text-[#4a5568]">
+      <div className="flex items-center justify-between rounded-lg soft-card-bg px-4 py-2.5">
+        <h2 className="flex items-center gap-1.5 text-sm font-bold text-[var(--text-primary)]">
           {leading ?? <span aria-hidden>{icon}</span>}
           {title}
         </h2>

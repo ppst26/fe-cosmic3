@@ -85,7 +85,7 @@ export function GamingGamesView({ categoryId, providerKey }: GamingGamesViewProp
           onSearch={setSearchQuery}
         />
 
-        <header className="mt-3 flex flex-col gap-3 border-b border-black/[0.06] pb-3 sm:flex-row sm:items-center sm:justify-between">
+        <header className="mt-3 flex flex-col gap-3 border-b border-white/[0.06] pb-3 sm:flex-row sm:items-center sm:justify-between">
           <h1 className="text-lg font-black text-[var(--brand)] sm:text-xl">{provider.title}</h1>
           <div className="flex gap-4">
             <button

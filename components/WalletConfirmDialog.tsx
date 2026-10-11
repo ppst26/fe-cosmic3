@@ -57,7 +57,7 @@ export function WalletConfirmDialog({
           type="button"
           disabled={loading}
           onClick={onClose}
-          className="absolute right-4 top-4 flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg border-0 bg-[var(--soft-card)] text-[var(--text-muted)] transition-colors hover:text-[var(--text-on-light)] disabled:opacity-50"
+          className="absolute right-4 top-4 flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg border-0 soft-panel-bg text-[var(--text-muted)] transition-colors hover:text-[var(--text-on-light)] disabled:opacity-50"
           aria-label={tc("close")}
         >
           <X className="h-4 w-4" />
@@ -66,7 +66,7 @@ export function WalletConfirmDialog({
         <div className="pb-3 text-center">
           <div
             className={`mx-auto mb-2 flex h-14 w-14 items-center justify-center rounded-lg ${
-              isDeposit ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700"
+              isDeposit ? "bg-emerald-100 text-emerald-400" : "bg-amber-100 text-amber-400"
             }`}
           >
             {isDeposit ? (
@@ -85,7 +85,7 @@ export function WalletConfirmDialog({
           ) : null}
         </div>
 
-        <div className="my-3 rounded-lg bg-[var(--soft-card)] p-3.5 text-xs sm:text-[13px]">
+        <div className="my-3 rounded-lg soft-panel-bg p-3.5 text-xs sm:text-[13px]">
           <div className="flex items-center justify-between text-[var(--text-muted)]">
             <span>{amountLabel}</span>
             <span className="font-mono text-base font-black text-[var(--brand)]">฿{amountDisplay}</span>
@@ -97,7 +97,7 @@ export function WalletConfirmDialog({
             type="button"
             disabled={loading}
             onClick={onClose}
-            className="h-11 flex-1 cursor-pointer rounded-lg border-0 bg-[var(--soft-card)] text-sm font-extrabold text-[var(--text-on-light)] transition-colors hover:bg-[var(--soft-card-elevated)] disabled:opacity-50"
+            className="h-11 flex-1 cursor-pointer rounded-lg border-0 soft-panel-bg text-sm font-extrabold text-[var(--text-on-light)] transition-colors hover:soft-card-bg disabled:opacity-50"
           >
             {tc("cancel")}
           </button>

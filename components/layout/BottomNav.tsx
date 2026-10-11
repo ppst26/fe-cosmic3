@@ -233,7 +233,7 @@ export function BottomNav({
           </svg>
 
           <div
-            className="absolute inset-0 rounded-t-[22px] border-t border-black/10 bg-[var(--soft-chrome)] shadow-[0_-8px_24px_rgba(45,55,72,0.2)]"
+            className="absolute inset-0 rounded-t-[22px] border-t border-white/10 bg-[var(--soft-chrome)] shadow-[0_-8px_24px_rgba(45,55,72,0.2)]"
           />
 
           <div

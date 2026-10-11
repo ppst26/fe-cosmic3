@@ -72,7 +72,7 @@ function GemsStoreView({
           <button
             type="button"
             onClick={() => setTermsOpen((open) => !open)}
-            className="h-10 w-full rounded-[var(--radius-soft-sm)] bg-[var(--soft-card)] text-sm font-semibold text-[var(--text-on-light)]"
+            className="h-10 w-full rounded-[var(--radius-soft-sm)] soft-panel-bg text-sm font-semibold text-[var(--text-on-light)]"
             aria-expanded={termsOpen}
           >
             {t("gemsStore.termsTitle")}
@@ -153,7 +153,7 @@ function GemsRedeemCard({
         className={
           affordable
             ? "soft-btn-primary mt-auto min-h-10 w-full text-sm font-semibold"
-            : "mt-auto min-h-10 w-full rounded-[var(--radius-soft-sm)] bg-[var(--soft-card)] text-xs font-semibold text-[var(--text-muted)]"
+            : "mt-auto min-h-10 w-full rounded-[var(--radius-soft-sm)] soft-panel-bg text-xs font-semibold text-[var(--text-muted)]"
         }
       >
         <span className="sm:hidden">{redeemLabel}</span>

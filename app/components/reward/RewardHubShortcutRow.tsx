@@ -28,7 +28,7 @@ export function RewardHubShortcutRow({ shortcuts }: { shortcuts: RewardHubShortc
         const cls = cn(
           "soft-card flex min-h-[88px] flex-col items-center justify-center gap-1 px-1 py-2 text-center transition-colors",
           active && "ring-2 ring-[var(--brand)]",
-          inactive ? "cursor-not-allowed opacity-50" : "hover:bg-[var(--soft-card-elevated)]",
+          inactive ? "cursor-not-allowed opacity-50" : "hover:soft-card-bg",
         );
         const inner = (
           <>

@@ -6,6 +6,7 @@ import { useAuthUI } from "@/context/AuthUIContext";
 import type { LobbyContent } from "@/lib/api/lobby";
 import { HomeScreenShortcutPromo } from "@/app/components/home/HomeScreenShortcutPromo";
 import { HomeMainContainer } from "./HomeMainContainer";
+import { MobileHomeSidebarLayout } from "./MobileHomeSidebarLayout";
 import { HomeTopFeed } from "./HomeTopFeed";
 import { SportBettingSection } from "./SportBettingSection";
 import { HomeCatalogSections } from "./HomeCatalogSections";
@@ -21,18 +22,20 @@ export function HomePage({ content }: { content: LobbyContent }) {
   const heroItems = banners.peek.length > 0 ? banners.peek : banners.promoCarousel;
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen app-bg">
       <div className="sticky top-0 z-40 w-full">
         <HeaderBar onOpenLogin={openLogin} onOpenRegister={openRegister} />
         <NoticeMarquee messages={content.announcements} />
       </div>
       <HomeTopFeed banners={heroItems} />
 
-      <HomeMainContainer>
-        <SportBettingSection />
-        <HomeCatalogSections content={content} />
-        <HomeScreenShortcutPromo className="mt-8 sm:mt-10" />
-      </HomeMainContainer>
+      <MobileHomeSidebarLayout>
+        <HomeMainContainer>
+          <SportBettingSection />
+          <HomeCatalogSections content={content} />
+          <HomeScreenShortcutPromo className="mt-8 sm:mt-10" />
+        </HomeMainContainer>
+      </MobileHomeSidebarLayout>
 
       <Footer />
       {/* ปุ่มแชทไป /support เหมือน glass (ยังไม่มีหน้า /support ใน glass เช่นกัน) */}

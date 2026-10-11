@@ -39,12 +39,12 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export const viewport: Viewport = {
-  themeColor: "#323c4d",
+  themeColor: "#09080e",
 };
 
 /**
  * RootLayout ต่อภาษา — กำหนด lang, ฟอนต์ตามภาษา และ dictionary ของ shell
- * (structure เหมือน glass app/[lang]/layout.tsx · ฟอนต์/ธีมสว่าง Orange Light Solid เป็นของ sport)
+ * (structure เหมือน glass app/[lang]/layout.tsx · ธีม Dark Lavender / Plum เป็นของ sport)
  */
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const locale = await lang();
@@ -53,8 +53,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html
       lang={locale}
-      className={`${kanit.variable} ${localeFontClass(locale)} light h-full antialiased`}
-      data-theme="orange"
+      className={`${kanit.variable} ${localeFontClass(locale)} dark h-full antialiased`}
+      data-theme="lavender"
     >
       <body className="min-h-full flex flex-col">
         <MessagesBoundary namespaces={NAMESPACES}>

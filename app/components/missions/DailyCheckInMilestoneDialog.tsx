@@ -50,7 +50,7 @@ export function DailyCheckInMilestoneDialog({
           {t("checkIn.milestoneGems", { amount: gemsReward })}
         </p>
         <div className="mt-4 w-full">
-          <div className="h-2.5 overflow-hidden rounded-full bg-[var(--soft-card)]">
+          <div className="h-2.5 overflow-hidden rounded-full soft-panel-bg">
             <div
               className="h-full rounded-full bg-[var(--brand)] transition-[width] duration-500 ease-out"
               style={{ width: `${progressPercent}%` }}

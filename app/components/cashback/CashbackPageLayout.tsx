@@ -40,7 +40,7 @@ export function CashbackPanelShell({ children, embedded = false, className }: Ca
 /** หัวข้อกลางในกล่องหลัก */
 export function CashbackPanelHeader({ title, subtitle }: { title: string; subtitle: string }) {
   return (
-    <header className="border-b border-black/[0.08] pb-3 text-center">
+    <header className="border-b border-white/[0.08] pb-3 text-center">
       <h2 className="text-base font-bold text-[var(--text-on-light)]">{title}</h2>
       <p className="mt-0.5 text-xs text-[var(--text-muted)]">{subtitle}</p>
     </header>
@@ -113,7 +113,7 @@ export function CashbackInsightPeriodTabs({ activeId, onSelect }: CashbackInsigh
   const t = useT("cashback");
   return (
     <div
-      className="grid grid-cols-4 gap-1.5 rounded-[var(--radius-soft-sm)] bg-[var(--soft-card-elevated)] p-1.5"
+      className="grid grid-cols-4 gap-1.5 rounded-[var(--radius-soft-sm)] soft-card-bg p-1.5"
       role="group"
       aria-label={t("periods.ariaLabel")}
     >
@@ -155,7 +155,7 @@ export function CashbackHighlightCard({
   secondaryHint,
 }: CashbackHighlightCardProps) {
   return (
-    <div className="flex items-start justify-between gap-4 rounded-[var(--radius-soft-md)] border border-black/[0.08] px-3.5 py-3 sm:px-4 sm:py-3.5">
+    <div className="flex items-start justify-between gap-4 rounded-[var(--radius-soft-md)] border border-white/[0.08] px-3.5 py-3 sm:px-4 sm:py-3.5">
       <div className="min-w-0">
         <p className="text-xs text-[var(--text-muted)]">{primaryLabel}</p>
         <p className={toneClass("emphasis", "mt-1 text-xl leading-tight sm:text-2xl")}>{primaryValue}</p>
@@ -192,7 +192,7 @@ export function CashbackRulesTableSection({ title, rows, action }: CashbackRules
       <div className="soft-card overflow-hidden">
         <table className="w-full border-collapse text-sm">
           <thead>
-            <tr className="border-b border-black/[0.08] bg-[var(--soft-card)]">
+            <tr className="border-b border-white/[0.08] soft-panel-bg">
               <th className="h-10 px-3 text-left text-xs font-semibold text-[var(--text-muted)] sm:px-4">
                 {t("rules.item")}
               </th>
@@ -203,7 +203,7 @@ export function CashbackRulesTableSection({ title, rows, action }: CashbackRules
           </thead>
           <tbody>
             {rows.map((row) => (
-              <tr key={row.id} className="border-b border-black/[0.05] last:border-0">
+              <tr key={row.id} className="border-b border-white/[0.05] last:border-0">
                 <td className="px-3 py-3 text-xs text-[var(--text-muted)] sm:px-4 sm:text-sm">{row.label}</td>
                 <td className="px-3 py-3 text-right text-xs font-semibold tabular-nums text-[var(--text-on-light)] sm:px-4 sm:text-sm">
                   {row.value}

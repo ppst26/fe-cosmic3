@@ -52,13 +52,13 @@ export interface WalletModalProps {
 }
 
 const METHOD_ICONS: Record<DepositMethodId, { Icon: typeof Landmark; color: string }> = {
-  bank: { Icon: Landmark, color: "text-emerald-600" },
-  gateway: { Icon: QrCode, color: "text-blue-600" },
-  truemoney: { Icon: Smartphone, color: "text-amber-600" },
+  bank: { Icon: Landmark, color: "text-emerald-400" },
+  gateway: { Icon: QrCode, color: "text-blue-400" },
+  truemoney: { Icon: Smartphone, color: "text-amber-400" },
 };
 
 const errorBoxClass =
-  "rounded-xl border border-rose-500/25 bg-rose-50 px-3 py-2 text-xs font-medium text-rose-700 sm:text-sm";
+  "rounded-xl border border-rose-500/25 bg-rose-50 px-3 py-2 text-xs font-medium text-rose-400 sm:text-sm";
 
 export function WalletModal({
   isOpen,
@@ -88,7 +88,7 @@ export function WalletModal({
         role="dialog"
         aria-modal="true"
         aria-label={tab === "deposit" ? t("deposit.title") : t("withdraw.title")}
-        className="relative z-10 flex max-h-[92vh] w-full max-w-[440px] flex-col overflow-y-auto rounded-[var(--radius-soft-xl)] border border-black/10 bg-[var(--soft-card-elevated)] p-4 text-[var(--text-on-light)] shadow-[var(--shadow-soft)] sm:p-5"
+        className="relative z-10 flex max-h-[92vh] w-full max-w-[440px] flex-col overflow-y-auto rounded-[var(--radius-soft-xl)] border border-white/10 soft-card-bg p-4 text-[var(--text-on-light)] shadow-[var(--shadow-soft)] sm:p-5"
       >
         <div className="mb-3 flex items-center justify-between">
           {showBack ? (
@@ -96,7 +96,7 @@ export function WalletModal({
               type="button"
               onClick={() => setDepositStep(depositStep === "confirm" ? "bank" : "methods")}
               aria-label={tc("back")}
-              className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border-0 bg-[var(--soft-card)] text-[var(--text-muted)] transition-all hover:text-[var(--text-on-light)] active:scale-95"
+              className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border-0 soft-panel-bg text-[var(--text-muted)] transition-all hover:text-[var(--text-on-light)] active:scale-95"
             >
               <ChevronLeft className="h-5 w-5 stroke-[2.5]" />
             </button>
@@ -114,14 +114,14 @@ export function WalletModal({
             type="button"
             onClick={onClose}
             aria-label={tab === "deposit" ? t("deposit.close") : t("withdraw.close")}
-            className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border-0 bg-[var(--soft-card)] text-[var(--text-muted)] transition-all hover:text-[var(--text-on-light)] active:scale-95"
+            className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border-0 soft-panel-bg text-[var(--text-muted)] transition-all hover:text-[var(--text-on-light)] active:scale-95"
           >
             <X className="h-5 w-5 stroke-[2.2]" />
           </button>
         </div>
 
         {!showBack && (
-          <div className="relative mb-3 flex border-b border-black/10">
+          <div className="relative mb-3 flex border-b border-white/10">
             {(["deposit", "withdraw"] as const).map((id) => (
               <button
                 key={id}
@@ -243,7 +243,7 @@ function DepositPanel({
   };
 
   const bankCard = (bank: DepositBankAccountMock) => (
-    <div className="rounded-[var(--radius-soft-lg)] bg-[var(--soft-card)] p-4">
+    <div className="rounded-[var(--radius-soft-lg)] soft-panel-bg p-4">
       <div className="flex items-start gap-3">
         <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl bg-[#12803b]">
           <Landmark className="h-6 w-6 text-white" />
@@ -264,11 +264,11 @@ function DepositPanel({
               className="cursor-pointer rounded-lg border-0 bg-transparent p-1 text-[var(--brand)] transition-colors hover:bg-[var(--brand-soft)]"
               aria-label={t("shared.copyAccountNumber")}
             >
-              {copied ? <Check className="h-4 w-4 text-emerald-600" /> : <Copy className="h-4 w-4" />}
+              {copied ? <Check className="h-4 w-4 text-emerald-400" /> : <Copy className="h-4 w-4" />}
             </button>
           </div>
           {copied && (
-            <p className="mt-1 text-xs text-emerald-600" role="status">
+            <p className="mt-1 text-xs text-emerald-400" role="status">
               {t("shared.copied")}
             </p>
           )}
@@ -294,7 +294,7 @@ function DepositPanel({
                         /* gateway / truemoney — ยังไม่มี step ถัดไป (เหมือน glass) */
                         if (method.id === "bank") onStepChange("bank");
                       }}
-                      className="flex w-full cursor-pointer flex-col items-center justify-center gap-1.5 rounded-2xl border-0 bg-[var(--soft-card)] p-2.5 text-[var(--text-on-light)] transition-all hover:ring-1 hover:ring-[var(--brand)]"
+                      className="flex w-full cursor-pointer flex-col items-center justify-center gap-1.5 rounded-2xl border-0 soft-panel-bg p-2.5 text-[var(--text-on-light)] transition-all hover:ring-1 hover:ring-[var(--brand)]"
                     >
                       <Icon className={`h-5 w-5 ${color}`} />
                       <span className="text-center text-[11px] font-bold">{t(method.titleKey)}</span>
@@ -316,7 +316,7 @@ function DepositPanel({
           <div className="space-y-3.5">
             {bankCard(bank)}
 
-            <div className="rounded-[var(--radius-soft-lg)] bg-[var(--soft-card)] p-4">
+            <div className="rounded-[var(--radius-soft-lg)] soft-panel-bg p-4">
               <label htmlFor="deposit-amount" className="mb-2 block text-xs font-bold text-[var(--text-muted)]">
                 {t("deposit.bank.amountLabel")}
               </label>
@@ -329,7 +329,7 @@ function DepositPanel({
                   value={amountInput}
                   maxLength={MONEY_AMOUNT_MAX_DIGITS}
                   onChange={(e) => handleAmountChange(e.target.value)}
-                  className="h-11 w-full rounded-xl border border-black/10 bg-[var(--soft-card-elevated)] pl-9 pr-14 font-mono text-sm font-bold text-[var(--text-on-light)] focus:outline-none focus:ring-2 focus:ring-[var(--brand)]/40"
+                  className="h-11 w-full rounded-xl border border-white/10 soft-card-bg pl-9 pr-14 font-mono text-sm font-bold text-[var(--text-on-light)] focus:outline-none focus:ring-2 focus:ring-[var(--brand)]/40"
                 />
                 <span className="absolute right-3 text-xs text-[var(--text-muted)]">{t("shared.currencyUnit")}</span>
               </div>
@@ -344,7 +344,7 @@ function DepositPanel({
                     className={`cursor-pointer rounded-xl border-0 px-1 py-2 text-xs font-black transition-all ${
                       amount === value
                         ? "bg-[var(--brand)] text-white"
-                        : "bg-[var(--soft-card-elevated)] text-[var(--text-on-light)] hover:bg-[var(--brand-soft)]"
+                        : "soft-card-bg text-[var(--text-on-light)] hover:bg-[var(--brand-soft)]"
                     }`}
                   >
                     ฿{formatDepositAmount(value)}
@@ -378,7 +378,7 @@ function DepositPanel({
       <ResourceGate resource={bankAccount} loadingLabel={t("deposit.bankAccountLoading")} errorTitle={t("deposit.bankAccountError")}>
         {(bank) => (
           <div className="animate-fade-in space-y-3.5">
-            <div className="rounded-[var(--radius-soft-lg)] bg-[var(--soft-card)] p-4 text-center">
+            <div className="rounded-[var(--radius-soft-lg)] soft-panel-bg p-4 text-center">
               <span className="mb-1 block text-xs font-bold text-[var(--text-muted)]">
                 {t("deposit.confirm.transferAmount")}
               </span>
@@ -404,11 +404,11 @@ function DepositPanel({
               <button
                 type="button"
                 onClick={() => slipInputRef.current?.click()}
-                className="group flex w-full cursor-pointer items-center justify-between rounded-[20px] border-2 border-dashed border-[var(--brand)]/40 bg-[var(--soft-card)] p-3.5 text-left transition-all hover:border-[var(--brand)]"
+                className="group flex w-full cursor-pointer items-center justify-between rounded-[20px] border-2 border-dashed border-[var(--brand)]/40 soft-panel-bg p-3.5 text-left transition-all hover:border-[var(--brand)]"
               >
                 <span className="flex min-w-0 items-center gap-3">
                   <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--brand-soft)] text-[var(--brand)]">
-                    {slipFileName ? <CheckCircle2 className="h-6 w-6 text-emerald-600" /> : <ImageIcon className="h-6 w-6" />}
+                    {slipFileName ? <CheckCircle2 className="h-6 w-6 text-emerald-400" /> : <ImageIcon className="h-6 w-6" />}
                   </span>
                   <span className="min-w-0">
                     <span className="block truncate text-xs font-bold sm:text-[13px]">
@@ -522,7 +522,7 @@ function WithdrawPanel({ onCompleted }: { onCompleted: (amount: number) => void 
     <div className="animate-fade-in space-y-4 pt-1">
       <ResourceGate resource={account} loadingLabel={t("withdraw.accountLoading")} errorTitle={t("withdraw.accountError")}>
         {(bank) => (
-          <div className="flex items-center justify-between rounded-[var(--radius-soft-lg)] bg-[var(--soft-card)] p-3.5">
+          <div className="flex items-center justify-between rounded-[var(--radius-soft-lg)] soft-panel-bg p-3.5">
             <div className="flex min-w-0 items-center gap-3">
               <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#12803b]">
                 <Landmark className="h-5 w-5 text-white" />
@@ -587,7 +587,7 @@ function WithdrawPanel({ onCompleted }: { onCompleted: (amount: number) => void 
               className={`shrink-0 cursor-pointer rounded-full border-0 px-4 py-2 text-xs font-black transition-all ${
                 amount === value
                   ? "scale-105 bg-[var(--brand)] text-white shadow-sm"
-                  : "bg-[var(--soft-card)] text-[var(--text-on-light)] hover:bg-[var(--brand-soft)]"
+                  : "soft-panel-bg text-[var(--text-on-light)] hover:bg-[var(--brand-soft)]"
               }`}
             >
               {formatWithdrawAmount(value)}

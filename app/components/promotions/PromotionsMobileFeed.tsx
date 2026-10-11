@@ -62,7 +62,7 @@ function PromotionsMobileListCard({ item }: { item: PromoHubMobileListItem }) {
       className="soft-card group flex w-full flex-col overflow-hidden text-left"
       aria-label={t("mobile.readTermsAria", { title: item.title })}
     >
-      <div className="relative aspect-[16/9] w-full overflow-hidden bg-[var(--soft-card-elevated)]">
+      <div className="relative aspect-[16/9] w-full overflow-hidden soft-card-bg">
         <Image
           src={item.bannerSrc}
           alt=""
@@ -73,7 +73,7 @@ function PromotionsMobileListCard({ item }: { item: PromoHubMobileListItem }) {
       </div>
       <div className="px-3 pb-3 pt-2.5">
         <h2 className="font-semibold leading-snug">{item.title}</h2>
-        <div className="mt-2 flex items-center justify-between gap-3 border-t border-black/[0.06] pt-2">
+        <div className="mt-2 flex items-center justify-between gap-3 border-t border-white/[0.06] pt-2">
           <span className="text-xs text-[var(--text-muted)]">
             {t("mobile.expires", { date: item.expiresLabel })}
           </span>

@@ -19,7 +19,7 @@ interface VipRankCarouselProps {
 }
 
 const arrowClass =
-  "absolute top-[42%] z-20 flex h-9 w-9 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border-0 bg-[var(--soft-card-elevated)] text-[var(--text-on-light)] shadow-[var(--shadow-soft-sm)] transition-colors hover:bg-[var(--brand-soft)] disabled:pointer-events-none disabled:opacity-0";
+  "absolute top-[42%] z-20 flex h-9 w-9 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border-0 soft-card-bg text-[var(--text-on-light)] shadow-[var(--shadow-soft-sm)] transition-colors hover:bg-[var(--brand-soft)] disabled:pointer-events-none disabled:opacity-0";
 
 /** แรงค์กลาง + ปุ่มเลื่อน — แท็บแร็งค์ */
 export function VipRankCarousel({ focusIndex, onFocusChange, playerRankId, vipRankTiers }: VipRankCarouselProps) {

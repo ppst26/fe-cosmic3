@@ -30,7 +30,7 @@ export function UserAvatar({ profile, size = "md", className = "" }: UserAvatarP
   const src = avatarPresetImageUrl(presetId, px * 2);
 
   return (
-    <span className={`relative inline-flex shrink-0 overflow-hidden bg-[var(--soft-card)] ${SIZE_CLASS[size]} ${className}`}>
+    <span className={`relative inline-flex shrink-0 overflow-hidden soft-panel-bg ${SIZE_CLASS[size]} ${className}`}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={src} alt="" width={px} height={px} className="h-full w-full object-cover" loading="lazy" decoding="async" />
       <span className="sr-only">{t("avatar.srLabel", { name: profile.displayName })}</span>

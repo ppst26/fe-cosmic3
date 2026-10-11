@@ -16,7 +16,7 @@ interface TransactionDateFilterProps {
 }
 
 const fieldClass =
-  "flex h-11 cursor-pointer items-center rounded-[var(--radius-soft-sm)] border-0 bg-[var(--soft-card-elevated)] px-3 text-[var(--text-on-light)]";
+  "flex h-11 cursor-pointer items-center rounded-[var(--radius-soft-sm)] border-0 soft-card-bg px-3 text-[var(--text-on-light)]";
 
 /** ฟิลเตอร์วันที่ — ช่องเลือกช่วง · ล้าง · ค้นหา */
 export function TransactionDateFilter({

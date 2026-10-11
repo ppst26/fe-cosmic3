@@ -23,7 +23,7 @@ import {
 import { useT } from "@/lib/i18n/I18nProvider";
 
 const inputClass =
-  "h-11 w-full rounded-[var(--radius-soft-sm)] bg-[var(--soft-card)] px-3 text-sm outline-none";
+  "h-11 w-full rounded-[var(--radius-soft-sm)] soft-panel-bg px-3 text-sm outline-none";
 
 const linkButtonClass =
   "cursor-pointer border-0 bg-transparent p-0 text-sm font-semibold text-[var(--brand)]";

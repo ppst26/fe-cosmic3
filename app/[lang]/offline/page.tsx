@@ -9,7 +9,7 @@ export default async function OfflinePage() {
   const locale = await getLocale();
   const t = await getT("errors");
   return (
-    <main className="flex min-h-dvh flex-col items-center justify-center gap-3 bg-[var(--body)] px-6 text-center">
+    <main className="flex min-h-dvh flex-col items-center justify-center gap-3 app-bg px-6 text-center">
       <h1 className="text-xl font-semibold text-[var(--text-on-light)]">{t("offline.title")}</h1>
       <p className="max-w-xs text-sm text-[var(--text-muted)]">{t("offline.description")}</p>
       {/* eslint-disable-next-line @next/next/no-html-link-for-pages -- ตั้งใจโหลดใหม่ทั้งหน้า ไม่ใช้ client navigation ตอนออฟไลน์ */}

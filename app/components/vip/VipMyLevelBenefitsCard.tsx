@@ -34,7 +34,7 @@ export function VipMyLevelBenefitsCard({ player }: { player: VipPlayerState }) {
           return (
             <li
               key={row.id}
-              className="flex min-w-0 items-center gap-1.5 rounded-[var(--radius-soft-sm)] bg-[var(--soft-card-elevated)] px-2.5 py-2"
+              className="flex min-w-0 items-center gap-1.5 rounded-[var(--radius-soft-sm)] soft-card-bg px-2.5 py-2"
             >
               <BenefitRowIcon rowId={row.id} />
               <span className="min-w-0 flex-1 truncate text-sm text-[var(--text-muted)]">{t(row.labelKey)}</span>

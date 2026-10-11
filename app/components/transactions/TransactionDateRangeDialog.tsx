@@ -25,7 +25,7 @@ interface TransactionDateRangeDialogProps {
 }
 
 const selectClass =
-  "h-10 rounded-[var(--radius-soft-sm)] border-0 bg-[var(--soft-card)] px-2 text-sm text-[var(--text-on-light)] outline-none";
+  "h-10 rounded-[var(--radius-soft-sm)] border-0 soft-panel-bg px-2 text-sm text-[var(--text-on-light)] outline-none";
 
 /** เลือกช่วงวันที่ — ปฏิทินเดือน + ยืนยัน/ยกเลิก (portal เหนือ hub modal ผ่าน SoftDialog) */
 export function TransactionDateRangeDialog({
@@ -161,7 +161,7 @@ export function TransactionDateRangeDialog({
                   ? "bg-[var(--brand)] font-semibold text-white"
                   : inRange
                     ? "bg-[var(--brand-soft)] text-[var(--text-on-light)]"
-                    : "bg-transparent text-[var(--text-on-light)] hover:bg-[var(--soft-card)]",
+                    : "bg-transparent text-[var(--text-on-light)] hover:soft-panel-bg",
               )}
             >
               {day.getDate()}

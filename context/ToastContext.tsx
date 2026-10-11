@@ -33,7 +33,7 @@ const VARIANT_STYLES: Record<ToastVariant, { box: string; icon: string }> = {
     icon: "!",
   },
   info: {
-    box: "bg-[#4a5568]/95 border-[var(--brand)]/50 text-[var(--soft-card-elevated)]",
+    box: "bg-[var(--surface-2)]/95 border-[var(--brand)]/50 text-[var(--soft-card-elevated)]",
     icon: "i",
   },
 };

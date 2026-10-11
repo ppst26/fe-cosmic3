@@ -28,7 +28,7 @@ export function SoftLineTabs<T extends string>({
     <div
       role="tablist"
       aria-label={ariaLabel}
-      className={cn("flex w-full border-b border-black/[0.08]", className)}
+      className={cn("flex w-full border-b border-white/[0.08]", className)}
     >
       {tabs.map((tab) => {
         const isActive = tab.id === activeId;

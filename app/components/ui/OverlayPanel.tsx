@@ -102,7 +102,7 @@ export function OverlayPanel({
         aria-modal="true"
         aria-labelledby={title && !hideHeader ? titleId : undefined}
         className={cn(
-          "relative flex max-h-[88dvh] w-full flex-col overflow-hidden rounded-t-[var(--radius-soft-xl)] bg-[var(--soft-card-elevated)] p-4 text-[var(--text-on-light)] shadow-[var(--shadow-soft)] outline-none transition duration-200 md:max-h-[85dvh] md:rounded-[var(--radius-soft-xl)]",
+          "relative flex max-h-[88dvh] w-full flex-col overflow-hidden rounded-t-[var(--radius-soft-xl)] soft-card-bg p-4 text-[var(--text-on-light)] shadow-[var(--shadow-soft)] outline-none transition duration-200 md:max-h-[85dvh] md:rounded-[var(--radius-soft-xl)]",
           maxWidthClassName,
           visible
             ? "translate-y-0 opacity-100 md:scale-100"
@@ -120,7 +120,7 @@ export function OverlayPanel({
               onClick={onClose}
               disabled={!dismissible}
               aria-label={closeLabel ?? t("close")}
-              className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full border-0 bg-[var(--soft-card)] text-[var(--text-muted)] hover:text-[var(--text-on-light)] disabled:opacity-50"
+              className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full border-0 soft-panel-bg text-[var(--text-muted)] hover:text-[var(--text-on-light)] disabled:opacity-50"
             >
               <X className="h-4 w-4" aria-hidden />
             </button>

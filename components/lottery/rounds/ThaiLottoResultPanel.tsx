@@ -26,7 +26,7 @@ export function ThaiLottoResultPanel({ result }: { result: ThaiLottoResult }) {
         <span className="text-xs text-[var(--text-muted)]">{roundLabel(result.drawLabel)}</span>
       </div>
 
-      <div className="thai-lotto-result__first flex flex-col items-center gap-1 rounded-[var(--radius-soft-sm)] bg-[var(--soft-card)] p-3">
+      <div className="thai-lotto-result__first flex flex-col items-center gap-1 rounded-[var(--radius-soft-sm)] soft-panel-bg p-3">
         <span className="text-xs text-[var(--text-muted)]">{t("thaiResult.firstPrize")}</span>
         <span className="text-2xl font-bold tracking-widest text-[var(--brand)]">
           {result.firstPrize}
@@ -37,7 +37,7 @@ export function ThaiLottoResultPanel({ result }: { result: ThaiLottoResult }) {
         {subPrizes.map((prize) => (
           <div
             key={prize.id}
-            className="flex flex-col items-center gap-1 rounded-[var(--radius-soft-sm)] bg-[var(--soft-card)] px-1 py-3"
+            className="flex flex-col items-center gap-1 rounded-[var(--radius-soft-sm)] soft-panel-bg px-1 py-3"
           >
             <dt className="text-[10px] text-[var(--text-muted)]">{prize.label}</dt>
             <dd className="m-0 flex flex-wrap justify-center gap-1 text-sm font-semibold text-[var(--text-on-light)]">

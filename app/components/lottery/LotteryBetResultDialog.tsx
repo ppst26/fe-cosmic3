@@ -35,7 +35,7 @@ export function LotteryBetResultDialog({ state, onClose }: LotteryBetResultDialo
         <button
           type="button"
           onClick={onClose}
-          className="absolute right-4 top-4 flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg border-0 bg-[var(--soft-card)] text-[var(--text-muted)] transition-colors hover:text-[var(--text-on-light)]"
+          className="absolute right-4 top-4 flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg border-0 soft-panel-bg text-[var(--text-muted)] transition-colors hover:text-[var(--text-on-light)]"
           aria-label={t("submit.close")}
         >
           <X className="h-4 w-4" />
@@ -43,7 +43,7 @@ export function LotteryBetResultDialog({ state, onClose }: LotteryBetResultDialo
 
         <div className="flex flex-col items-center pt-2 text-center">
           <span
-            className="lottery-bet-result-dialog__icon is-error flex h-14 w-14 items-center justify-center rounded-lg bg-red-100 text-red-600"
+            className="lottery-bet-result-dialog__icon is-error flex h-14 w-14 items-center justify-center rounded-lg bg-red-100 text-red-400"
             aria-hidden="true"
           >
             <X className="h-6 w-6 stroke-[2.5]" />

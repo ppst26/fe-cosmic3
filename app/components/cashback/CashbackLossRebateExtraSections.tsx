@@ -105,7 +105,7 @@ function LossRebateSections({
             aria-label={t("lossRebate.selectMonth")}
             value={monthId}
             onChange={(event) => handleMonthChange(event.target.value)}
-            className="h-9 rounded-[var(--radius-soft-sm)] border-0 bg-[var(--soft-card-elevated)] px-3 text-xs font-semibold text-[var(--text-on-light)] outline-none"
+            className="h-9 rounded-[var(--radius-soft-sm)] border-0 soft-card-bg px-3 text-xs font-semibold text-[var(--text-on-light)] outline-none"
           >
             {lossRebate.months.map((option) => (
               <option key={option.id} value={option.id}>
@@ -119,7 +119,7 @@ function LossRebateSections({
           <div className="overflow-x-auto">
             <table className="w-full border-collapse text-sm">
               <thead>
-                <tr className="border-b border-black/[0.08] bg-[var(--soft-card)]">
+                <tr className="border-b border-white/[0.08] soft-panel-bg">
                   <th className={`${thClass} text-left`}>{t("lossRebate.period")}</th>
                   <th className={`${thClass} text-right`}>{t("lossRebate.netLoss")}</th>
                   <th className={`${thClass} text-right`}>{t("lossRebate.bonusReceived")}</th>
@@ -135,7 +135,7 @@ function LossRebateSections({
                   </tr>
                 ) : (
                   pageRows.map((row) => (
-                    <tr key={row.id} className="border-b border-black/[0.05] last:border-0">
+                    <tr key={row.id} className="border-b border-white/[0.05] last:border-0">
                       <td className="px-3 py-3 text-xs font-semibold text-[var(--text-on-light)] sm:px-4">
                         {row.periodLabel}
                       </td>
@@ -156,7 +156,7 @@ function LossRebateSections({
           </div>
 
           {totalHistory > 0 && (
-            <div className="flex flex-col gap-3 border-t border-black/[0.08] px-4 py-3.5 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex flex-col gap-3 border-t border-white/[0.08] px-4 py-3.5 sm:flex-row sm:items-center sm:justify-between">
               <p className="text-xs text-[var(--text-muted)]">
                 {t("pagination.showing", { start: rangeStart, end: rangeEnd, total: fmt.records(totalHistory) })}
               </p>
@@ -178,7 +178,7 @@ function LossRebateSections({
           className="flex w-full cursor-pointer items-center gap-2.5 border-0 bg-transparent px-4 py-3.5 text-left transition-colors hover:bg-[var(--brand-soft)]"
           aria-expanded={termsOpen}
         >
-          <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[var(--soft-card-elevated)] text-xs font-semibold text-[var(--text-muted)]">
+          <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full soft-card-bg text-xs font-semibold text-[var(--text-muted)]">
             i
           </span>
           <span className="flex-1 text-sm font-semibold text-[var(--text-on-light)]">{t("lossRebate.termsTitle")}</span>
@@ -188,7 +188,7 @@ function LossRebateSections({
           />
         </button>
         {termsOpen && (
-          <ul className="space-y-2 border-t border-black/[0.08] px-4 py-3.5 text-xs leading-relaxed text-[var(--text-muted)]">
+          <ul className="space-y-2 border-t border-white/[0.08] px-4 py-3.5 text-xs leading-relaxed text-[var(--text-muted)]">
             {lossRebate.terms.map((line) => (
               <li key={line} className="flex gap-2">
                 <span className="text-[var(--brand)]" aria-hidden="true">
@@ -206,7 +206,7 @@ function LossRebateSections({
 
 function FormulaCell({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex min-w-0 flex-1 flex-col items-center gap-1 rounded-[var(--radius-soft-sm)] bg-[var(--soft-card-elevated)] px-2 py-3 text-center">
+    <div className="flex min-w-0 flex-1 flex-col items-center gap-1 rounded-[var(--radius-soft-sm)] soft-card-bg px-2 py-3 text-center">
       <span className="text-[11px] text-[var(--text-muted)] sm:text-xs">{label}</span>
       <span className={toneClass("emphasis", "text-sm sm:text-base")}>{value}</span>
     </div>

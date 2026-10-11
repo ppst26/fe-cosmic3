@@ -30,7 +30,7 @@ export function MostOnlineSection({ items }: { items: MostOnlineLobbyItem[] }) {
             aria-label={`${item.brandName} — ${item.tagline}`}
             className="group soft-card flex flex-col overflow-hidden transition duration-300 hover:-translate-y-1 hover:shadow-[var(--shadow-soft)]"
           >
-            <div className="relative aspect-[16/10] w-full overflow-hidden bg-[var(--soft-card)]">
+            <div className="relative aspect-[16/10] w-full overflow-hidden soft-panel-bg">
               <Image
                 src={item.coverSrc}
                 alt=""

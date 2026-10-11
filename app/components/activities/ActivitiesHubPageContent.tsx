@@ -55,7 +55,7 @@ function ActivitiesListView({ activities }: { activities: ActivityHubItem[] }) {
             type="button"
             onClick={() => setSelectedId(null)}
             aria-label={t("activities.closeDetail")}
-            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[var(--radius-soft-sm)] bg-[var(--soft-card)]"
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[var(--radius-soft-sm)] soft-panel-bg"
           >
             <X className="h-5 w-5" />
           </button>

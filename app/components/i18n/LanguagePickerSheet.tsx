@@ -54,7 +54,7 @@ export function LanguagePickerSheet({ isOpen, onClose }: LanguagePickerSheetProp
                 aria-pressed={selected}
                 onClick={() => select(code)}
                 className={cn(
-                  "flex min-h-14 w-full cursor-pointer items-center gap-3 rounded-[var(--radius-soft-md)] border-0 bg-[var(--soft-card)] px-3.5 py-2.5 text-left outline-none hover:bg-[var(--brand-soft)]",
+                  "flex min-h-14 w-full cursor-pointer items-center gap-3 rounded-[var(--radius-soft-md)] border-0 soft-panel-bg px-3.5 py-2.5 text-left outline-none hover:bg-[var(--brand-soft)]",
                   selected && "shadow-[inset_0_0_0_2px_var(--brand)]",
                 )}
               >

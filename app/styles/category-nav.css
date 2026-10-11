@@ -1,12 +1,12 @@
-/* Category bar — โครง BP + สี Orange Light Solid */
+/* Category bar — Dark Lavender / Plum */
 
 .category-nav-desktop {
   position: sticky;
   top: 0;
   z-index: 30;
   background: var(--soft-card-elevated);
-  border-top: 1px solid rgba(0, 0, 0, 0.04);
-  border-bottom: 1px solid #e8e8e8;
+  border-top: 1px solid var(--border-soft);
+  border-bottom: 1px solid var(--border-soft);
   user-select: none;
 }
 

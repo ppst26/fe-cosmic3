@@ -19,8 +19,8 @@ export const metadata: Metadata = {
  */
 export default function GlobalNotFound() {
   return (
-    <html lang="th" className={`${kanit.variable} light h-full antialiased`} data-theme="orange">
-      <body className="flex min-h-dvh items-center justify-center bg-[var(--body)] px-4">
+    <html lang="th" className={`${kanit.variable} dark h-full antialiased`} data-theme="lavender">
+      <body className="flex min-h-dvh items-center justify-center app-bg px-4">
         <StatusState
           icon={<span className="text-lg font-medium tabular-nums">404</span>}
           title="ไม่พบหน้าที่คุณต้องการ · Page not found"

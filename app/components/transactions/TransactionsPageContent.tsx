@@ -98,7 +98,7 @@ export function TransactionsPageContent({ embedded = false, initialKind = "depos
       maximumFractionDigits: 2,
     }).format(value);
 
-  const summaryRow = "flex items-center justify-between gap-3 rounded-[var(--radius-soft-sm)] bg-[var(--soft-card-elevated)] px-3 py-2.5 text-sm text-[var(--text-on-light)]";
+  const summaryRow = "flex items-center justify-between gap-3 rounded-[var(--radius-soft-sm)] soft-card-bg px-3 py-2.5 text-sm text-[var(--text-on-light)]";
 
   return (
     <div className="flex min-h-0 flex-col gap-4">

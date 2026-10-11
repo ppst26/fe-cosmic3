@@ -16,7 +16,7 @@ interface LuckyWheelPrizeHistoryProps {
 }
 
 const pageBtnClass =
-  "flex h-7 w-7 cursor-pointer items-center justify-center rounded-full border-0 bg-[var(--soft-card-elevated)] text-sm text-[var(--text-on-light)] transition-colors hover:bg-[var(--brand-soft)] disabled:opacity-30";
+  "flex h-7 w-7 cursor-pointer items-center justify-center rounded-full border-0 soft-card-bg text-sm text-[var(--text-on-light)] transition-colors hover:bg-[var(--brand-soft)] disabled:opacity-30";
 
 /** ประวัติการหมุนของฉัน */
 export function LuckyWheelPrizeHistory({ extraRows = [], variant = "default" }: LuckyWheelPrizeHistoryProps) {

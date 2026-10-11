@@ -37,7 +37,7 @@ export function HomeTopFeed({ banners }: HomeTopFeedProps) {
   return (
     <div className="flex flex-col">
       <CategoryIconNav
-        className="order-1 md:order-2 md:border-t md:border-[#ececec]"
+        className="order-1 hidden md:block md:order-2 md:border-t md:border-[var(--border-soft)]"
         items={navItems}
         active={active}
         ariaLabel={t("categoryNav.ariaLabel")}

@@ -67,8 +67,8 @@ export function VipBenefitsComparisonTable({ currentRankId }: VipBenefitsCompari
         <div ref={scrollRef} className="overflow-x-auto overscroll-x-contain">
           <table className="w-max min-w-full text-xs sm:text-[0.8125rem]">
             <thead>
-              <tr className="border-b border-black/[0.08]">
-                <th className="sticky left-0 z-10 min-w-[8.25rem] bg-[var(--soft-card)] px-3 py-3 text-left font-semibold text-[var(--text-muted)] sm:min-w-[9rem] sm:px-4">
+              <tr className="border-b border-white/[0.08]">
+                <th className="sticky left-0 z-10 min-w-[8.25rem] soft-panel-bg px-3 py-3 text-left font-semibold text-[var(--text-muted)] sm:min-w-[9rem] sm:px-4">
                   {t("tabs.benefits")}
                 </th>
                 {vipRankTiers.map((tier) => {
@@ -101,8 +101,8 @@ export function VipBenefitsComparisonTable({ currentRankId }: VipBenefitsCompari
             </thead>
             <tbody>
               {benefitRows.map((row, rowIndex) => (
-                <tr key={row.id} className={rowIndex % 2 === 0 ? "bg-[var(--soft-card-elevated)]/60" : undefined}>
-                  <td className="sticky left-0 z-10 min-w-[8.25rem] bg-[var(--soft-card)] px-3 py-3 font-semibold text-[var(--text-on-light)] sm:min-w-[9rem] sm:px-4">
+                <tr key={row.id} className={rowIndex % 2 === 0 ? "soft-card-bg/60" : undefined}>
+                  <td className="sticky left-0 z-10 min-w-[8.25rem] soft-panel-bg px-3 py-3 font-semibold text-[var(--text-on-light)] sm:min-w-[9rem] sm:px-4">
                     {t(row.labelKey)}
                   </td>
                   {vipRankTiers.map((tier) => {
