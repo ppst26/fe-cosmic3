@@ -22,7 +22,7 @@ export function GamingProvidersView({ categoryId }: GamingProvidersViewProps) {
   const isSlot = categoryId === "slot";
 
   return (
-    <div className="gaming-lobby-panel p-3 sm:p-4">
+    <div className="p-3 sm:p-4">
       <div className="grid grid-cols-3 gap-3">
         {providers.map((entry) => {
           if (isSlot) {

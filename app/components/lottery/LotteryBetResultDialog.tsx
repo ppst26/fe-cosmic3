@@ -29,7 +29,7 @@ export function LotteryBetResultDialog({ state, onClose }: LotteryBetResultDialo
         aria-modal="true"
         aria-labelledby="lottery-bet-result-title"
         aria-describedby="lottery-bet-result-desc"
-        className="soft-card relative w-full max-w-[360px] animate-scale-up p-5 sm:p-6"
+        className="modal-surface relative w-full max-w-[360px] animate-scale-up p-5 sm:p-6"
         onClick={(event) => event.stopPropagation()}
       >
         <button

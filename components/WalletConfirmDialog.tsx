@@ -50,7 +50,7 @@ export function WalletConfirmDialog({
         role="alertdialog"
         aria-labelledby="wallet-confirm-title"
         aria-describedby="wallet-confirm-desc"
-        className="soft-card relative w-full max-w-[360px] animate-scale-up p-5 sm:p-6"
+        className="modal-surface relative w-full max-w-[360px] animate-scale-up p-5 sm:p-6"
         onClick={(e) => e.stopPropagation()}
       >
         <button

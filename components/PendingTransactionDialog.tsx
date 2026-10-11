@@ -40,7 +40,7 @@ export function PendingTransactionDialog({ payload, onClose }: PendingTransactio
         role="dialog"
         aria-labelledby="pending-tx-title"
         aria-describedby="pending-tx-desc"
-        className="soft-card relative w-full max-w-[400px] animate-scale-up px-5 pb-5 pt-4"
+        className="modal-surface relative w-full max-w-[400px] animate-scale-up px-5 pb-5 pt-4"
         onClick={(e) => e.stopPropagation()}
       >
         <button

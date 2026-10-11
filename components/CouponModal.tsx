@@ -50,7 +50,7 @@ function CouponModalBody({ onClose }: { onClose: () => void }) {
       <div className="fixed inset-0 bg-black/60 transition-opacity" onClick={onClose} aria-hidden="true" />
 
       <div
-        className="relative z-10 w-full max-w-[380px] rounded-[var(--radius-soft-lg)] border border-white/10 soft-card-bg p-5 text-[var(--text-on-light)] shadow-[0_12px_40px_rgba(45,55,72,0.25)] sm:p-6"
+        className="relative z-10 w-full max-w-[380px] rounded-[var(--radius-soft-lg)] border border-white/10 modal-surface-bg p-5 text-[var(--text-on-light)] shadow-[0_12px_40px_rgba(45,55,72,0.25)] sm:p-6"
         role="dialog"
         aria-modal="true"
         aria-labelledby="coupon-modal-title"

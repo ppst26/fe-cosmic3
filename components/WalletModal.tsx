@@ -88,7 +88,7 @@ export function WalletModal({
         role="dialog"
         aria-modal="true"
         aria-label={tab === "deposit" ? t("deposit.title") : t("withdraw.title")}
-        className="relative z-10 flex max-h-[92vh] w-full max-w-[440px] flex-col overflow-y-auto rounded-[var(--radius-soft-xl)] border border-white/10 soft-card-bg p-4 text-[var(--text-on-light)] shadow-[var(--shadow-soft)] sm:p-5"
+        className="relative z-10 flex max-h-[92vh] w-full max-w-[440px] flex-col overflow-y-auto rounded-[var(--radius-soft-xl)] border border-white/10 modal-surface-bg p-4 text-[var(--text-on-light)] shadow-[var(--shadow-soft)] sm:p-5"
       >
         <div className="mb-3 flex items-center justify-between">
           {showBack ? (

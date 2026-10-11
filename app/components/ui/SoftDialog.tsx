@@ -42,7 +42,7 @@ export function SoftDialog({ open, onClose, title, locked = false, closeLabel = 
         role="dialog"
         aria-modal="true"
         aria-label={title}
-        className="soft-card relative w-full max-w-[380px] animate-scale-up p-5 sm:p-6"
+        className="modal-surface relative w-full max-w-[380px] animate-scale-up p-5 sm:p-6"
         onClick={(event) => event.stopPropagation()}
       >
         <button

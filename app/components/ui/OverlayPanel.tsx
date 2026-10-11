@@ -102,7 +102,7 @@ export function OverlayPanel({
         aria-modal="true"
         aria-labelledby={title && !hideHeader ? titleId : undefined}
         className={cn(
-          "relative flex max-h-[88dvh] w-full flex-col overflow-hidden rounded-t-[var(--radius-soft-xl)] soft-card-bg p-4 text-[var(--text-on-light)] shadow-[var(--shadow-soft)] outline-none transition duration-200 md:max-h-[85dvh] md:rounded-[var(--radius-soft-xl)]",
+          "relative flex max-h-[88dvh] w-full flex-col overflow-hidden rounded-t-[var(--radius-soft-xl)] modal-surface-bg p-4 text-[var(--text-on-light)] shadow-[var(--shadow-soft)] outline-none transition duration-200 md:max-h-[85dvh] md:rounded-[var(--radius-soft-xl)]",
           maxWidthClassName,
           visible
             ? "translate-y-0 opacity-100 md:scale-100"
