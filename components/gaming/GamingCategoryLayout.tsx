@@ -2,9 +2,11 @@
 
 import React from "react";
 import { usePathname, useRouter } from "@/lib/i18n/navigation";
-import { HeaderBar, Footer, CategoryNav, FloatingControls } from "@/components/layout";
+import { HeaderBar, Footer, FloatingControls, NoticeMarquee } from "@/components/layout";
 import { JackpotSidebar } from "@/components/JackpotSidebar";
 import { MobileHomeSidebarLayout } from "@/components/home/MobileHomeSidebarLayout";
+import { HomeTopFeed } from "@/components/home/HomeTopFeed";
+import { HomeCatalogSections } from "@/components/home/HomeCatalogSections";
 import { useAuthUI } from "@/context/AuthUIContext";
 import type { LobbyContent } from "@/lib/api/lobby";
 import { getGamingCategory, type GamingCategoryId } from "@/lib/gamingCategories";
@@ -29,12 +31,17 @@ export function GamingCategoryLayout({
   if (!meta) return null;
 
   const isProviderGamesPage = isGamingProviderDetailPath(pathname, meta.basePath);
+  const { banners } = content;
+  const heroItems = banners.peek.length > 0 ? banners.peek : banners.promoCarousel;
 
   return (
     <div className="flex min-h-screen flex-col app-bg text-[var(--text-on-light)]">
-      <HeaderBar onOpenLogin={openLogin} onOpenRegister={openRegister} />
+      <div className="sticky top-0 z-40 w-full">
+        <HeaderBar onOpenLogin={openLogin} onOpenRegister={openRegister} />
+        <NoticeMarquee messages={content.announcements} />
+      </div>
 
-      <CategoryNav />
+      <HomeTopFeed banners={heroItems} />
 
       <MobileHomeSidebarLayout>
         <div className="mx-auto w-full max-w-[1440px] flex-1 px-0 py-1 sm:px-2 sm:py-3 lg:px-6">
@@ -55,6 +62,12 @@ export function GamingCategoryLayout({
             ) : null}
           </div>
         </div>
+
+        {!isProviderGamesPage ? (
+          <div className="mx-auto w-full max-w-[1440px] px-2 sm:px-0 lg:px-6">
+            <HomeCatalogSections content={content} />
+          </div>
+        ) : null}
       </MobileHomeSidebarLayout>
 
       <Footer />
