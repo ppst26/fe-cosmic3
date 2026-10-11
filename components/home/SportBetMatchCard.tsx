@@ -1,3 +1,4 @@
+import { Clock } from "lucide-react";
 import Link from "@/lib/i18n/navigation";
 import type { MockSportBetMatch } from "@/lib/mock/home";
 
@@ -5,11 +6,11 @@ function formatOdd(value: number) {
   return value.toFixed(2);
 }
 
-function TeamRow({ role, name, flag }: MockSportBetMatch["home"]) {
+function TeamRow({ role, name, code }: MockSportBetMatch["home"]) {
   return (
     <div className="flex items-center gap-2 text-sm text-[var(--text-on-light)]">
-      <span className="text-lg leading-none" aria-hidden>
-        {flag}
+      <span className="flex h-5 shrink-0 items-center justify-center rounded px-1.5 text-[10px] font-bold tracking-wide soft-card-bg text-[var(--brand)]">
+        {code}
       </span>
       <span className="font-semibold text-[var(--text-muted)]">[{role}]</span>
       <span className="min-w-0 truncate font-semibold">{name}</span>
@@ -19,7 +20,7 @@ function TeamRow({ role, name, flag }: MockSportBetMatch["home"]) {
 
 export function SportBetMatchCard({ match }: { match: MockSportBetMatch }) {
   return (
-    <article className="w-[min(100%,292px)] shrink-0 overflow-hidden rounded-lg soft-panel-bg shadow-[0_1px_4px_rgba(0,0,0,0.35)]">
+    <article className="w-[min(100%,292px)] shrink-0 overflow-hidden rounded-lg soft-card-dark shadow-[0_1px_4px_rgba(0,0,0,0.35)]">
       <div className="flex items-center justify-between gap-2 bg-[#2c4563] px-3 py-2.5 text-[11px] font-semibold text-white">
         <p className="min-w-0 truncate">{match.league}</p>
         <p className="flex shrink-0 items-center gap-1 whitespace-nowrap">
@@ -32,14 +33,14 @@ export function SportBetMatchCard({ match }: { match: MockSportBetMatch }) {
         <TeamRow {...match.home} />
         <TeamRow {...match.away} />
 
-        <div className="grid grid-cols-3 gap-1 rounded-lg soft-panel-bg p-1 text-center text-xs font-bold">
+        <div className="grid grid-cols-3 gap-1 rounded-lg bg-[var(--soft-card)] p-1 text-center text-xs font-bold">
           <OddCell label="1" value={match.odds.home} />
           <OddCell label="X" value={match.odds.draw} />
           <OddCell label="2" value={match.odds.away} />
         </div>
 
-        <p className="flex w-full items-center justify-center gap-1.5 rounded-lg soft-panel-bg py-2 text-xs font-semibold text-[var(--text-muted)]">
-          <span aria-hidden>🕒</span>
+        <p className="flex w-full items-center justify-center gap-1.5 rounded-lg bg-[var(--soft-card)] py-2 text-xs font-semibold text-[var(--text-muted)]">
+          <Clock className="h-3.5 w-3.5" aria-hidden />
           เริ่มใน {match.startsInLabel}
         </p>
 
@@ -57,7 +58,7 @@ export function SportBetMatchCard({ match }: { match: MockSportBetMatch }) {
 
 function OddCell({ label, value }: { label: string; value: number }) {
   return (
-    <div className="rounded-[6px] soft-card-bg py-2">
+    <div className="rounded-[6px] bg-[var(--soft-card-elevated)] py-2">
       <p className="text-[10px] font-semibold text-[var(--text-muted)]">{label}</p>
       <p className="mt-0.5 text-sm font-extrabold text-[var(--text-on-light)]">
         {formatOdd(value)}

@@ -1,5 +1,6 @@
 "use client";
 
+import { Headphones } from "lucide-react";
 import Link from "@/lib/i18n/navigation";
 import { useT } from "@/lib/i18n/I18nProvider";
 
@@ -12,9 +13,7 @@ export function FloatingControls({ onOpenChat }: FloatingControlsProps) {
   const t = useT("nav");
   const content = (
     <>
-      <span className="text-lg" aria-hidden>
-        🎧
-      </span>
+      <Headphones className="h-[18px] w-[18px]" aria-hidden />
       {t("bottomNav.contact")}
     </>
   );

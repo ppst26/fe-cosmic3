@@ -7,6 +7,7 @@ import { usePwaInstall } from "@/app/components/pwa/PwaInstallProvider";
 import { useToast } from "@/context/ToastContext";
 import { cn } from "@/lib/utils";
 import { useT } from "@/lib/i18n/I18nProvider";
+import { BrandLogo } from "@/components/brand/BrandLogo";
 import type { MessageKey } from "@/lib/i18n/messages";
 
 type InstallPlatform = "android" | "ios";
@@ -116,9 +117,7 @@ export function HomeScreenShortcutPromo({ className }: { className?: string }) {
       <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-[#2a2a30] via-[#1c1c22] to-[#121218] p-4 shadow-[0_8px_24px_rgba(0,0,0,0.12)] sm:p-5">
         <div className="flex items-stretch gap-3 sm:gap-4">
           <div className="min-w-0 flex-1">
-            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-b from-[#ff9a3c] to-[var(--brand)] text-xs font-extrabold text-white shadow-md">
-              CMB
-            </div>
+            <BrandLogo size="sm" />
 
             <p className="mt-3 text-base font-extrabold text-white sm:text-lg">{t("a2hs.cardTitle")}</p>
             <p className="mt-1 text-xs leading-relaxed text-white/65 sm:text-sm">
@@ -167,9 +166,8 @@ export function HomeScreenShortcutPromo({ className }: { className?: string }) {
               className="absolute inset-y-2 right-0 aspect-square w-full rounded-full border-[3px] border-[var(--brand)] bg-gradient-to-br from-[#3d2814] via-[#1a1410] to-[#0d0d10] shadow-[0_0_24px_rgba(245,135,30,0.45)]"
               aria-hidden
             >
-              <div className="flex h-full flex-col items-center justify-center px-2 text-center">
-                <span className="text-lg font-extrabold leading-none text-[var(--brand)]">CMB</span>
-                <span className="mt-1 text-[9px] font-bold tracking-wide text-white/80">Jupiter</span>
+              <div className="flex h-full items-center justify-center px-2">
+                <BrandLogo size="sm" className="h-6" />
               </div>
             </div>
           </div>

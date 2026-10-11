@@ -15,6 +15,7 @@ import { useNotifications } from "@/app/components/notifications/NotificationPro
 import { AssetIcon } from "@/components/ui/AssetIcon";
 import { formatMoney } from "@/lib/format";
 import { useT } from "@/lib/i18n/I18nProvider";
+import { BrandLogo } from "@/components/brand/BrandLogo";
 
 export interface MobileMenuDialogProps {
   isOpen: boolean;
@@ -201,14 +202,7 @@ export function MobileMenuDialog({
 
       <div className="relative z-[101] flex h-full w-full max-w-[340px] flex-col overflow-y-auto border-l border-white/10 app-bg p-4 text-[var(--text-on-dark)] shadow-[-12px_0_35px_rgba(0,0,0,0.45)] sm:max-w-[380px] sm:p-5">
         <div className="mb-2 flex items-center justify-between border-b border-white/10 pb-3.5">
-          <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--brand)] text-[10px] font-black text-white">
-              CMB
-            </div>
-            <span className="text-xl font-black tracking-wider text-white">
-              CMB-<span className="text-[var(--brand)]">Jupiter</span>
-            </span>
-          </div>
+          <BrandLogo size="md" />
 
           <button
             type="button"

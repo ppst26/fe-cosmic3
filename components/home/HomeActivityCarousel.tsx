@@ -8,6 +8,16 @@ import { toSportHref } from "@/lib/gamingRoutes";
 import type { HomeLobbyTournamentItem } from "@/app/types/lobby";
 import { HomePageSection } from "./HomePageSection";
 
+function EventTicketIcon() {
+  return (
+    <span className="inline-flex text-[var(--brand)]" aria-hidden>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M4 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v2a2 2 0 1 0 0 4v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2a2 2 0 1 0 0-4V7zm6 1v2h2V8h-2zm0 4v2h2v-2h-2zm0 4v1a1 1 0 0 0 2 0v-1h-2z" />
+      </svg>
+    </span>
+  );
+}
+
 type HomeActivityCarouselProps = {
   /** กิจกรรม/ทัวร์นาเมนต์จาก lobby API (LobbyContent.tournaments) */
   items: HomeLobbyTournamentItem[];
@@ -66,7 +76,7 @@ export function HomeActivityCarousel({
   if (items.length === 0) return null;
 
   return (
-    <HomePageSection title={title} icon="🎉" viewAllHref={viewAllHref} contentClassName="pb-4 pt-2 md:pb-5 md:pt-3">
+    <HomePageSection title={title} icon={<EventTicketIcon />} viewAllHref={viewAllHref} contentClassName="pb-4 pt-2 md:pb-5 md:pt-3">
       <div
         ref={trackRef}
         className="flex gap-2.5 overflow-x-auto scroll-smooth px-3 snap-x snap-mandatory scrollbar-none sm:gap-3 md:px-6"

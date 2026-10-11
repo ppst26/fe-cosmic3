@@ -18,7 +18,7 @@ export function GamingProviderSidebar({ meta, providers, activeKey }: GamingProv
   return (
     <aside className="gaming-lobby-panel flex w-full shrink-0 flex-col p-3 lg:w-[11.5rem] xl:w-[12.5rem]">
       <div className="mb-2 flex items-baseline justify-between gap-2">
-        <Link href={meta.basePath} className="text-sm font-bold text-[var(--text-on-light)] hover:text-[var(--brand)]">
+        <Link href={meta.basePath} className="text-sm font-bold text-[var(--text-on-light)] hover:text-[var(--text-muted)]">
           {t(meta.labelKey)}
         </Link>
         <span className="text-[11px] text-[var(--text-muted)]">

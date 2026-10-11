@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "@/lib/i18n/navigation";
+import { ChevronDown } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import type { LotteryPlayRound } from "@/app/types/lottery";
 import {
@@ -110,7 +111,7 @@ export function LotteryPlayRoundList({ rounds, marketSlug, basePath }: LotteryPl
             onClick={() => setShowAllGrid(true)}
           >
             {t("rounds.showAll", { count: rounds.length })}
-            <span aria-hidden="true">▼</span>
+            <ChevronDown className="h-4 w-4" aria-hidden="true" />
           </button>
         ) : null}
       </div>

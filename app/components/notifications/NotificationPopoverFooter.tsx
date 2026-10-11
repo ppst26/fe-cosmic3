@@ -16,7 +16,7 @@ export function NotificationPopoverFooter() {
         <Link
           key={item.icon}
           href={item.href}
-          className="flex h-9 w-9 items-center justify-center rounded-full soft-panel-bg text-[var(--text-muted)] no-underline hover:text-[var(--brand)]"
+          className="flex h-9 w-9 items-center justify-center rounded-full soft-panel-bg text-[var(--text-muted)] no-underline hover:text-[var(--text-primary)]"
           aria-label={item.label}
         >
           <NotificationSocialIcon icon={item.icon} />

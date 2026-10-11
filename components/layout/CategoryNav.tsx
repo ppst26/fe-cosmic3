@@ -73,21 +73,10 @@ export function CategoryNav() {
     ));
 
   return (
-    <>
-      <nav className="category-nav-desktop hidden md:block" aria-label={t("categoryNav.ariaLabel")}>
-        <div className="mx-auto max-w-[1440px] px-1 lg:px-4">
-          <div className="category-nav-desktop__track">{track("desktop")}</div>
-        </div>
-      </nav>
-
-      <nav
-        className="category-nav-mobile block border-b border-[var(--border-soft)] soft-card-bg md:hidden"
-        aria-label={t("categoryNav.ariaLabel")}
-      >
-        <div className="mx-auto max-w-[1440px] px-2">
-          <div className="category-nav-mobile__track">{track("mobile")}</div>
-        </div>
-      </nav>
-    </>
+    <nav className="category-nav-desktop hidden md:block" aria-label={t("categoryNav.ariaLabel")}>
+      <div className="mx-auto max-w-[1440px] px-1 lg:px-4">
+        <div className="category-nav-desktop__track">{track("desktop")}</div>
+      </div>
+    </nav>
   );
 }

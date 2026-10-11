@@ -8,6 +8,16 @@ import { createHallOfFameRow } from "@/app/data/hallOfFameGenerator";
 import { HALL_OF_FAME_ROW_LIMIT, HALL_OF_FAME_TICK_MS } from "@/lib/uiConstants";
 import { HomePageSection } from "./HomePageSection";
 
+function CrownIcon() {
+  return (
+    <span className="inline-flex text-[var(--brand)]" aria-hidden>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M3 18h18l-1.5-9-4.5 4-3-6-3 6-4.5-4L3 18zm0 2h18v2H3v-2z" />
+      </svg>
+    </span>
+  );
+}
+
 interface HallOfFameProps {
   /** ข้อมูลรอบแรกจาก lobby API (LobbyContent.hallOfFame) */
   datasets: Record<HallOfFameTabId, HallOfFameRow[]>;
@@ -61,7 +71,7 @@ export function HallOfFame({ datasets }: HallOfFameProps) {
   }, []);
 
   return (
-    <HomePageSection title="Top Performance" icon="👑">
+    <HomePageSection title="Top Performance" icon={<CrownIcon />}>
       <div className="w-full space-y-3 select-none">
         <div
           className="flex max-w-full flex-wrap items-center gap-1.5"

@@ -15,6 +15,7 @@
   --surface-3: rgba(65, 49, 79, 0.80);
   --surface-input: rgba(46, 36, 58, 0.76);
   --surface-hover: rgba(57, 45, 70, 0.92);
+  --surface-card-dark: #140e14;
 
   --lavender-200: #e1ccff;
   --lavender-300: #d4b9ff;
@@ -116,11 +117,10 @@ body {
   }
 }
 
-/* การ์ด/panel ทั่วไป — ใช้ surface gradient แทนสีทึบ (ดู design.md 4.1 surface card variants) */
+/* การ์ด/panel ทั่วไป — สีทึบ (solid) เป็นค่าเริ่มต้น gradient ทำให้การ์ดเล็ก/ซ้อนกันหลายใบดูเพี้ยนไม่เท่ากัน
+   ใช้ soft-card-glow แทนเฉพาะจุดที่ต้องการเน้นเป็นพิเศษ (ดู design.md 4.1) */
 @utility soft-panel {
-  background:
-    radial-gradient(circle at 70% 8%, rgba(177, 97, 255, 0.10), transparent 45%),
-    linear-gradient(145deg, #241a30 0%, #1a1322 55%, #15101c 100%);
+  background: var(--surface-1);
   border: 1px solid var(--border-soft);
   border-radius: var(--radius-soft-lg);
   box-shadow:
@@ -129,11 +129,9 @@ body {
   color: var(--text-on-light);
 }
 
-/* การ์ดเด่น/elevated — ใช้ base surface เดียวกับ soft-panel (ไม่ใช้ purple glow สองจุดเป็นค่าเริ่มต้น เพราะดูจัดเกินไปเมื่อวางซ้อนกันหลายใบ) */
+/* การ์ดเด่น/elevated — สีทึบเข้มกว่า soft-panel เล็กน้อย (surface-2) */
 @utility soft-card {
-  background:
-    radial-gradient(circle at 70% 8%, rgba(177, 97, 255, 0.10), transparent 45%),
-    linear-gradient(145deg, #241a30 0%, #1a1322 55%, #15101c 100%);
+  background: var(--surface-2);
   border: 1px solid var(--border-soft);
   border-radius: var(--radius-soft-md);
   box-shadow:
@@ -156,22 +154,45 @@ body {
   color: var(--text-on-light);
 }
 
+/* การ์ดสีทึบลาเวนเดอร์เข้มเกือบดำ — เข้มกว่า soft-panel/soft-card ใช้เมื่อต้องการให้การ์ดจมเข้ากับพื้นหลัง ไม่สว่างเด่น */
+@utility soft-card-dark {
+  background: var(--surface-card-dark);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-soft-md);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.03),
+    var(--shadow-soft-sm);
+  color: var(--text-on-light);
+}
+
 .gaming-lobby-panel {
   color: var(--text-on-light);
 }
 
-/* เวอร์ชัน background-only ของ soft-panel/soft-card — ใช้แทน bg-[var(--soft-card)] / bg-[var(--soft-card-elevated)]
-   (Tailwind arbitrary bg-[var(...)] คอมไพล์เป็น background-color ซึ่งรับ gradient ไม่ได้ ต้องใช้ class นี้แทน) */
-@utility soft-panel-bg {
+.app-header {
+  position: relative;
+  overflow: hidden;
+
   background:
-    radial-gradient(circle at 70% 8%, rgba(177, 97, 255, 0.10), transparent 45%),
-    linear-gradient(145deg, #241a30 0%, #1a1322 55%, #15101c 100%);
+    radial-gradient(circle at 8% 40%, rgba(147, 71, 255, 0.20) 0%, rgba(111, 50, 190, 0.12) 20%, transparent 42%),
+    linear-gradient(90deg, #2f253cfa 0%, #120d1c 30%, #0c0b16 65%, #080912 100%);
+
+  border-bottom: 1px solid rgba(176, 124, 255, 0.14);
+
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.025),
+    0 8px 24px rgba(0, 0, 0, 0.18);
+}
+
+/* เวอร์ชัน background-only ของ soft-panel/soft-card — ใช้แทน bg-[var(--soft-card)] / bg-[var(--soft-card-elevated)]
+   (Tailwind arbitrary bg-[var(...)] คอมไพล์เป็น background-color ซึ่งรับ gradient ไม่ได้ ต้องใช้ class นี้แทน)
+   สีทึบเหมือน soft-panel/soft-card — ใช้ soft-card-glow-bg แทนถ้าต้องการ gradient เน้นพิเศษ */
+@utility soft-panel-bg {
+  background: var(--surface-1);
 }
 
 @utility soft-card-bg {
-  background:
-    radial-gradient(circle at 70% 8%, rgba(177, 97, 255, 0.10), transparent 45%),
-    linear-gradient(145deg, #241a30 0%, #1a1322 55%, #15101c 100%);
+  background: var(--surface-2);
 }
 
 @utility soft-card-glow-bg {

@@ -17,7 +17,7 @@ export const LOSS_REBATE_HISTORY_PAGE_SIZE = 5;
 export const LUCKY_WHEEL_HISTORY_PAGE_SIZE = 5;
 
 /** Hall of Fame — จำนวนแถวที่แสดง และรอบอัปเดต (ms) */
-export const HALL_OF_FAME_ROW_LIMIT = 8;
+export const HALL_OF_FAME_ROW_LIMIT = 5;
 export const HALL_OF_FAME_TICK_MS = 2000;
 
 /** หน้าแรก — จำนวนการ์ดสูงสุดต่อ carousel เกม / carousel ทั่วไป */

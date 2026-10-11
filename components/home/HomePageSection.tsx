@@ -3,7 +3,7 @@ import { SectionHeader } from "@/components/layout";
 
 type HomePageSectionProps = {
   title: string;
-  icon?: string;
+  icon?: ReactNode;
   leading?: ReactNode;
   viewAllHref?: string;
   onViewAll?: () => void;
@@ -21,10 +21,10 @@ export function HomePageSection({
   onViewAll,
   children,
   className = "",
-  contentClassName = "px-3 pb-4 pt-3 md:px-6 md:pb-5 md:pt-4",
+  contentClassName = "px-3 pb-1.5 pt-3 md:px-6 md:pb-2 md:pt-4",
 }: HomePageSectionProps) {
   return (
-    <section className={`mt-3 bg-[var(--soft-canvas)] md:mt-0 ${className}`.trim()}>
+    <section className={`mt-1 md:mt-0 ${className}`.trim()}>
       <SectionHeader
         title={title}
         icon={icon}

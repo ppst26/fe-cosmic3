@@ -98,7 +98,7 @@ export function LotteryMarketShell({
             </h1>
             <Link
               href={lotteryRulesHref(activeEntry.slug)}
-              className="mt-0.5 inline-block text-[11px] text-[var(--brand)] no-underline hover:underline"
+              className="mt-0.5 inline-block text-[11px] text-[var(--text-muted)] no-underline hover:text-[var(--text-primary)] hover:underline"
             >
               {t("market.rules")}
             </Link>

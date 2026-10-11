@@ -161,7 +161,7 @@ export function WalletModal({
         <Link
           href="/transactions"
           onClick={onClose}
-          className="mt-4 flex items-center justify-center gap-1.5 text-sm font-bold text-[var(--brand-strong)] underline-offset-4 hover:underline"
+          className="mt-4 flex items-center justify-center gap-1.5 text-sm font-bold text-[var(--text-muted)] underline-offset-4 hover:text-[var(--text-primary)] hover:underline"
         >
           <History className="h-4 w-4" />
           {t("pending.viewHistory")}

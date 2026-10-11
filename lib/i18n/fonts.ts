@@ -8,7 +8,7 @@ import type { Locale } from "./config";
  */
 const lao = Noto_Sans_Lao({
   variable: "--font-locale",
-  subsets: ["lao", "latin"],
+  subsets: ["lao"],
   weight: ["400", "500"],
   display: "swap",
   preload: false,
@@ -16,15 +16,15 @@ const lao = Noto_Sans_Lao({
 
 const myanmar = Noto_Sans_Myanmar({
   variable: "--font-locale",
-  subsets: ["myanmar", "latin"],
-  weight: ["400", "500"],
+  subsets: ["myanmar"],
+  weight: "400",
   display: "swap",
   preload: false,
 });
 
 const khmer = Noto_Sans_Khmer({
   variable: "--font-locale",
-  subsets: ["khmer", "latin"],
+  subsets: ["khmer"],
   weight: ["400", "500"],
   display: "swap",
   preload: false,
@@ -40,7 +40,7 @@ const chinese = Noto_Sans_SC({
 
 const vietnamese = Noto_Sans({
   variable: "--font-locale",
-  subsets: ["vietnamese", "latin"],
+  subsets: ["vietnamese"],
   weight: ["400", "500"],
   display: "swap",
   preload: false,

@@ -1,13 +1,7 @@
 import type { Metadata } from "next";
-import { Kanit } from "next/font/google";
+import { kanit } from "@/lib/kanitFont";
 import { StatusState } from "@/app/components/ui/StatusState";
 import "./globals.css";
-
-const kanit = Kanit({
-  variable: "--font-kanit",
-  subsets: ["thai", "latin"],
-  weight: ["400", "500", "600", "700"],
-});
 
 export const metadata: Metadata = {
   title: "ไม่พบหน้านี้ · Page not found — CMB-Jupiter",

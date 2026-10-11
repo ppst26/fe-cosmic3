@@ -15,7 +15,7 @@ export function HomeCatalogRailSection({
   items,
 }: {
   title: string;
-  icon?: string;
+  icon?: ReactNode;
   leading?: ReactNode;
   viewAllHref?: string;
   items: MockSportCategory[];

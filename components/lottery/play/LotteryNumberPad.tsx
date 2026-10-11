@@ -1,5 +1,6 @@
 "use client";
 
+import { Delete } from "lucide-react";
 import { useLotteryI18n } from "@/app/components/lottery/useLotteryI18n";
 const PAD_DIGITS = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
 
@@ -74,7 +75,7 @@ export function LotteryNumberPad({
           disabled={!value}
           aria-label={t("pad.backspace")}
         >
-          ⌫
+          <Delete className="mx-auto h-4 w-4" aria-hidden />
         </button>
       </div>
     </div>

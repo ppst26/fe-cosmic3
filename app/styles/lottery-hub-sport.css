@@ -206,7 +206,7 @@
 }
 
 .lottery-results-board__more-link:hover {
-  color: var(--brand-strong);
+  color: var(--text-primary);
 }
 
 .lottery-market-scroll {

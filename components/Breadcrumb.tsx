@@ -78,7 +78,7 @@ export function Breadcrumb({
               ) : item.href ? (
                 <Link
                   href={item.href}
-                  className="truncate text-[var(--text-muted)] transition-colors hover:text-[var(--brand)]"
+                  className="truncate text-[var(--text-muted)] transition-colors hover:text-[var(--text-primary)]"
                 >
                   {item.label}
                 </Link>

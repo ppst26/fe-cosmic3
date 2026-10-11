@@ -49,7 +49,7 @@ export function LotteryLatestResultsTable({
         </div>
         <Link
           href={resultsPageHref}
-          className="lottery-results-board__more-link shrink-0 text-xs font-semibold text-[var(--brand)] sm:text-sm"
+          className="lottery-results-board__more-link shrink-0 text-xs font-semibold text-[var(--text-muted)] sm:text-sm"
         >
           {t("hub.mySlips")} &gt;&gt;
         </Link>

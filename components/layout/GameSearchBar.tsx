@@ -1,3 +1,5 @@
+import { SlidersHorizontal } from "lucide-react";
+
 type GameSearchBarProps = {
   placeholder?: string;
   compact?: boolean;
@@ -31,7 +33,7 @@ export function GameSearchBar({
         type="button"
         className="hidden h-11 shrink-0 items-center gap-1 rounded-lg bg-[var(--soft-chrome)] px-3 text-xs font-medium text-white md:flex md:h-12"
       >
-        <span aria-hidden>⚙</span>
+        <SlidersHorizontal className="h-3.5 w-3.5" aria-hidden />
         ปรับแต่ง
       </button>
     </div>

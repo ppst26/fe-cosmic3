@@ -13,7 +13,8 @@ type MobileHomeSidebarLayoutProps = {
 };
 
 /**
- * หน้าแรกมือถือ — คอลัมน์ซ้ายเมนูหมวด + พื้นที่เนื้อหาขวา (layout เท่านั้น)
+ * เมนูซ้ายมือถือ (ใช้ร่วมหน้าแรกและหน้าหมวดเกม) — คอลัมน์ไอคอนหมวด + พื้นที่เนื้อหาขวา
+ * กดแล้วเปลี่ยน path จริงไปหน้าหมวดนั้น (ไม่ใช่เปิด modal) — active อ่านจาก pathname ปัจจุบัน
  */
 export function MobileHomeSidebarLayout({ children }: MobileHomeSidebarLayoutProps) {
   const t = useT("home");
@@ -34,35 +35,28 @@ export function MobileHomeSidebarLayout({ children }: MobileHomeSidebarLayoutPro
   return (
     <div className="flex w-full md:block">
       <aside
-        className="sticky top-0 flex w-[4.25rem] shrink-0 self-start flex-col border-r border-[var(--border-soft)] bg-[var(--soft-canvas)] md:hidden"
+        className="sticky top-0 flex w-[4.75rem] shrink-0 self-start flex-col border-r border-[var(--border-soft)] bg-[var(--soft-canvas)] md:hidden"
         aria-label={t("categoryNav.ariaLabel")}
       >
         <nav className="flex flex-col gap-0.5 p-1.5">
           {items.map((item) => {
             const isActive = item.id === active;
+            const itemClass = `flex min-h-[4.25rem] w-full flex-col items-center justify-center gap-1 rounded-lg px-1 py-2.5 text-center transition-colors ${
+              isActive ? "bg-[var(--brand-soft)] text-white" : "text-[var(--text-muted)]"
+            }`;
+            const labelClass = `max-w-full truncate text-[11px] leading-tight ${
+              isActive ? "font-bold" : "font-medium"
+            }`;
+
             return (
               <Link
                 key={item.id}
                 href={item.href}
                 aria-current={isActive ? "page" : undefined}
-                className={`flex min-h-[3.25rem] flex-col items-center justify-center gap-0.5 rounded-lg px-1 py-1.5 text-center transition-colors ${
-                  isActive
-                    ? "bg-[var(--brand-soft)] text-[var(--brand)]"
-                    : "text-[var(--text-muted)]"
-                }`}
+                className={itemClass}
               >
-                <CategoryNavIcon
-                  id={item.icon}
-                  className="h-[22px] w-[22px]"
-                  aria-hidden
-                />
-                <span
-                  className={`max-w-full truncate text-[9px] leading-tight ${
-                    isActive ? "font-bold" : "font-medium"
-                  }`}
-                >
-                  {item.label}
-                </span>
+                <CategoryNavIcon id={item.icon} className="h-[28px] w-[28px]" aria-hidden />
+                <span className={labelClass}>{item.label}</span>
               </Link>
             );
           })}

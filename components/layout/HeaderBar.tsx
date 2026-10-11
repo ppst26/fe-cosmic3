@@ -2,11 +2,8 @@
 
 import { useState } from "react";
 import Link from "@/lib/i18n/navigation";
-import { useLocale } from "@/lib/i18n/navigation";
 import { useAuth } from "@/app/components/auth/AuthProvider";
 import { useWallet } from "@/app/hooks/api/account";
-import { LocaleFlag } from "@/app/components/i18n/LocaleFlag";
-import { useLanguagePicker } from "@/app/components/i18n/LanguagePickerProvider";
 import { useNotifications } from "@/app/components/notifications/NotificationProvider";
 import { NotificationBellButton } from "@/app/components/notifications/NotificationBellButton";
 import { NotificationDesktopPopover } from "@/app/components/notifications/NotificationDesktopPopover";
@@ -15,6 +12,7 @@ import { useDeposit } from "@/context/DepositContext";
 import { useMenuUI } from "@/context/MenuUIContext";
 import { formatHeaderWalletBalance, formatMoney } from "@/lib/format";
 import { useT } from "@/lib/i18n/I18nProvider";
+import { BrandLogo } from "@/components/brand/BrandLogo";
 
 type HeaderBarProps = {
   onOpenLogin?: () => void;
@@ -96,15 +94,12 @@ function DesktopBalancePills({
 export function HeaderBar({
   onOpenLogin,
   onOpenRegister,
-  onOpenSearch,
   onOpenMenu,
 }: HeaderBarProps) {
   const t = useT("nav");
   const tAuth = useT("auth");
   const { isAuthenticated: isLoggedIn } = useAuth();
   const wallet = useWallet();
-  const locale = useLocale();
-  const { openLanguagePicker } = useLanguagePicker();
   const { openNotifications } = useNotifications();
   const { openLogin } = useAuthUI();
   const { openDeposit } = useDeposit();
@@ -156,62 +151,15 @@ export function HeaderBar({
     </button>
   );
 
-  const languageControl = (
-    <button
-      type="button"
-      aria-label={t("menu.language")}
-      onClick={openLanguagePicker}
-      className="flex h-10 w-10 cursor-pointer items-center justify-center border-0 bg-transparent md:h-11 md:w-11"
-    >
-      <LocaleFlag locale={locale} className="h-6 w-6" />
-    </button>
-  );
-
   return (
-    <header className="w-full bg-[#050608] text-[var(--text-on-dark)]">
+    <header className="app-header w-full text-[var(--text-on-dark)]">
       {/* Mobile */}
       <div className="mx-auto flex h-14 w-full max-w-[1440px] items-center gap-1.5 px-3 md:hidden">
         <Link href="/" className="flex shrink-0 items-center" aria-label={t("header.home")}>
-          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[var(--brand)] text-[11px] font-bold text-white">
-            CMB
-          </span>
+          <BrandLogo size="sm" priority />
         </Link>
 
-        {isLoggedIn ? (
-          <div className="flex h-9 items-center overflow-hidden rounded-lg bg-[var(--brand)] text-xs font-semibold text-white">
-            <button
-              type="button"
-              onClick={handleOpenDeposit}
-              aria-label={t("header.walletDeposit")}
-              className="flex h-9 cursor-pointer items-center gap-1 border-0 bg-transparent pl-2.5 pr-1.5 text-xs font-semibold text-white"
-            >
-              <span aria-hidden>👛</span>
-              <span className="tabular-nums">
-                {balanceHidden ? HIDDEN_BALANCE : formatHeaderWalletBalance(balance)}
-              </span>
-            </button>
-            <button
-              type="button"
-              onClick={() => setBalanceHidden((v) => !v)}
-              aria-pressed={balanceHidden}
-              aria-label={t("header.walletBalance")}
-              className="flex h-9 w-7 cursor-pointer items-center justify-center border-0 bg-transparent text-white/90"
-            >
-              <EyeIcon off={balanceHidden} size={14} />
-            </button>
-            <button
-              type="button"
-              onClick={handleRefreshBalance}
-              disabled={wallet.isRefreshing}
-              aria-label={t("header.walletBalance")}
-              className="flex h-9 w-7 cursor-pointer items-center justify-center border-0 bg-transparent pr-1 text-white/90 disabled:opacity-60"
-            >
-              <span className={wallet.isRefreshing ? "animate-spin" : undefined}>
-                <RefreshIcon size={14} />
-              </span>
-            </button>
-          </div>
-        ) : (
+        {!isLoggedIn ? (
           <>
             <button
               type="button"
@@ -228,40 +176,37 @@ export function HeaderBar({
               {tAuth("login")}
             </button>
           </>
-        )}
+        ) : null}
 
         <div className="flex-1" />
 
-        <div className="flex shrink-0 items-center">
-          {languageControl}
+        <div className="flex shrink-0 items-center gap-1.5">
+          {isLoggedIn ? (
+            <button
+              type="button"
+              onClick={handleOpenDeposit}
+              aria-label={t("header.walletDeposit")}
+              className="flex h-8 shrink-0 cursor-pointer items-center gap-1 rounded-lg border-0 bg-[var(--surface-card-dark)] px-1.5 text-xs font-semibold"
+            >
+              <span className="text-white" aria-hidden>
+                <WalletPlusIcon />
+              </span>
+              <span className="tabular-nums text-[var(--text-muted)]">
+                {formatHeaderWalletBalance(balance)}
+              </span>
+            </button>
+          ) : null}
           {isLoggedIn ? (
             <NotificationBellButton onClick={openNotifications} />
           ) : null}
-          <button
-            type="button"
-            aria-label={t("header.searchLabel")}
-            onClick={onOpenSearch}
-            className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-lg border-0 bg-black/20 text-white/90"
-          >
-            <SearchIcon />
-          </button>
           {menuControl}
         </div>
       </div>
 
       {/* Desktop */}
       <div className="mx-auto hidden h-[72px] w-full max-w-[1440px] grid-cols-[1fr_auto_1fr] items-center gap-4 px-6 md:grid">
-        <Link
-          href="/"
-          className="flex flex-col items-start justify-center leading-none"
-          aria-label={t("header.home")}
-        >
-          <span className="flex h-9 w-11 items-center justify-center rounded-md bg-gradient-to-b from-[#ff9a3c] to-[#f5871e] text-sm font-extrabold text-white">
-            CMB
-          </span>
-          <span className="mt-1 text-[11px] font-bold tracking-[0.12em] text-white">
-            JUPITER
-          </span>
+        <Link href="/" className="flex items-center" aria-label={t("header.home")}>
+          <BrandLogo size="md" priority />
         </Link>
 
         <div className="flex justify-center">
@@ -295,29 +240,11 @@ export function HeaderBar({
         </div>
 
         <div className="flex items-center justify-end gap-1">
-          {languageControl}
           {isLoggedIn ? <NotificationDesktopPopover /> : null}
-          <button
-            type="button"
-            aria-label={t("header.searchLabel")}
-            onClick={onOpenSearch}
-            className="flex h-11 w-11 cursor-pointer items-center justify-center border-0 bg-transparent text-white/90"
-          >
-            <SearchIcon />
-          </button>
           {menuControl}
         </div>
       </div>
     </header>
-  );
-}
-
-function SearchIcon() {
-  return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden>
-      <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="2" />
-      <path d="M20 20l-3.5-3.5" stroke="currentColor" strokeWidth="2" />
-    </svg>
   );
 }
 

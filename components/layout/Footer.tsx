@@ -1,8 +1,10 @@
 "use client";
 
 import React from "react";
+import { ShieldCheck } from "lucide-react";
 import Link from "@/lib/i18n/navigation";
 import { useT } from "@/lib/i18n/I18nProvider";
+import { BrandLogo } from "@/components/brand/BrandLogo";
 
 export function Footer() {
   const t = useT("nav");
@@ -29,14 +31,7 @@ export function Footer() {
       <div className="mx-auto max-w-[1440px] px-4 lg:px-6">
         <div className="grid grid-cols-1 gap-8 border-b border-white/10 pb-8 md:grid-cols-12">
           <div className="space-y-3 md:col-span-5">
-            <div className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--brand)] text-[10px] font-black text-white">
-                CMB
-              </div>
-              <span className="text-xl font-black tracking-wider text-white">
-                CMB-<span className="text-[var(--brand)]">Jupiter</span>
-              </span>
-            </div>
+            <BrandLogo size="lg" />
             <p className="max-w-md leading-relaxed text-white/70">{t("footer.tagline")}</p>
           </div>
 
@@ -44,19 +39,19 @@ export function Footer() {
             <h4 className="text-sm font-bold tracking-wide text-white">{t("desktop.gameCategories")}</h4>
             <ul className="space-y-1.5">
               <li>
-                <Link href="/slots" className="hover:text-[var(--brand)]">{t("footer.link.slots")}</Link>
+                <Link href="/slots" className="hover:text-white">{t("footer.link.slots")}</Link>
               </li>
               <li>
-                <Link href="/casino" className="hover:text-[var(--brand)]">{t("footer.link.liveCasino")}</Link>
+                <Link href="/casino" className="hover:text-white">{t("footer.link.liveCasino")}</Link>
               </li>
               <li>
-                <Link href="/sports" className="hover:text-[var(--brand)]">{t("footer.link.sports")}</Link>
+                <Link href="/sports" className="hover:text-white">{t("footer.link.sports")}</Link>
               </li>
               <li>
-                <Link href="/lottery" className="hover:text-[var(--brand)]">{t("footer.link.lottery")}</Link>
+                <Link href="/lottery" className="hover:text-white">{t("footer.link.lottery")}</Link>
               </li>
               <li>
-                <Link href="/fish" className="hover:text-[var(--brand)]">{t("footer.link.fishing")}</Link>
+                <Link href="/fish" className="hover:text-white">{t("footer.link.fishing")}</Link>
               </li>
             </ul>
           </div>
@@ -64,10 +59,10 @@ export function Footer() {
           <div className="space-y-2 md:col-span-2">
             <h4 className="text-sm font-bold tracking-wide text-white">{t("footer.columns.services")}</h4>
             <ul className="space-y-1.5">
-              <li><a href="#rules" className="hover:text-[var(--brand)]">{t("footer.link.terms")}</a></li>
-              <li><a href="#privacy" className="hover:text-[var(--brand)]">{t("footer.link.privacy")}</a></li>
-              <li><a href="#faq" className="hover:text-[var(--brand)]">{t("footer.link.helpCenter")}</a></li>
-              <li><a href="#contact" className="hover:text-[var(--brand)]">{t("footer.link.contactUs")}</a></li>
+              <li><a href="#rules" className="hover:text-white">{t("footer.link.terms")}</a></li>
+              <li><a href="#privacy" className="hover:text-white">{t("footer.link.privacy")}</a></li>
+              <li><a href="#faq" className="hover:text-white">{t("footer.link.helpCenter")}</a></li>
+              <li><a href="#contact" className="hover:text-white">{t("footer.link.contactUs")}</a></li>
             </ul>
           </div>
 
@@ -92,9 +87,10 @@ export function Footer() {
           {licenses.map((lic) => (
             <div
               key={lic}
-              className="rounded-full bg-white/10 px-3 py-1.5 text-[10px] font-bold tracking-wider text-white/70"
+              className="flex items-center gap-1 rounded-full bg-white/10 px-3 py-1.5 text-[10px] font-bold tracking-wider text-white/70"
             >
-              🔒 {lic}
+              <ShieldCheck className="h-3 w-3" aria-hidden />
+              {lic}
             </div>
           ))}
         </div>

@@ -114,7 +114,7 @@ export function PendingTransactionDialog({ payload, onClose }: PendingTransactio
         <Link
           href={payload.historyHref}
           onClick={onClose}
-          className="mt-4 block text-center text-sm font-bold text-[var(--brand-strong)] underline underline-offset-4 transition-colors hover:text-[var(--brand)]"
+          className="mt-4 block text-center text-sm font-bold text-[var(--text-muted)] underline underline-offset-4 transition-colors hover:text-[var(--text-primary)]"
         >
           {t("pending.viewHistory")}
         </Link>

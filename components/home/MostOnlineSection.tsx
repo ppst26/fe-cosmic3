@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "@/lib/i18n/navigation";
-import { Users } from "lucide-react";
+import { Flame, Users } from "lucide-react";
 import { useT } from "@/lib/i18n/I18nProvider";
 import { useFluctuatingOnlineCount } from "@/app/hooks/useFluctuatingOnlineCount";
 import { toSportHref } from "@/lib/gamingRoutes";
@@ -21,7 +21,7 @@ export function MostOnlineSection({ items }: { items: MostOnlineLobbyItem[] }) {
   if (items.length === 0) return null;
 
   return (
-    <HomePageSection title={t("mostOnline.title")} icon="🔥">
+    <HomePageSection title={t("mostOnline.title")} icon={<Flame className="h-4 w-4 text-[var(--brand)]" aria-hidden />}>
       <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-4">
         {items.map((item) => (
           <Link
@@ -50,8 +50,9 @@ export function MostOnlineSection({ items }: { items: MostOnlineLobbyItem[] }) {
                   </p>
                 </div>
                 {item.showHot ? (
-                  <span className="shrink-0 rounded-full bg-[#ef4444] px-2 py-0.5 text-[10px] font-black text-white">
-                    🔥 HOT
+                  <span className="flex shrink-0 items-center gap-0.5 rounded-full bg-[#ef4444] px-2 py-0.5 text-[10px] font-black text-white">
+                    <Flame className="h-2.5 w-2.5" aria-hidden />
+                    HOT
                   </span>
                 ) : null}
               </div>

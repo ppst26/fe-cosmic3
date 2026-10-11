@@ -4,6 +4,7 @@ import React from "react";
 import { usePathname, useRouter } from "@/lib/i18n/navigation";
 import { HeaderBar, Footer, CategoryNav, FloatingControls } from "@/components/layout";
 import { JackpotSidebar } from "@/components/JackpotSidebar";
+import { MobileHomeSidebarLayout } from "@/components/home/MobileHomeSidebarLayout";
 import { useAuthUI } from "@/context/AuthUIContext";
 import type { LobbyContent } from "@/lib/api/lobby";
 import { getGamingCategory, type GamingCategoryId } from "@/lib/gamingCategories";
@@ -35,24 +36,26 @@ export function GamingCategoryLayout({
 
       <CategoryNav />
 
-      <div className="mx-auto w-full max-w-[1440px] flex-1 px-0 py-1 sm:px-2 sm:py-3 lg:px-6">
-        <div className="mt-2 grid grid-cols-1 gap-4 px-2 sm:mt-4 sm:gap-5 sm:px-0 lg:grid-cols-12 lg:gap-6">
-          <div
-            className={
-              isProviderGamesPage ? "min-w-0 lg:col-span-12" : "min-w-0 lg:col-span-8 xl:col-span-9"
-            }
-          >
-            {children}
-          </div>
-          {!isProviderGamesPage ? (
-            <div className="hidden lg:block lg:col-span-4 xl:col-span-3">
-              <div className="sticky top-24">
-                <JackpotSidebar tournaments={content.tournaments} promotions={content.banners.promoCarousel} />
-              </div>
+      <MobileHomeSidebarLayout>
+        <div className="mx-auto w-full max-w-[1440px] flex-1 px-0 py-1 sm:px-2 sm:py-3 lg:px-6">
+          <div className="mt-2 grid grid-cols-1 gap-4 px-2 sm:mt-4 sm:gap-5 sm:px-0 lg:grid-cols-12 lg:gap-6">
+            <div
+              className={
+                isProviderGamesPage ? "min-w-0 lg:col-span-12" : "min-w-0 lg:col-span-8 xl:col-span-9"
+              }
+            >
+              {children}
             </div>
-          ) : null}
+            {!isProviderGamesPage ? (
+              <div className="hidden lg:block lg:col-span-4 xl:col-span-3">
+                <div className="sticky top-24">
+                  <JackpotSidebar tournaments={content.tournaments} promotions={content.banners.promoCarousel} />
+                </div>
+              </div>
+            ) : null}
+          </div>
         </div>
-      </div>
+      </MobileHomeSidebarLayout>
 
       <Footer />
       {/* ปุ่มแชทไป /support เหมือน glass (ยังไม่มีหน้า /support ใน glass เช่นกัน) */}

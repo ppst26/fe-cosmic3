@@ -2,6 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
+import { Megaphone, Target } from "lucide-react";
 import Link from "@/lib/i18n/navigation";
 import { useT } from "@/lib/i18n/I18nProvider";
 import { toSportHref } from "@/lib/gamingRoutes";
@@ -24,12 +25,10 @@ export function JackpotSidebar({ tournaments, promotions }: JackpotSidebarProps)
         <div className="soft-card p-4 sm:p-5">
           <div className="mb-3 flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <span className="text-lg" aria-hidden>
-                🎯
-              </span>
+              <Target className="h-[18px] w-[18px] text-[var(--brand)]" aria-hidden />
               <h3 className="text-base font-bold text-[var(--text-on-light)]">{t("events.title")}</h3>
             </div>
-            <Link href="/activities" className="text-xs font-semibold text-[var(--brand)] hover:underline">
+            <Link href="/activities" className="text-xs font-semibold text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:underline">
               ดูทั้งหมด
             </Link>
           </div>
@@ -72,12 +71,10 @@ export function JackpotSidebar({ tournaments, promotions }: JackpotSidebarProps)
         <div className="soft-card p-4 sm:p-5">
           <div className="mb-3 flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <span className="text-lg" aria-hidden>
-                📢
-              </span>
+              <Megaphone className="h-[18px] w-[18px] text-[var(--brand)]" aria-hidden />
               <h3 className="text-base font-bold text-[var(--text-on-light)]">โปรโมชั่นที่น่าสนใจ</h3>
             </div>
-            <Link href="/promotions" className="text-xs font-semibold text-[var(--brand)] hover:underline">
+            <Link href="/promotions" className="text-xs font-semibold text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:underline">
               ดูทั้งหมด
             </Link>
           </div>

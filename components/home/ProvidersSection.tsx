@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "@/lib/i18n/navigation";
+import { Gamepad2 } from "lucide-react";
 import { useT } from "@/lib/i18n/I18nProvider";
 import { HOME_PROVIDER_LOGO_MARQUEE } from "@/app/data/homeProviderLogosData";
 import { toSportHref } from "@/lib/gamingRoutes";
@@ -39,7 +40,7 @@ export function ProvidersSection() {
   );
 
   return (
-    <HomePageSection title="Providers" icon="🎮" viewAllHref="/slots">
+    <HomePageSection title="Providers" icon={<Gamepad2 className="h-4 w-4 text-[var(--brand)]" aria-hidden />} viewAllHref="/slots">
       {logos.length === 0 ? (
         <p className="py-6 text-center text-sm text-[var(--text-muted)]">{t("providers.empty")}</p>
       ) : (

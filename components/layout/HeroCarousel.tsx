@@ -37,7 +37,7 @@ export function HeroCarousel({ items, className = "" }: HeroCarouselProps) {
       className={`relative w-full overflow-hidden bg-[var(--soft-canvas)] ${className}`.trim()}
       aria-label={t("peekCarousel.ariaLabel")}
     >
-      <div className="relative mx-auto aspect-[3/1] max-h-[160px] w-full max-w-[1200px] md:aspect-auto md:h-[clamp(240px,24vw,320px)] md:max-h-none">
+      <div className="relative mx-auto aspect-[5/2] w-full max-w-[1200px] md:aspect-auto md:h-[clamp(240px,24vw,320px)]">
         {slides.map((slide, index) => (
           <Link
             key={slide.id}
@@ -54,7 +54,7 @@ export function HeroCarousel({ items, className = "" }: HeroCarouselProps) {
               fill
               priority={index === 0}
               sizes="(max-width: 1200px) 100vw, 1200px"
-              className="object-cover"
+              className="object-contain"
             />
           </Link>
         ))}
